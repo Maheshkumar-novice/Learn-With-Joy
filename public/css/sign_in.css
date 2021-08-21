@@ -5,6 +5,50 @@
   background-color: black;
   color: white;
   overflow: hidden;
+  position: relative;
+}
+
+/* .main>*:not(.main__name){
+  filter: blur(2rem);
+} */
+
+.main__name{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  z-index: 1;
+}
+
+.main__name--input{
+  font-size: 4rem;
+  color: black;
+  padding: 1rem;
+  border: none;
+  border-bottom: 1px solid black;
+  align-self: center;
+}
+
+.main__name--input:focus{
+  outline: none;
+}
+
+.main__name--err{
+  color: red;
+  font-size: 1.8rem;
+}
+
+.main__name--next{
+  align-self: flex-end;
+  font-size: 3rem;
+  color: black;
+  cursor: pointer;
+  margin-right: 1rem;
 }
 
 .main__feature-wrapper {
@@ -84,4 +128,8 @@
 
 .signin-prompt--bold {
   font-weight: bold;
+}
+
+.none{
+  display: none;
 }

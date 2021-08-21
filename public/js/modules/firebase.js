@@ -24,4 +24,8 @@ export function writeDB(db, referencce, value){
     db.ref(referencce).set(value);
 }
 
+// read data
+export async function readDB(db, reference){
+    return await db.ref(reference).get();
+}
 
