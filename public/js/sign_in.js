@@ -53,9 +53,9 @@ gsignIn.addEventListener("click", (e) => {
 
 let check_name, userName, userLower;
 newNameInput.addEventListener("input", function (e) {
-  if (!names || newNameInput.value === "") return;
   userName = this.value;
   userLower = this.value.toLowerCase();
+  if (!names || newNameInput.value === "") return;
   check_name = names.filter((name) => name === userLower).join("");
   newNameInput.style.borderBottom = "1px solid black";
   newNameErr.innerText = "";
