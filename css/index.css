@@ -10,10 +10,98 @@
 
 .header__title {
   font-size: 5rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .header__img {
   width: 40px;
   cursor: pointer;
+}
+
+.main {
+  height: calc(100vh - 100px);
+  display: flex;
+  padding: 3rem;
+  background-color: black;
+  color: white;
+  overflow: hidden;
+}
+
+.main__feature-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.main__feature-wrapper--2 {
+  display: flex;
+  flex-direction: row;
+}
+
+.main__feature-wrapper--2 .main__img {
+  width: 25rem;
+  height: 25rem;
+}
+
+.main__features {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.main__feature-text {
+  width: 30rem;
+  font-size: 3rem;
+  text-align: center;
+  padding: 0.25em;
+  border-radius: 1rem;
+  margin: 1rem;
+  background-color: var(--primary-color);
+}
+
+.main__img {
+  width: 20rem;
+  height: 20rem;
+}
+
+.main__text--notes {
+  background-color: var(--notes-color);
+}
+
+.main__text--files {
+  background-color: var(--file-upload-color);
+}
+
+.main__text--entertainment {
+  background-color: var(--entertainment-color);
+}
+
+.main__text--calendar {
+  background-color: var(--calendar-color);
+}
+
+.main__text--chat {
+  background-color: var(--chat-color);
+}
+
+.main__text--calculator {
+  background-color: var(--calculator-color);
+}
+
+.signin-prompt {
+  font-size: 4rem;
+  color: white;
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.signin-prompt--bold {
+  font-weight: bold;
 }
