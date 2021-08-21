@@ -1,0 +1,45 @@
+.header {
+  height: 70px;
+}
+
+.header__title {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.navbar {
+  height: 45px;
+  padding: 1rem;
+  padding-bottom: 0;
+  padding-top: 0;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar__title {
+  font-size: 2.5rem;
+  font-weight: 400;
+}
+
+.navbar__tab {
+  cursor: pointer;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar__tab--active {
+  color: red;
+  border-bottom: 5px solid red;
+}
+
+.navbar__img {
+  height: 50%;
+  margin-right: 2rem;
+  cursor: pointer;
+}
