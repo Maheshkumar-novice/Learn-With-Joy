@@ -1,87 +1,69 @@
-.main {
-  height: calc(100vh - 100px);
-  display: flex;
-  padding: 3rem;
-  background-color: black;
-  color: white;
-  overflow: hidden;
+.header {
+  height: 70px;
 }
 
-.main__feature-wrapper {
+.header__title {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.navbar {
+  height: 45px;
+  padding: 1rem;
+  padding-bottom: 0;
+  padding-top: 0;
+  background-color: #191a20;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar__title {
+  font-size: 2.5rem;
+  font-weight: 400;
+}
+
+.navbar__tab {
+  cursor: pointer;
+  height: 100%;
   flex: 1;
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  flex-direction: column;
-  gap: 2rem;
+  justify-content: center;
 }
 
-.main__feature-wrapper--2 {
-  display: flex;
-  flex-direction: row;
+.navbar__tab--active {
+  color: red;
+  border-bottom: 5px solid red;
 }
 
-.main__feature-wrapper--2 .main__img {
-  width: 25rem;
-  height: 25rem;
+.navbar__img {
+  height: 50%;
+  margin-right: 2rem;
+  cursor: pointer;
 }
 
-.main__features {
+.main {
+  height: calc(100vh - 145px);
+  padding: 1rem;
+  background-color: black;
+  display: grid;
+  grid-template-columns: 30% 45% auto;
+  grid-gap: 1rem;
+}
+
+.main__container {
+  background-color: #191a20;
+  border-radius: 2rem;
+}
+
+.footer {
+  height: 30px;
+  font-size: 1.5rem;
+  background-color: #191a20;
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.main__feature-text {
-  width: 30rem;
-  font-size: 3rem;
-  text-align: center;
-  padding: 0.25em;
-  border-radius: 1rem;
-  margin: 1rem;
-  background-color: var(--primary-color);
-}
-
-.main__img {
-  width: 20rem;
-  height: 20rem;
-}
-
-.main__text--notes {
-  background-color: var(--notes-color);
-}
-
-.main__text--files {
-  background-color: var(--file-upload-color);
-}
-
-.main__text--entertainment {
-  background-color: var(--entertainment-color);
-}
-
-.main__text--calendar {
-  background-color: var(--calendar-color);
-}
-
-.main__text--chat {
-  background-color: var(--chat-color);
-}
-
-.main__text--calculator {
-  background-color: var(--calculator-color);
-}
-
-.signin-prompt {
-  font-size: 4rem;
-  color: white;
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.signin-prompt--bold {
-  font-weight: bold;
 }

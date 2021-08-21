@@ -4,87 +4,42 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Learn With Joy | Home</title>
+    <title>Dashboard | Learn With Joy</title>
     <link rel="stylesheet" href="./css/custom_reset.css" />
     <link rel="stylesheet" href="./css/common.css" />
     <link rel="stylesheet" href="./css/index.css" />
   </head>
   <body>
-    <p class="signin-prompt">
-      <span class="signin-prompt--bold">Sign In</span> to Learn With Joy!
-    </p>
     <header class="header">
-      <h1 class="header__title">Learn With Joy</h1>
+      <h1 class="header__title">
+        <span class="header__title--greet">Good Morning!</span
+        ><span class="header__title--username"> Lorem.</span>
+      </h1>
       <img
         src="https://img.icons8.com/office/80/000000/google-logo.png"
         class="header__img"
       />
     </header>
+    <nav class="navbar">
+      <h2 class="navbar__title navbar__tab navbar__tab--active">Friends</h2>
+      <h2 class="navbar__title navbar__tab">Groups</h2>
+      <h2 class="navbar__title navbar__tab">Notes</h2>
+      <h2 class="navbar__title navbar__tab">Calendar</h2>
+      <h2 class="navbar__title navbar__tab">Entertainment</h2>
+      <h2 class="navbar__title navbar__tab">Timer</h2>
+      <img
+        src="./assets/icons/dashboard/drop down.svg"
+        alt="Drop Down Menu"
+        class="navbar__img"
+      />
+    </nav>
     <main class="main">
-      <div class="main__feature-wrapper main__feature-wrapper--1">
-        <div class="main__features">
-          <img
-            src="./assets/icons/home/puzzle.svg"
-            alt="Puzzle Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--puzzle">Solve Puzzles</p>
-        </div>
-        <div class="main__features">
-          <img
-            src="./assets/icons/home/notes.svg"
-            alt="Notes Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--notes">Take Notes</p>
-        </div>
-      </div>
-      <div class="main__feature-wrapper main__feature-wrapper--2">
-        <div class="main__features">
-          <img
-            src="./assets/icons/home/upload.svg"
-            alt="Store Files Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--files">Store Files</p>
-        </div>
-        <div class="main__features">
-          <img
-            src="./assets/icons/home/entertainment.svg"
-            alt="Entertainment Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--entertainment">
-            Entertainment
-          </p>
-        </div>
-        <div class="main__features">
-          <img
-            src="./assets/icons/home/calendar.svg"
-            alt="Calendar Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--calendar">Calendar</p>
-        </div>
-      </div>
-      <div class="main__feature-wrapper main__feature-wrapper--3">
-        <div class="main__features">
-          <img
-            src="./assets/icons/home/chat.svg"
-            alt="Chat Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--chat">Chat With Friends</p>
-        </div>
-        <div class="main__features">
-          <img
-            src="./assets/icons/home/calculator.svg"
-            alt="Calculator Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--calculator">Calculator</p>
-        </div>
-      </div>
+      <div class="main__container main__friends"></div>
+      <div class="main__container main__chat"></div>
+      <div class="main__container main__requests"></div>
     </main>
+    <footer class="footer">
+      <p class="footer__time">01:21:19</p>
+    </footer>
   </body>
 </html>
