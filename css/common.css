@@ -1,0 +1,19 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+  padding: 2rem;
+  padding-right: 3rem;
+  background-color: var(--primary-color);
+}
+
+.header__title {
+  font-size: 5rem;
+  font-weight: 600;
+}
+
+.header__img {
+  width: 40px;
+  cursor: pointer;
+}
