@@ -30,7 +30,6 @@ function showInput() {
 async function updateNewUser() {
   let data = await readDB(database, "users/names");
   names = data.val();
-  console.log(names);
   showInput();
 }
 
@@ -43,8 +42,6 @@ auth.onAuthStateChanged(async (user) => {
     } else {
       window.location = "../index.html";
     }
-  } else {
-    console.log("out");
   }
 });
 
@@ -54,31 +51,36 @@ gsignIn.addEventListener("click", (e) => {
   userSignIn(auth, provider);
 });
 
-let check_name;
+let check_name, userName, userLower;
 newNameInput.addEventListener("input", function (e) {
   if (!names || newNameInput.value === "") return;
-  check_name = names.filter((name) => name === this.value).join("");
+  userName = this.value;
+  userLower = this.value.toLowerCase();
+  check_name = names.filter((name) => name === userLower).join("");
   newNameInput.style.borderBottom = "1px solid black";
   newNameErr.innerText = "";
-  if(check_name === newNameInput.value){
-      newNameErr.innerText = "User Name Already Taken"
-      newNameInput.style.borderBottom = "1px solid red";
+  next.classList.remove("none");
+  if (check_name === userLower) {
+    newNameErr.innerText = "User Name Already Taken";
+    newNameInput.style.borderBottom = "1px solid red";
+    next.classList.add("none");
   }
 });
 
 next.addEventListener("click", function (e) {
+  if (newNameInput.value === "") return;
   let user = auth.currentUser;
   user
     .updateProfile({
-      displayName: `${newNameInput.value}`,
+      displayName: `${userName}`,
       photoURL: user.photoURL,
     })
     .then(() => {
       let value = {
-        name: newNameInput.value,
+        name: userName,
         photo: user.photoURL,
       };
-      names ? names.push(newNameInput.value) : (names = [newNameInput.value]);
+      names ? names.push(userLower) : (names = [userLower]);
       writeDB(database, "users/names", names);
       writeDB(database, `users/${user.uid}`, value);
       window.location = "../index.html";

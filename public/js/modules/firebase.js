@@ -11,7 +11,9 @@ export const firebaseConfig = {
 
 // sign In
 export async function userSignIn(auth, provider){
-    auth.signInWithPopup(provider);
+    auth.signInWithPopup(provider).catch(error => {
+        
+    });
 }
 
 // Sign Out

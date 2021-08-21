@@ -8,13 +8,9 @@
   position: relative;
 }
 
-/* .main>*:not(.main__name){
-  filter: blur(2rem);
-} */
-
 .main__name{
   position: absolute;
-  top: 50%;
+  top: 15%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
@@ -46,9 +42,18 @@
 .main__name--next{
   align-self: flex-end;
   font-size: 3rem;
-  color: black;
+  color: white;
   cursor: pointer;
   margin-right: 1rem;
+  margin-top: 1rem;
+  background-color: blue;
+  padding: .5rem 1rem;
+  border-radius: 1rem;
+}
+
+.main__name--next:hover{
+  background-color: transparent;
+  color: black;
 }
 
 .main__feature-wrapper {
