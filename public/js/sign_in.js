@@ -11,7 +11,7 @@ firebase.analytics();
 
 const auth = firebase.auth();
 const database = firebase.database();
-let names = [];
+let names = [], uid = [];
 
 // selectors
 let gsignIn = document.querySelector(".header__img");
@@ -28,8 +28,11 @@ function showInput() {
 }
 
 async function updateNewUser() {
-  let data = await readDB(database, "users/names");
-  names = data.val();
+  let data = await readDB(database, "users/totalUsers");
+  if(data.val()){
+    names = data.val().names;
+    uid = data.val().uid;
+  }
   showInput();
 }
 
@@ -80,8 +83,12 @@ next.addEventListener("click", function (e) {
         name: userName,
         photo: user.photoURL,
       };
-      names ? names.push(userLower) : (names = [userLower]);
-      writeDB(database, "users/names", names);
+      names ? (names.push(userLower), uid.push(user.uid)) : (names = [userLower], uid = [user.uid]);
+      let userVal = {
+        names,
+        uid
+      }
+      writeDB(database, "users/totalUsers", userVal);
       writeDB(database, `users/${user.uid}`, value);
       window.location = "../index.html";
     })
