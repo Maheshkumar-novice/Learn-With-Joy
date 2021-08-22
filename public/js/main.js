@@ -48,6 +48,7 @@ auth.onAuthStateChanged(async (check_user) => {
     console.log(user);
     updateList();
     updateUserDetails();
+    // addFriendList();
   } else {
     window.location = "./sign_in.html";
   }
@@ -114,8 +115,39 @@ async function sendRequest(uid) {
 }
 
 // add and reject friend
-function addFriend(e) {
-  let fid = e.target.parentElement;
+async function addFriend(e) {
+  await updateFriendList();
+  let fid = e.target.parentElement.dataset.id;
+  let hashtext = CryptoJS.SHA256(fid + user.uid).toString();
+  friendlist.friends === "null"
+    ? (friendlist.friends = [hashtext])
+    : friendlist.friends.push(hashtext);
+  let frnd_data_val = await readDB(database, `friends/${fid}`);
+  let frnd_data = frnd_data_val.val();
+  frnd_data.friends === "null"
+    ? (frnd_data.friends = [hashtext])
+    : frnd_data.friends.push(hashtext);
+  friendlist.received.length === 1
+    ? (friendlist.received = "null")
+    : friendlist.received.splice(
+        friendlist.received.findIndex((frnd) => frnd === fid),
+        1
+      );
+  frnd_data.sent.length === 1
+    ? (frnd_data.sent = "null")
+    : frnd_data.sent.splice(
+        frnd_data.sent.findIndex((frnd) => frnd === user.uid),
+        1
+      );
+  writeDB(database, `friends/${user.uid}/friends`, friendlist.friends);
+  writeDB(database, `friends/${user.uid}/received`, friendlist.received);
+  writeDB(database, `friends/${fid}/friends`, frnd_data.friends);
+  writeDB(database, `friends/${fid}/sent`, frnd_data.sent);
+  let value = {
+    user1: user.uid,
+    user2: fid,
+  };
+  writeDB(database, `chat/${hashtext}`, value);
 }
 
 function removeFriend(e) {
@@ -164,14 +196,36 @@ async function updateFriendList() {
   }
 }
 
+async function addFriendList() {
+  await updateFriendList();
+  let cnt = document.querySelector(".main__friend-cnt");
+  cnt.innerHTML = "";
+  if(friendlist.friends === "null") return
+  console.log(friendlist.friends);
+  friendlist.friends.forEach(async function (elem) {
+    let chatUsers = (await readDB(database, `chat/${elem}`)).val();
+    let chatUid = (await readDB(database, `users/${chatUsers.user2}`)).val();
+    cnt.innerHTML += `<div class="main__friend-card" data-id=${chatUsers.user2}>
+    <img
+      src="${chatUid.photo}"
+      alt="Friend"
+      class="main__img"
+    />
+    <p class="main__friend-name">${chatUid.name}</p>
+    <button class="main__remove-friend">Remove</button>
+  </div>`
+  });
+}
+
 async function updateRequestReceived() {
   await updateFriendList();
+  cnt[0].innerHTML = "";
   console.log(friendlist);
   if (friendlist === {} || friendlist.received === "null") return;
-  let tot_length = (cnt[0].querySelectorAll(".main__friend-card") || []).length;
+  // let tot_length = (cnt[0].querySelectorAll(".main__friend-card") || []).length;
   // let start = friendlist.received.length - tot_length
   friendlist.received.forEach(async (list, idx) => {
-    if (tot_length > idx) return;
+    // if (tot_length > idx) return;
     let list_user = await readDB(database, `users/${list}`);
     cnt[0].innerHTML += `<div class="main__friend-card default" data-id=${list}>
     <img
@@ -184,7 +238,6 @@ async function updateRequestReceived() {
     <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
   </div>`;
     document.querySelectorAll(`.main__add-friend-ic`).forEach((accept) => {
-      console.log(accept);
       accept.addEventListener("click", addFriend);
     });
     document.querySelectorAll(`.main__remove-friend-ic`).forEach((reject) => {
@@ -196,12 +249,13 @@ async function updateRequestReceived() {
 async function updateRequestSent() {
   await updateFriendList();
   console.log(friendlist);
+  cnt[1].innerHTML = "";
   if (friendlist === {} || friendlist.sent === "null") return;
-  let tot_length = (cnt[1].querySelectorAll(".main__friend-card") || []).length;
+  // let tot_length = (cnt[1].querySelectorAll(".main__friend-card") || []).length;
   // let start = (friendlist.sent.length - tot_length)-1
   // console.log(tot_length, start);
   friendlist.sent.forEach(async (list, idx) => {
-    if (tot_length > idx) return;
+    // if (tot_length > idx) return;
     let list_user = await readDB(database, `users/${list}`);
     cnt[1].innerHTML += `<div class="main__friend-card default" data-id=${list}>
     <img
@@ -222,6 +276,8 @@ function update() {
 
 // ------------------------- db listener --------------------------
 function addDbListener() {
+  setDBListener(`friends/${user.uid}`, updateFriendList);
+  setDBListener(`friends/${user.uid}/friends`, addFriendList);
   setDBListener(`friends/${user.uid}/sent`, updateRequestSent);
   setDBListener(`friends/${user.uid}/received`, updateRequestReceived);
 }
