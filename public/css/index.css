@@ -53,7 +53,7 @@
   padding: 1rem;
   background-color: black;
   display: grid;
-  grid-template-columns: 30% 45% auto;
+  grid-template-columns: 27% 45% auto;
   grid-gap: 1rem;
 }
 
@@ -223,6 +223,46 @@
 
 .main__time-stamp--left {
   right: 52%;
+}
+
+/* main --chat-requests */
+.main__requests {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.main__requests > * {
+  max-height: 50%;
+  flex: 1;
+  border-radius: 15px;
+  border: 2px solid var(--primary-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.main__req-cards {
+  flex: 1;
+  overflow: auto;
+}
+
+.main__req-header {
+  background-color: var(--primary-color);
+  font-size: 3rem;
+  font-weight: normal;
+  border-radius: 15px 15px 0 0;
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main__req-rec {
+  background-color: #191a20;
+}
+
+.main__req-sent {
+  background-color: #191a20;
 }
 
 /* footer */
