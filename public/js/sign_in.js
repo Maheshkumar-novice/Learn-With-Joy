@@ -25,6 +25,7 @@ function showInput() {
     elem.style.filter = "blur(2rem)";
   });
   newNameCnt.classList.remove("none");
+  newNameInput.focus();
 }
 
 async function updateNewUser() {
@@ -90,7 +91,9 @@ next.addEventListener("click", function (e) {
       }
       writeDB(database, "users/totalUsers", userVal);
       writeDB(database, `users/${user.uid}`, value);
-      window.location = "../index.html";
+      setTimeout(() => {
+        window.location = "../index.html";
+      }, 200);
     })
     .catch((error) => {
       console.log(error);
