@@ -17,3 +17,7 @@
   width: 40px;
   cursor: pointer;
 }
+
+.none {
+  display: none !important;
+}
