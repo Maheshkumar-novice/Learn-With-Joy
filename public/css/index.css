@@ -57,6 +57,12 @@
   background-color: #191a20;
   border-radius: 2rem;
   overflow: auto;
+  overflow-x: hidden;
+  padding: 1.5rem;
+}
+
+.main__chat {
+  padding: 0;
 }
 
 .main__friend-card,
@@ -104,6 +110,62 @@
   outline: none;
   border: none;
   font-size: inherit;
+  max-width: 100%;
+}
+
+.main__chat-window {
+  height: 100%;
+  border-radius: 15px;
+}
+
+.main__chat-header {
+  height: 10%;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  font-size: 3rem;
+  font-weight: 600;
+  background-color: #c4c4c4;
+}
+
+.main__chat-body {
+  height: 80%;
+}
+
+.main__chat-message-sender {
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.main__input--chat {
+  height: 100%;
+  font-size: 2rem;
+  background-color: #c4c4c4;
+  padding: 2rem;
+  overflow: auto;
+  border-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  flex: 10;
+}
+.main__img--chat {
+  height: 5rem;
+}
+
+.main__img--send,
+.main__img--file {
+  height: 100%;
+  max-width: 10rem;
+  padding: 1rem;
+  background-color: #c4c4c4;
+
+}
+
+.main__img--file {
+  flex: 1;
+  background-color: #c4c4c4;
 }
 
 .footer {

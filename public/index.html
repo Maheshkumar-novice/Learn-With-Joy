@@ -37,7 +37,12 @@
     <main class="main">
       <div class="main__container main__friends">
         <div class="main__search-trigger">
-          <input type="text" placeholder="Search New Friends..." class="main__input" autofocus/>
+          <input
+            type="text"
+            placeholder="Search New Friends..."
+            class="main__input"
+            autofocus
+          />
         </div>
         <div class="main__friend-card">
           <img
@@ -59,7 +64,7 @@
         </div>
       </div>
       <div class="main__container main__chat">
-        <div class="main__result-card">
+        <div class="main__result-card none">
           <img
             src="./assets/icons/home/user.svg"
             alt="Friend"
@@ -67,6 +72,34 @@
           />
           <p class="main__friend-name">Lorem Ipsum</p>
           <button class="main__add-friend">Add</button>
+        </div>
+        <div class="main__chat-window">
+          <div class="main__chat-header">
+            <img
+              src="./assets/icons/home/user.svg"
+              alt="User Profile Picture"
+              class="main__img--chat"
+            />
+            <p class="main__chat-username">Lorem Ipsum</p>
+          </div>
+          <div class="main__chat-body"></div>
+          <div class="main__chat-message-sender">
+            <img
+              src="./assets/icons/home/add_file.svg"
+              alt="Send Message"
+              class="main__img--file"
+            />
+            <input
+              type="text"
+              placeholder="Enter Message..."
+              class="main__input main__input--chat"
+            />
+            <img
+              src="./assets/icons/home/send.svg"
+              alt="Send Message"
+              class="main__img--send"
+            />
+          </div>
         </div>
       </div>
       <div class="main__container main__requests"></div>
