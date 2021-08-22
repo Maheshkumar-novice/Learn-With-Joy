@@ -204,8 +204,9 @@ async function addFriendList() {
   console.log(friendlist.friends);
   friendlist.friends.forEach(async function (elem) {
     let chatUsers = (await readDB(database, `chat/${elem}`)).val();
-    let chatUid = (await readDB(database, `users/${chatUsers.user2}`)).val();
-    cnt.innerHTML += `<div class="main__friend-card" data-id=${chatUsers.user2}>
+    let frndUID = chatUsers.user1===user.uid ? chatUsers.user2 : chatUsers.user1;
+    let chatUid = (await readDB(database, `users/${frndUID}`)).val();
+    cnt.innerHTML += `<div class="main__friend-card" data-id=${frndUID}>
     <img
       src="${chatUid.photo}"
       alt="Friend"
