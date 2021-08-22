@@ -101,6 +101,24 @@
   cursor: pointer;
 }
 
+.main__remove-friend-ic,
+.main__add-friend-ic, .main__pending-friend-ic{
+  width: 40px;
+  height: 40px;
+  margin: 0 .5rem;
+  cursor: pointer;
+}
+
+.main__remove-friend-ic:hover,
+.main__add-friend-ic:hover{
+  transform: scale(1.2);
+} 
+
+.main__friend-name{
+  flex: 1;
+  margin-left: 2rem;
+}
+
 .main__search-trigger {
   color: black;
   background-color: #c4c4c4;
@@ -274,4 +292,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.default{
+  cursor: default;
 }
