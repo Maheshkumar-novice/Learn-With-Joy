@@ -15,7 +15,11 @@
         <span class="header__title--greet">Good Morning! </span
         ><span class="header__title--username"></span>
       </h1>
-      <img src="./assets/icons/home/user.svg" alt="Profile Picture" class="header__img" />
+      <img
+        src="./assets/icons/home/user.svg"
+        alt="Profile Picture"
+        class="header__img"
+      />
     </header>
     <nav class="navbar">
       <h2 class="navbar__title navbar__tab navbar__tab--active">Friends</h2>
@@ -31,8 +35,40 @@
       />
     </nav>
     <main class="main">
-      <div class="main__container main__friends"></div>
-      <div class="main__container main__chat"></div>
+      <div class="main__container main__friends">
+        <div class="main__search-trigger">
+          <input type="text" placeholder="Search New Friends..." class="main__input" autofocus/>
+        </div>
+        <div class="main__friend-card">
+          <img
+            src="./assets/icons/home/user.svg"
+            alt="Friend"
+            class="main__img"
+          />
+          <p class="main__friend-name">Lorem Ipsum</p>
+          <button class="main__remove-friend">Remove</button>
+        </div>
+        <div class="main__friend-card">
+          <img
+            src="./assets/icons/home/user.svg"
+            alt="Friend"
+            class="main__img"
+          />
+          <p class="main__friend-name">Lorem Ipsum</p>
+          <button class="main__remove-friend">Remove</button>
+        </div>
+      </div>
+      <div class="main__container main__chat">
+        <div class="main__result-card">
+          <img
+            src="./assets/icons/home/user.svg"
+            alt="Friend"
+            class="main__img"
+          />
+          <p class="main__friend-name">Lorem Ipsum</p>
+          <button class="main__add-friend">Add</button>
+        </div>
+      </div>
       <div class="main__container main__requests"></div>
     </main>
     <footer class="footer">

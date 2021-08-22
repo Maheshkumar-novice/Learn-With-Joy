@@ -56,6 +56,54 @@
 .main__container {
   background-color: #191a20;
   border-radius: 2rem;
+  overflow: auto;
+}
+
+.main__friend-card,
+.main__result-card {
+  background-color: #c4c4c4;
+  height: 3em;
+  margin: 1.5rem;
+  padding: 1rem;
+  font-size: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.main__img {
+  height: 100%;
+}
+
+.main__remove-friend,
+.main__add-friend {
+  outline: none;
+  border: none;
+  background-color: transparent;
+  color: red;
+  cursor: pointer;
+}
+
+.main__search-trigger {
+  color: black;
+  background-color: #c4c4c4;
+  border-radius: 15px;
+  height: 3em;
+  margin: 1.5rem;
+  padding: 2rem;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main__input {
+  background-color: inherit;
+  outline: none;
+  border: none;
+  font-size: inherit;
 }
 
 .footer {
