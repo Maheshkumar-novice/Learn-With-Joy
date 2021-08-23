@@ -26,13 +26,25 @@ function updateUserDetails() {
   userName.innerText = user.displayName;
 }
 
-//Updat names and uid list
+//Update names and uid list
 async function updateList() {
-  let total_data = await readDB(database, "users/totalUsers");
-  if (total_data.val()) {
-    namesList = total_data.val().names;
-    uidList = total_data.val().uid;
+  let total_data = (await readDB(database, "users")).val();
+  for(let uid in total_data){
+    console.log(uid);
+    uidList.push(uid);
+    namesList.push(total_data[uid]);
   }
+  console.log(namesList, uidList);
+  // if (total_data) {
+  //   namesList = total_data.names;
+  //   uidList = total_data.uid;
+  // }
+}
+
+function appendList(data){
+  uidList.push(data.key);
+  namesList.push(data.val());
+  console.log(namesList, uidList);
 }
 
 // sign In status change
@@ -46,7 +58,7 @@ auth.onAuthStateChanged(async (check_user) => {
     user = check_user;
     addDbListener();
     console.log(user);
-    updateList();
+    // updateList();
     updateUserDetails();
     // addFriendList();
   } else {
@@ -75,9 +87,10 @@ async function updateSearchResult(uid) {
       if (list === uid) bool = true;
     });
   }
-  if (uid === user.uid || bool) return;
-  let data = await readDB(database, `users/${uid}`);
-  let search_user = data.val();
+  // if (uid === user.uid || bool) return;
+  let search_user = namesList[uidList.findIndex(tot_uid => tot_uid === uid)];
+  // let data = await readDB(database, `users/${uid}`);
+  // let search_user = data.val();
   searchCnt.innerHTML += `<div class="main__result-card" data-id=${uid}>
                             <img
                               src=${search_user.photo}
@@ -277,12 +290,13 @@ function update() {
 
 // ------------------------- db listener --------------------------
 function addDbListener() {
-  setDBListener(`friends/${user.uid}`, updateFriendList);
-  setDBListener(`friends/${user.uid}/friends`, addFriendList);
-  setDBListener(`friends/${user.uid}/sent`, updateRequestSent);
-  setDBListener(`friends/${user.uid}/received`, updateRequestReceived);
+  setDBListener(`users`, "child_added", appendList);
+  setDBListener(`friends/${user.uid}`, "value", updateFriendList);
+  setDBListener(`friends/${user.uid}/friends`, "value", addFriendList);
+  setDBListener(`friends/${user.uid}/sent`, "value", updateRequestSent);
+  setDBListener(`friends/${user.uid}/received`, "value", updateRequestReceived);
 }
 
-function setDBListener(reference, callBack) {
-  database.ref(reference).on("value", callBack);
+function setDBListener(reference, type, callBack) {
+  database.ref(reference).on(type, callBack);
 }

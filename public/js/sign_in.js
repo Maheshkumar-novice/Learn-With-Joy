@@ -84,12 +84,12 @@ next.addEventListener("click", function (e) {
         name: userName,
         photo: user.photoURL,
       };
-      names ? (names.push(userLower), uid.push(user.uid)) : (names = [userLower], uid = [user.uid]);
-      let userVal = {
-        names,
-        uid
-      }
-      writeDB(database, "users/totalUsers", userVal);
+      // names ? (names.push(userLower), uid.push(user.uid)) : (names = [userLower], uid = [user.uid]);
+      // let userVal = {
+      //   names,
+      //   uid
+      // }
+      // writeDB(database, "users/totalUsers", userVal);
       writeDB(database, `users/${user.uid}`, value);
       setTimeout(() => {
         window.location = "../index.html";
