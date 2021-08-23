@@ -102,10 +102,10 @@ function updateSearchResult(uid) {
   }
   if (friendsUID !== "null") {
     friendsUID.forEach((list) => {
-      if (list === uid) boolSent = true;
+      if (list === uid) boolFriends = true;
     });
   }
-  if (uid === user.uid || boolReceived || boolSent) return;
+  if (uid === user.uid || boolReceived || boolSent || boolFriends) return;
   let search_user = namesList[uidList.findIndex(tot_uid => tot_uid === uid)];
   return `<div class="main__result-card" data-id=${uid}>
                             <img
