@@ -45,3 +45,8 @@ export async function updateDB(db, reference, value){
 export async function removeDB(db, referencce){
     db.ref(referencce).remove();
 }
+
+// create key for a post
+export function pushKey(db, reference, key){
+    return db.ref(reference).child(key).push().key;
+}
