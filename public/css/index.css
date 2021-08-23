@@ -79,7 +79,9 @@
 
 /* main - friends & search */
 .main__friend-card,
-.main__result-card {
+.main__result-card,
+.main__received-card,
+.main__sent-card {
   background-color: #c4c4c4;
   height: 3em;
   margin: 1.5rem;
