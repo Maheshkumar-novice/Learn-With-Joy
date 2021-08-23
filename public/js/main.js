@@ -15,7 +15,7 @@ let user,
   namesList = [],
   uidList = [],
   friendlist = null,
-  friendsUID="null";
+  friendsUID = "null";
 
 // selector
 const userProfilePic = document.querySelector(".header__img");
@@ -30,7 +30,7 @@ function updateUserDetails() {
 //Update names and uid list
 async function updateList() {
   let total_data = (await readDB(database, "users")).val();
-  for(let uid in total_data){
+  for (let uid in total_data) {
     console.log(uid);
     uidList.push(uid);
     namesList.push(total_data[uid]);
@@ -42,7 +42,7 @@ async function updateList() {
   // }
 }
 
-function appendList(data){
+function appendList(data) {
   uidList.push(data.key);
   namesList.push(data.val());
   console.log(namesList, uidList);
@@ -80,8 +80,10 @@ let searchCnt = document.querySelector(".main__chat");
 let addBtn;
 
 //remove after add btn triggered
-function removeSerachFriendResult(e){
-  let remove_elem = document.querySelector(`.main__result-card[data-id=${e.target.parentElement.dataset.id}]`);
+function removeSerachFriendResult(e) {
+  let remove_elem = document.querySelector(
+    `.main__result-card[data-id=${e.target.parentElement.dataset.id}]`
+  );
   console.log(remove_elem);
   searchCnt.removeChild(remove_elem);
 }
@@ -89,7 +91,7 @@ function removeSerachFriendResult(e){
 // Update search Result
 let boolReceived, boolSent, boolFriends;
 function updateSearchResult(uid) {
-  boolReceived = boolSent = false;
+  boolReceived = boolSent = boolFriends = false;
   if (friendlist.received !== "null") {
     friendlist.received.forEach((list) => {
       if (list === uid) boolReceived = true;
@@ -102,11 +104,12 @@ function updateSearchResult(uid) {
   }
   if (friendsUID !== "null") {
     friendsUID.forEach((list) => {
+      console.log(list, uid);
       if (list === uid) boolFriends = true;
     });
   }
   if (uid === user.uid || boolReceived || boolSent || boolFriends) return;
-  let search_user = namesList[uidList.findIndex(tot_uid => tot_uid === uid)];
+  let search_user = namesList[uidList.findIndex((tot_uid) => tot_uid === uid)];
   return `<div class="main__result-card" data-id=${uid}>
                             <img
                               src=${search_user.photo}
@@ -182,7 +185,7 @@ function removeFriend(e) {
 
 //listener
 searchInp.addEventListener("input", (e) => {
-  if(e.target.value === "") searchCnt.innerHTML = "";
+  if (e.target.value === "") searchCnt.innerHTML = "";
   let value = e.target.value;
   // searchCnt.innerHTML = "";
   let html = "";
@@ -228,22 +231,25 @@ async function updateFriendList() {
 }
 
 async function addFriendList() {
+  console.log("in");
   await updateFriendList();
   let cnt = document.querySelector(".main__friend-cnt");
   // cnt.innerHTML = "";
-  if(friendlist.friends === "null") {
+  if (friendlist.friends === "null") {
     friendsUID = "null";
-    return
+    return;
   }
   friendsUID = [];
-  let html = ""
-  console.log(friendlist.friends);
+  let html = "";
+  console.table(friendlist.friends);
   friendlist.friends.map(async (elem, idx) => {
+    console.log(elem, idx, friendlist.friends.length - 1);
     let chatUsers = (await readDB(database, `chat/${elem}`)).val();
-    let frndUID = chatUsers.user1===user.uid ? chatUsers.user2 : chatUsers.user1;
-    let chatUid = namesList[uidList.findIndex(UID => UID === frndUID)];
-    console.log(chatUid)
-    friendsUID.push(chatUid);
+    let frndUID =
+      chatUsers.user1 === user.uid ? chatUsers.user2 : chatUsers.user1;
+    let chatUid = namesList[uidList.findIndex((UID) => UID === frndUID)];
+    console.log(chatUid);
+    friendsUID.push(frndUID);
     html += `<div class="main__friend-card" data-id=${frndUID}>
     <img
       src="${chatUid.photo}"
@@ -252,8 +258,10 @@ async function addFriendList() {
     />
     <p class="main__friend-name">${chatUid.name}</p>
     <button class="main__remove-friend">Remove</button>
-  </div>`
-    if(idx === friendlist.friends.length-1){
+  </div>\n`;
+    console.log(html);
+    if (idx === friendlist.friends.length - 1) {
+      console.log(html);
       cnt.innerHTML = html;
       console.log(friendsUID);
     }
@@ -274,20 +282,45 @@ async function addFriendList() {
   // });
 }
 
+async function appendAddFriendList(data) {
+  let chatUsers = data.val();
+  if(chatUsers.user1 !== user.uid && chatUsers.user2 !== user.uid) return;
+  if(friendsUID === "null"){
+    friendsUID = [];
+  }
+  let cnt = document.querySelector(".main__friend-cnt");
+  console.log(chatUsers)
+  let frndUID =
+    chatUsers.user1 === user.uid ? chatUsers.user2 : chatUsers.user1;
+  let chatUid = namesList[uidList.findIndex((UID) => UID === frndUID)];
+  console.log(chatUid);
+  friendsUID.push(frndUID);
+  cnt.innerHTML += `<div class="main__friend-card" data-id=${frndUID}>
+    <img
+      src="${chatUid.photo}"
+      alt="Friend"
+      class="main__img"
+    />
+    <p class="main__friend-name">${chatUid.name}</p>
+    <button class="main__remove-friend">Remove</button>
+  </div>\n`;
+}
+
 async function updateRequestReceived() {
   await updateFriendList();
   // cnt[0].innerHTML = "";
   console.log(friendlist);
   if (friendlist === {} || friendlist.received === "null") {
     cnt[0].innerHTML = "";
-    return
-  };
+    return;
+  }
   // let tot_length = (cnt[0].querySelectorAll(".main__friend-card") || []).length;
   // let start = friendlist.received.length - tot_length
   // let html = "";
-  cnt[0].innerHTML = friendlist.received.map(list => {
-    let list_user = namesList[uidList.findIndex(UID => UID === list)];
-    return `<div class="main__friend-card default" data-id=${list}>
+  cnt[0].innerHTML = friendlist.received
+    .map((list) => {
+      let list_user = namesList[uidList.findIndex((UID) => UID === list)];
+      return `<div class="main__friend-card default" data-id=${list}>
     <img
       src="${list_user.photo}"
       alt="Friend"
@@ -296,8 +329,9 @@ async function updateRequestReceived() {
     <p class="main__friend-name">${list_user.name}</p>
     <img class="main__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
     <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
-  </div>`
-  }).join("");
+  </div>`;
+    })
+    .join("");
   document.querySelectorAll(`.main__add-friend-ic`).forEach((accept) => {
     accept.addEventListener("click", addFriend);
   });
@@ -325,15 +359,16 @@ async function updateRequestSent() {
   console.log(friendlist);
   if (friendlist === {} || friendlist.sent === "null") {
     cnt[1].innerHTML = "";
-    return
-  };
+    return;
+  }
   // let html = "";
   // let tot_length = (cnt[1].querySelectorAll(".main__friend-card") || []).length;
   // let start = (friendlist.sent.length - tot_length)-1
   // console.log(tot_length, start);
-  cnt[1].innerHTML = friendlist.sent.map(list => {
-    let list_user = namesList[uidList.findIndex(UID => UID === list)];
-    return `<div class="main__friend-card default" data-id=${list}>
+  cnt[1].innerHTML = friendlist.sent
+    .map((list) => {
+      let list_user = namesList[uidList.findIndex((UID) => UID === list)];
+      return `<div class="main__friend-card default" data-id=${list}>
     <img
       src="${list_user.photo}"
       alt="Friend"
@@ -342,7 +377,8 @@ async function updateRequestSent() {
     <p class="main__friend-name">${list_user.name}</p>
     <img class="main__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
   </div>`;
-  }).join("");
+    })
+    .join("");
   // friendlist.sent.forEach(async (list, idx) => {
   //   // if (tot_length > idx) return;
   //   let list_user = await readDB(database, `users/${list}`);
@@ -358,16 +394,20 @@ async function updateRequestSent() {
   // });
 }
 
-function update() {
-  updateRequestReceived();
-  updateRequestSent();
-}
+// function update() {
+//   updateRequestReceived();
+//   updateRequestSent();
+// }
 
 // ------------------------- db listener --------------------------
 function addDbListener() {
   setDBListener(`users`, "child_added", appendList);
   setDBListener(`friends/${user.uid}`, "value", updateFriendList);
-  setDBListener(`friends/${user.uid}/friends`, "value", addFriendList);
+  setDBListener(
+    `chat`,
+    "child_added",
+    appendAddFriendList
+  );
   setDBListener(`friends/${user.uid}/sent`, "value", updateRequestSent);
   setDBListener(`friends/${user.uid}/received`, "value", updateRequestReceived);
 }
