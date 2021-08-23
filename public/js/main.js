@@ -6,6 +6,7 @@ import {
   removeDB,
   updateDB,
   addChlidDB,
+  pushKey,
 } from "./modules/firebase.js";
 
 // firebase initialization
@@ -153,6 +154,19 @@ async function addFriend(e) {
   writeDB(database, `chat/${hashtext}`, value);
 }
 
+async function rejectFriend(e){
+  let fid = e.target.parentElement.dataset.id;
+  let key = pushKey(database, `friends/${fid}`, "notifications");
+  console.log(key)
+  let notification = {
+    0: namesList[uidList.findIndex(uid => uid === fid)].name
+  };
+  addChlidDB(database, `friends/${fid}/notifications`, key, notification);
+
+  removeDB(database, `friends/${user.uid}/received/${fid}`);
+  removeDB(database, `friends/${fid}/sent/${user.uid}`);
+}
+
 async function removeFriend(e) {
   await updateFriendList();
   let hash = e.target.parentElement.dataset.hash;
@@ -259,7 +273,7 @@ async function updateRequestReceived(data) {
     accept.addEventListener("click", addFriend);
   });
   document.querySelectorAll(`.main__remove-friend-ic`).forEach((reject) => {
-    reject.addEventListener("click", removeFriend);
+    reject.addEventListener("click", rejectFriend);
   });
 }
 
@@ -306,10 +320,6 @@ async function removeRequestSent(data) {
   cnt[1].removeChild(sent_frnd_elem);
 }
 
-async function rejectedSentRequest(data) {
-  console.log(data.val());
-}
-
 // ------------------------- db listener --------------------------
 function addDbListener() {
   setDBListener(`users`, "child_added", appendList);
@@ -318,7 +328,7 @@ function addDbListener() {
   setDBListener(`friends/${user.uid}/friends`,"child_removed", removeFriendList);
 
   setDBListener(`friends/${user.uid}/sent`, "child_added", updateRequestSent);
-  setDBListener(`friends/${user.uid}/sent`,"child_changed",rejectedSentRequest);
+  // setDBListener(`friends/${user.uid}/sent`,"child_changed",rejectedSentRequest);
   setDBListener(`friends/${user.uid}/sent`, "child_removed", removeRequestSent);
 
   setDBListener(`friends/${user.uid}/received`, "child_added", updateRequestReceived);
@@ -327,8 +337,4 @@ function addDbListener() {
 
 function setDBListener(reference, type, callBack) {
   database.ref(reference).on(type, callBack);
-}
-
-function removeDBListener(reference, value) {
-  database.ref(reference).off(value);
 }
