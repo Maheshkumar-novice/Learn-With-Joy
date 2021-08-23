@@ -79,19 +79,22 @@ let searchCnt = document.querySelector(".main__chat");
 let addBtn;
 
 // Update search Result
-let bool;
-async function updateSearchResult(uid) {
-  bool = false;
+let boolReceived, boolSent;
+function updateSearchResult(uid) {
+  boolReceived = boolSent = false;
   if (friendlist.received !== "null") {
     friendlist.received.forEach((list) => {
-      if (list === uid) bool = true;
+      if (list === uid) boolReceived = true;
     });
   }
-  // if (uid === user.uid || bool) return;
+  if (friendlist.sent !== "null") {
+    friendlist.sent.forEach((list) => {
+      if (list === uid) boolSent = true;
+    });
+  }
+  if (uid === user.uid || boolReceived || boolSent) return;
   let search_user = namesList[uidList.findIndex(tot_uid => tot_uid === uid)];
-  // let data = await readDB(database, `users/${uid}`);
-  // let search_user = data.val();
-  searchCnt.innerHTML += `<div class="main__result-card" data-id=${uid}>
+  return `<div class="main__result-card" data-id=${uid}>
                             <img
                               src=${search_user.photo}
                               alt="Friend"
@@ -100,9 +103,6 @@ async function updateSearchResult(uid) {
                             <p class="main__friend-name">${search_user.name}</p>
                             <button class="main__add-friend">Add</button>
                           </div>`;
-  addBtnListener();
-
-  // console.log(search_user);
 }
 
 // update Friends list
@@ -169,15 +169,19 @@ function removeFriend(e) {
 
 //listener
 searchInp.addEventListener("input", (e) => {
+  if(e.target.value === "") searchCnt.innerHTML = "";
   let value = e.target.value;
-  searchCnt.innerHTML = "";
+  // searchCnt.innerHTML = "";
+  let html = "";
   if (value === "") return;
   let regex = new RegExp(value, "gi");
-  namesList.forEach(async (name, idx) => {
-    if (name.match(regex)) {
-      await updateSearchResult(uidList[idx], idx);
+  namesList.forEach((obj, idx) => {
+    if (obj.name.match(regex)) {
+      html += updateSearchResult(uidList[idx], idx);
     }
   });
+  searchCnt.innerHTML = html;
+  addBtnListener();
 });
 
 function addBtnListener() {
@@ -233,54 +237,86 @@ async function addFriendList() {
 
 async function updateRequestReceived() {
   await updateFriendList();
-  cnt[0].innerHTML = "";
+  // cnt[0].innerHTML = "";
   console.log(friendlist);
-  if (friendlist === {} || friendlist.received === "null") return;
+  if (friendlist === {} || friendlist.received === "null") {
+    cnt[0].innerHTML = "";
+    return
+  };
   // let tot_length = (cnt[0].querySelectorAll(".main__friend-card") || []).length;
   // let start = friendlist.received.length - tot_length
-  friendlist.received.forEach(async (list, idx) => {
-    // if (tot_length > idx) return;
-    let list_user = await readDB(database, `users/${list}`);
-    cnt[0].innerHTML += `<div class="main__friend-card default" data-id=${list}>
+  // let html = "";
+  cnt[0].innerHTML = friendlist.received.map(list => {
+    let list_user = namesList[uidList.findIndex(UID => UID === list)];
+    return `<div class="main__friend-card default" data-id=${list}>
     <img
-      src="${list_user.val().photo}"
+      src="${list_user.photo}"
       alt="Friend"
       class="main__img"
     />
-    <p class="main__friend-name">${list_user.val().name}</p>
+    <p class="main__friend-name">${list_user.name}</p>
     <img class="main__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
     <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
-  </div>`;
-    document.querySelectorAll(`.main__add-friend-ic`).forEach((accept) => {
-      accept.addEventListener("click", addFriend);
-    });
-    document.querySelectorAll(`.main__remove-friend-ic`).forEach((reject) => {
-      reject.addEventListener("click", removeFriend);
-    });
+  </div>`
+  }).join("");
+  document.querySelectorAll(`.main__add-friend-ic`).forEach((accept) => {
+    accept.addEventListener("click", addFriend);
   });
+  document.querySelectorAll(`.main__remove-friend-ic`).forEach((reject) => {
+    reject.addEventListener("click", removeFriend);
+  });
+  // friendlist.received.forEach(async (list, idx) => {
+  //   // if (tot_length > idx) return;
+  //   let list_user = await readDB(database, `users/${list}`);
+  //   cnt[0].innerHTML += `<div class="main__friend-card default" data-id=${list}>
+  //   <img
+  //     src="${list_user.val().photo}"
+  //     alt="Friend"
+  //     class="main__img"
+  //   />
+  //   <p class="main__friend-name">${list_user.val().name}</p>
+  //   <img class="main__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
+  //   <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
+  // </div>`;
+  // });
 }
 
 async function updateRequestSent() {
   await updateFriendList();
   console.log(friendlist);
-  cnt[1].innerHTML = "";
-  if (friendlist === {} || friendlist.sent === "null") return;
+  if (friendlist === {} || friendlist.sent === "null") {
+    cnt[1].innerHTML = "";
+    return
+  };
+  // let html = "";
   // let tot_length = (cnt[1].querySelectorAll(".main__friend-card") || []).length;
   // let start = (friendlist.sent.length - tot_length)-1
   // console.log(tot_length, start);
-  friendlist.sent.forEach(async (list, idx) => {
-    // if (tot_length > idx) return;
-    let list_user = await readDB(database, `users/${list}`);
-    cnt[1].innerHTML += `<div class="main__friend-card default" data-id=${list}>
+  cnt[1].innerHTML = friendlist.sent.map(list => {
+    let list_user = namesList[uidList.findIndex(UID => UID === list)];
+    return `<div class="main__friend-card default" data-id=${list}>
     <img
-      src="${list_user.val().photo}"
+      src="${list_user.photo}"
       alt="Friend"
       class="main__img"
     />
-    <p class="main__friend-name">${list_user.val().name}</p>
+    <p class="main__friend-name">${list_user.name}</p>
     <img class="main__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
   </div>`;
-  });
+  }).join("");
+  // friendlist.sent.forEach(async (list, idx) => {
+  //   // if (tot_length > idx) return;
+  //   let list_user = await readDB(database, `users/${list}`);
+  //   html += `<div class="main__friend-card default" data-id=${list}>
+  //   <img
+  //     src="${list_user.val().photo}"
+  //     alt="Friend"
+  //     class="main__img"
+  //   />
+  //   <p class="main__friend-name">${list_user.val().name}</p>
+  //   <img class="main__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
+  // </div>`;
+  // });
 }
 
 function update() {
