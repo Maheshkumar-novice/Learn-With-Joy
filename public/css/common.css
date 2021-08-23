@@ -15,7 +15,44 @@
 
 .header__img {
   width: 40px;
+  height: 40px;
   cursor: pointer;
+}
+
+.header__notification-cnt{
+  display: flex;
+  align-items: center;
+}
+
+.header__notification{
+  position: relative;
+}
+
+.header__notification-ic{
+  margin-right: 2rem;
+  width: 30px;
+  height: 30px;
+}
+
+.header__notification-display{
+  position: absolute;
+  font-size: 1.7rem;
+  width: 300px;
+  right: 10px;
+  top: 110%;
+  background-color: #191a20;
+  color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  max-height: 400px;
+  overflow: auto;
+}
+
+.header__notification-display p{
+  background-color: #272626;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 1rem;
 }
 
 .none {
