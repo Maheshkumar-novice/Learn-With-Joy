@@ -21,9 +21,14 @@ export async function userSignOut(auth){
     auth.signOut();
 }
 
-// push data
+// write data
 export function writeDB(db, referencce, value){
     db.ref(referencce).set(value);
+}
+
+// child data
+export function addChlidDB(db, referencce, key, value){
+    db.ref(referencce).child(key).set(value)
 }
 
 // read data
@@ -31,3 +36,12 @@ export async function readDB(db, reference){
     return await db.ref(reference).get();
 }
 
+//update data
+export async function updateDB(db, reference, value){
+    db.ref(reference).update(value);
+}
+
+// remove data
+export async function removeDB(db, referencce){
+    db.ref(referencce).remove();
+}
