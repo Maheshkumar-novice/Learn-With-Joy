@@ -84,7 +84,7 @@ function removeSerachFriendResult(e) {
 // Update search Result
 function updateSearchResult(uid) {
   // check for not resending the request
-  if(user.uid === uid || checkUserPresent(friendlist, friendsUID, uid)) return;
+  if(user.uid === uid || checkUserPresent(friendlist, friendsUID, uid)) return "";
   let search_user = namesList[uidList.findIndex((tot_uid) => tot_uid === uid)];
   return `<div class="main__result-card" data-id=${uid}>
                             <img

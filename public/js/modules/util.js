@@ -11,8 +11,11 @@ export function checkUserPresent(friendlist, friendsUID, uid){
       }
     }
   }
+  let bool = false;
   friendsUID.forEach((list) => {
-    if (list === uid) return  true;
+    if (list === uid){
+      bool = true;
+    }
   });
-  return false;
+  return bool;
 }
