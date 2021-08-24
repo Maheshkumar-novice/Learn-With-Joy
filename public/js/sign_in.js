@@ -36,6 +36,7 @@ async function updateNewUser() {
       namesList.push(data[id].name);
     }
   }
+  console.log(namesList)
   showInput();
 }
 

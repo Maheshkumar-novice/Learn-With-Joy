@@ -52,6 +52,8 @@ auth.onAuthStateChanged(async (check_user) => {
     addDbListener();
     console.log(user);
     updateUserDetails();
+    //releasing disabled
+    searchInp.disabled = false;
   } else {
     window.location = "./sign_in.html";
   }
@@ -65,8 +67,9 @@ userProfilePic.addEventListener("click", () => {
 // ------------------------------------------------------ friends js start ------------------------------------------------------
 
 //selector
-let searchInp = document.querySelector(".main__input");
-let searchCnt = document.querySelector(".main__chat");
+const searchInp = document.querySelector(".main__input");
+const searchCnt = document.querySelector(".main__search-cnt");
+const chatCnt = document.querySelector(".main__chat");
 let addBtn;
 
 //remove from search result after add btn triggered
@@ -132,11 +135,10 @@ async function rejectFriend(e){
   let notification = {
     0: namesList[uidList.findIndex(uid => uid === fid)].name
   };
-  addChlidDB(database, `friends/${fid}/notifications`, key, notification);
+  // addChlidDB(database, `friends/${fid}/notifications`, key, notification);
 
   removeDB(database, `friends/${user.uid}/received/${fid}`);
   removeDB(database, `friends/${fid}/sent/${user.uid}`);
-  await updateFriendList();
 }
 
 async function removeFriend(e) {
@@ -150,7 +152,7 @@ async function removeFriend(e) {
 
 //listener
 searchInp.addEventListener("input", (e) => {
-  if (e.target.value === "") searchCnt.innerHTML = "";
+  if (e.target.value === "") searchCnt.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
   let value = e.target.value;
   // searchCnt.innerHTML = "";
   let html = "";
@@ -161,8 +163,16 @@ searchInp.addEventListener("input", (e) => {
       html += updateSearchResult(uidList[idx], idx);
     }
   });
-  searchCnt.innerHTML = html;
+  searchCnt.innerHTML = html === "" ? `<p class="main__serach-msg">Sorry! no results found</p>` : html;
   addBtnListener();
+});
+
+searchInp.addEventListener("click", (e)=>{
+  searchCnt.classList.remove("none");
+  chatCnt.classList.add("none");
+  if(e.target.value === ""){
+    searchCnt.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
+  }
 });
 
 function addBtnListener() {
@@ -265,6 +275,7 @@ async function removeRequestReceived(data) {
     `.main__received-card[data-id="${data.key}"]`
   );
   cnt[0].removeChild(sent_frnd_elem);
+  await updateFriendList();
 }
 
 // Update friend request sent
@@ -299,6 +310,7 @@ async function removeRequestSent(data) {
   );
   console.log(sent_frnd_elem, data.val(), data.key);
   cnt[1].removeChild(sent_frnd_elem);
+  await updateFriendList();
 }
 
 // ------------------------- db listener --------------------------
