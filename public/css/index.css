@@ -66,7 +66,13 @@
   outline: none;
   border: none;
   font-size: inherit;
-  max-width: 100%;
+  padding: 2rem ;
+  width: 100%;
+}
+
+.main__input:focus{
+  background-color: #42444d;
+  color: white;
 }
 
 .main__container {
@@ -75,6 +81,10 @@
   overflow: auto;
   overflow-x: hidden;
   padding: 1.5rem;
+}
+
+.no-padding{
+  padding: 0;
 }
 
 /* main - friends & search */
@@ -127,16 +137,17 @@
   border-radius: 15px;
   height: 3em;
   margin: 1.5rem;
-  padding: 2rem;
   font-size: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 /* main- chat-window */
 .main__chat {
   padding: 0;
+  height: 100%;
 }
 
 .main__chat-window {
@@ -153,7 +164,7 @@
   padding: 2rem;
   font-size: 3rem;
   font-weight: 600;
-  background-color: #c4c4c4;
+  background-color: var(--primary-color);
 }
 
 /* main --chat-sender */
@@ -194,8 +205,18 @@
 }
 
 /* main --chat-body */
-.main__chat-body {
+.main__chat-body{
   height: 80%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 100%;
+}
+
+/* main --chat-container */
+.main__chat-container {
+  width: 100%;
+  max-height: 100%;
   display: grid;
   gap: 3rem;
   padding: 2rem;
