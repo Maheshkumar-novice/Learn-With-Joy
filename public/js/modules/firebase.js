@@ -11,8 +11,7 @@ export const firebaseConfig = {
 
 // sign In
 export async function userSignIn(auth, provider){
-    auth.signInWithPopup(provider).catch(error => {
-        
+    auth.signInWithPopup(provider).catch(error => { 
     });
 }
 
@@ -50,3 +49,8 @@ export async function removeDB(db, referencce){
 export function pushKey(db, reference, key){
     return db.ref(reference).child(key).push().key;
 }
+
+// set Listener
+export function setDBListener(db, reference, type, callBack) {
+    db.ref(reference).on(type, callBack);
+  }
