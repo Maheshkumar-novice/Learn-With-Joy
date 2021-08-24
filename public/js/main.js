@@ -4,10 +4,11 @@ import {
   readDB,
   writeDB,
   removeDB,
-  updateDB,
   addChlidDB,
   pushKey,
+  setDBListener
 } from "./modules/firebase.js";
+import { checkUserPresent } from "./modules/util.js";
 
 // firebase initialization
 firebase.initializeApp(firebaseConfig);
@@ -31,42 +32,26 @@ function updateUserDetails() {
   userName.innerText = user.displayName;
 }
 
-// async function updateList() {
-//   let total_data = (await readDB(database, "users")).val();
-//   for (let uid in total_data) {
-//     console.log(uid);
-//     uidList.push(uid);
-//     namesList.push(total_data[uid]);
-//   }
-//   console.log(namesList, uidList);
-//   // if (total_data) {
-//   //   namesList = total_data.names;
-//   //   uidList = total_data.uid;
-//   // }
-// }
-
 //Update names and uid list
 function appendList(data) {
   uidList.push(data.key);
   namesList.push(data.val());
-  console.log(namesList, uidList);
 }
 
 // sign In status change
 auth.onAuthStateChanged(async (check_user) => {
   if (check_user) {
+    // check user redirected directly
     let check_presence = await readDB(database, `users/${check_user.uid}`);
     if (!check_presence.val()) {
       window.location = "./sign_in.html";
     }
-    // updateFriendList();
+    // update on sign in
     user = check_user;
     await updateFriendList();
     addDbListener();
     console.log(user);
-    // updateList();
     updateUserDetails();
-    // addFriendList();
   } else {
     window.location = "./sign_in.html";
   }
@@ -84,7 +69,7 @@ let searchInp = document.querySelector(".main__input");
 let searchCnt = document.querySelector(".main__chat");
 let addBtn;
 
-//remove after add btn triggered
+//remove from search result after add btn triggered
 function removeSerachFriendResult(e) {
   let remove_elem = document.querySelector(
     `.main__result-card[data-id=${e.target.parentElement.dataset.id}]`
@@ -94,25 +79,9 @@ function removeSerachFriendResult(e) {
 }
 
 // Update search Result
-let boolReceived, boolSent, boolFriends;
 function updateSearchResult(uid) {
-  boolReceived = boolSent = boolFriends = false;
-  if (friendlist) {
-    if ("received" in friendlist) {
-      for (let id in friendlist.received) {
-        if (id === uid) boolReceived = true;
-      }
-    }
-    if ("sent" in friendlist) {
-      for (let id in friendlist.sent) {
-        if (id === uid) boolSent = true;
-      }
-    }
-  }
-  friendsUID.forEach((list) => {
-    if (list === uid) boolFriends = true;
-  });
-  if (uid === user.uid || boolReceived || boolSent || boolFriends) return;
+  // check for not resending the request
+  if(user.uid === uid || checkUserPresent(friendlist, friendsUID, uid)) return;
   let search_user = namesList[uidList.findIndex((tot_uid) => tot_uid === uid)];
   return `<div class="main__result-card" data-id=${uid}>
                             <img
@@ -127,7 +96,9 @@ function updateSearchResult(uid) {
 
 // update Friends list
 async function sendRequest(uid) {
+  // check for not resending the request
   await updateFriendList();
+  if(checkUserPresent(friendlist, friendsUID, uid)) return;
   let userUpdate = {},
     friendUpdate = {};
   userUpdate[uid] = "pending";
@@ -165,6 +136,7 @@ async function rejectFriend(e){
 
   removeDB(database, `friends/${user.uid}/received/${fid}`);
   removeDB(database, `friends/${fid}/sent/${user.uid}`);
+  await updateFriendList();
 }
 
 async function removeFriend(e) {
@@ -211,6 +183,7 @@ async function updateFriendList() {
   friendlist = friends_data.val();
 }
 
+// Add friends to the friends list
 async function addFriendList(data) {
   if (!data.val()) return;
   console.log(data.val());
@@ -235,6 +208,7 @@ async function addFriendList(data) {
     });
 }
 
+// Remove friends from the friends list
 async function removeFriendList(data) {
   let cnt = document.querySelector(".main__friend-cnt");
   if(!data.val()){
@@ -247,9 +221,13 @@ async function removeFriendList(data) {
     `.main__friend-card[data-hash="${data.val()}"]`
   );
   friendsUID.splice(remove_friend_elem.dataset.id, 1);
+  console.log(friendsUID);
   cnt.removeChild(remove_friend_elem);
+  await updateFriendList();
+  // console.log(friendlist);
 }
 
+// Update friend request received
 async function updateRequestReceived(data) {
   await updateFriendList();
   console.log(friendlist, data.val(), data.key);
@@ -277,6 +255,7 @@ async function updateRequestReceived(data) {
   });
 }
 
+// Remove friend request received
 async function removeRequestReceived(data) {
   console.log(data.val(), data.key);
   if (!data.val()) {
@@ -288,6 +267,7 @@ async function removeRequestReceived(data) {
   cnt[0].removeChild(sent_frnd_elem);
 }
 
+// Update friend request sent
 async function updateRequestSent(data) {
   await updateFriendList();
   let sentData = data.val();
@@ -309,6 +289,7 @@ async function updateRequestSent(data) {
   </div>`;
 }
 
+// Remove friend request sent
 async function removeRequestSent(data) {
   if (!data.val()) {
     cnt[1].innerHTML = "";
@@ -322,19 +303,21 @@ async function removeRequestSent(data) {
 
 // ------------------------- db listener --------------------------
 function addDbListener() {
-  setDBListener(`users`, "child_added", appendList);
+  setDBListener(database, `users`, "child_added", appendList); //Listener for updating total users
 
-  setDBListener(`friends/${user.uid}/friends`, "child_added", addFriendList);
-  setDBListener(`friends/${user.uid}/friends`,"child_removed", removeFriendList);
+  // Listener for updating friends list
+  setDBListener(database, `friends/${user.uid}/friends`, "child_added", addFriendList);
+  setDBListener(database, `friends/${user.uid}/friends`,"child_removed", removeFriendList);
 
-  setDBListener(`friends/${user.uid}/sent`, "child_added", updateRequestSent);
-  // setDBListener(`friends/${user.uid}/sent`,"child_changed",rejectedSentRequest);
-  setDBListener(`friends/${user.uid}/sent`, "child_removed", removeRequestSent);
+  // Listener for updating friends requests sent
+  setDBListener(database, `friends/${user.uid}/sent`, "child_added", updateRequestSent);
+  setDBListener(database, `friends/${user.uid}/sent`, "child_removed", removeRequestSent);
 
-  setDBListener(`friends/${user.uid}/received`, "child_added", updateRequestReceived);
-  setDBListener(`friends/${user.uid}/received`, "child_removed", removeRequestReceived);
+  // Listener for updating friends requests received
+  setDBListener(database, `friends/${user.uid}/received`, "child_added", updateRequestReceived);
+  setDBListener(database, `friends/${user.uid}/received`, "child_removed", removeRequestReceived);
 }
 
-function setDBListener(reference, type, callBack) {
-  database.ref(reference).on(type, callBack);
-}
+// function setDBListener(reference, type, callBack) {
+//   database.ref(reference).on(type, callBack);
+// }
