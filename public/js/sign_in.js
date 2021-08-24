@@ -11,7 +11,7 @@ firebase.analytics();
 
 const auth = firebase.auth();
 const database = firebase.database();
-let names = [], uid = [];
+let namesList = [];
 
 // selectors
 let gsignIn = document.querySelector(".header__img");
@@ -29,10 +29,12 @@ function showInput() {
 }
 
 async function updateNewUser() {
-  let data = await readDB(database, "users/totalUsers");
-  if(data.val()){
-    names = data.val().names;
-    uid = data.val().uid;
+  let data = (await readDB(database, "users")).val();
+  console.log(data);
+  if(data){
+    for(let id in data){
+      namesList.push(data[id].name);
+    }
   }
   showInput();
 }
@@ -59,8 +61,8 @@ let check_name, userName, userLower;
 newNameInput.addEventListener("input", function (e) {
   userName = this.value;
   userLower = this.value.toLowerCase();
-  if (!names || newNameInput.value === "") return;
-  check_name = names.filter((name) => name === userLower).join("");
+  if (newNameInput.value === "") return;
+  check_name = namesList.filter((name) => name === userLower).join("");
   newNameInput.style.borderBottom = "1px solid black";
   newNameErr.innerText = "";
   next.classList.remove("none");
@@ -84,12 +86,6 @@ next.addEventListener("click", function (e) {
         name: userName,
         photo: user.photoURL,
       };
-      // names ? (names.push(userLower), uid.push(user.uid)) : (names = [userLower], uid = [user.uid]);
-      // let userVal = {
-      //   names,
-      //   uid
-      // }
-      // writeDB(database, "users/totalUsers", userVal);
       writeDB(database, `users/${user.uid}`, value);
       setTimeout(() => {
         window.location = "../index.html";
