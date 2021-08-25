@@ -14,7 +14,7 @@ const database = firebase.database();
 let namesList = [];
 
 // selectors
-let gsignIn = document.querySelector(".header__img");
+const gsignIn = document.querySelector(".header__img");
 const newNameCnt = document.querySelector(".main__name");
 const newNameInput = document.querySelector(".main__name--input");
 const newNameErr = document.querySelector(".main__name--err");
@@ -63,11 +63,11 @@ newNameInput.addEventListener("input", function (e) {
   userName = this.value;
   userLower = this.value.toLowerCase();
   if (newNameInput.value === "") return;
-  check_name = namesList.filter((name) => name === userLower).join("");
+  check_name = namesList.find((name) => name.toLowerCase() === userLower);
   newNameInput.style.borderBottom = "1px solid black";
   newNameErr.innerText = "";
   next.classList.remove("none");
-  if (check_name === userLower) {
+  if (check_name) {
     newNameErr.innerText = "User Name Already Taken";
     newNameInput.style.borderBottom = "1px solid red";
     next.classList.add("none");
