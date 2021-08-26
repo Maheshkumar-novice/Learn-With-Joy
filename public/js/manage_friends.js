@@ -47,7 +47,7 @@ let addBtn;
 
 //remove from search result after add btn triggered
 function removeSerachFriendResult(e) {
-    let id = e.target.parentElement.dataset.id;
+  let id = e.target.parentElement.dataset.id;
   console.log(e,e.target,id);
   let remove_elem = document.querySelector(`.main__result-card[data-id="${id}"]`);
   console.log(remove_elem);
@@ -105,10 +105,10 @@ async function addFriend(e) {
 async function rejectFriend(e) {
   let fid = e.target.parentElement.dataset.id;
   let key = pushKey(database, `friends/${fid}`, "notifications");
-  console.log(key);
-  let notification = {
-    0: namesList[uidList.findIndex((uid) => uid === fid)].name,
-  };
+  // console.log(key);
+  // let notification = {
+  //   0: namesList[uidList.findIndex((uid) => uid === fid)].name,
+  // };
   // addChlidDB(database, `friends/${fid}/notifications`, key, notification);
 
   removeDB(database, `friends/${user.uid}/received/${fid}`);
@@ -179,7 +179,8 @@ async function addFriendList(data) {
   let hash = data.val();
   friendsUID.push(fid);
   let cnt = document.querySelector(".main__friend-cnt");
-  let chatUid = namesList[uidList.findIndex((UID) => UID === fid)];
+  // let chatUid = namesList[uidList.findIndex((UID) => UID === fid)];
+  let chatUid = (await readDB(database, `users/${fid}`)).val();
   cnt.innerHTML += `<div class="main__friend-card" data-id=${fid} data-hash=${hash}>
       <img
         src="${chatUid.photo}"
@@ -224,7 +225,9 @@ async function updateRequestReceived(data) {
     return;
   }
   let receivedKey = data.key;
-  let list_user = namesList[uidList.findIndex((UID) => UID === receivedKey)];
+  // let list_user = namesList[uidList.findIndex((UID) => UID === receivedKey)];
+  let list_user = (await readDB(database, `users/${receivedKey}`)).val();
+  console.log(list_user);
   cnt[0].innerHTML += `<div class="main__received-card default" data-id=${receivedKey}>
     <img
       src="${list_user.photo}"
@@ -266,7 +269,8 @@ async function updateRequestSent(data) {
   }
   let sent = data.key;
   console.log(sent);
-  let list_user = namesList[uidList.findIndex((UID) => UID === sent)];
+  // let list_user = namesList[uidList.findIndex((UID) => UID === sent)];
+  let list_user = (await readDB(database, `users/${sent}`)).val();
   cnt[1].innerHTML += `<div class="main__sent-card default" data-id=${sent}>
       <img
         src="${list_user.photo}"
