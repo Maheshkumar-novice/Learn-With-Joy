@@ -110,11 +110,11 @@
               <!-- <p class="main__chat-info">Please select the friend to chat with them</p> -->
               
               <div class="upload">
+                <div class="upload__info">
+                  <h4 class="upload__info--no">Max file Limit: 5</h4>
+                  <h4 class="upload__info--size">Max file Size: 10MB</h4>
+                </div>
                 <div class="upload__preview none">
-                  <div class="upload__preview--imginfo">
-                    <img src="./assets/image/jsvbw.jpg" alt="" class="upload__preview-img">
-                    <span class="upload__preview--name">Image 1.jpg</span>
-                  </div>
                 </div>
 
                 <div class="upload__dragndrop">
@@ -125,23 +125,23 @@
                 </div>
 
                 <div class="upload__click">
-                  <div class="upload__click--each upload__image">
-                    <input type="file" accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, .pdf" hidden="hidden" multiple/>
+                  <div class="upload__click--each upload__file" data-value="0">
+                    <input class="upload__input upload__input-file" type="file" accept=".xlsx, .xl, .doc,.docx, .ppt, .pptx, .txt, .pdf" hidden="hidden" multiple data-type="docs"/>
                     <img
                       class="upload__click-ic"
                       src="./assets/icons/home/file-upload.svg"
                       alt="docs-upload"
                     />
-                    <span>Images</span>
+                    <span>Files</span>
                   </div>
-                  <div class="upload__click--each upload__file">
-                    <input type="file" accept="image/*" hidden="hidden" multiple/>
+                  <div class="upload__click--each upload__image" data-value="1">
+                    <input class="upload__input upload__input-image" type="file" accept="image/*" hidden="hidden" multiple data-type="image"/>
                     <img
                       class="upload__click-ic"
                       src="./assets/icons/home/image-upload.svg"
                       alt="img-upload"
                     />
-                    <span>Files</span>
+                    <span>Images</span>
                   </div>
                 
                 </div>
@@ -232,5 +232,6 @@
     <!-- <script type="module" src="./js/main.js"></script>
     <script type="module" src="./js/manage_friends.js"></script>
     <script type="module" src="./js/notification.js"></script> -->
+    <script src="./js/file_upload.js"></script>
   </body>
 </html>

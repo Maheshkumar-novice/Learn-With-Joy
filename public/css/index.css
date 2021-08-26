@@ -338,9 +338,19 @@
   flex: 1;
 }
 
+.upload__info{
+  margin: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 2rem;
+  color: white;
+  height: 40px;
+}
+
 .upload__preview--imginfo{
-  min-width: 300px;
-  width: 300px;
+  min-width: 400px;
+  width: 400px;
   height: 300px;
   display: flex;
   font-size: 2rem;
@@ -353,6 +363,19 @@
 .upload__preview-img{
   width: 100%;
   margin-bottom: 1rem;
+}
+
+.upload__preview--docsinfo{
+  min-width: 100px;
+  width: 100px;
+  height: 200px;
+  display: flex;
+  font-size: 2rem;
+  color: white;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: space-between; */
+  margin: 0 4rem;
 }
 
 .upload__click{
