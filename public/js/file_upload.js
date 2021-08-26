@@ -1,3 +1,6 @@
+const toggleUploadBtn = document.querySelector(".main__img--file");
+const uploadCnt = document.querySelector(".upload");
+const info = document.querySelector(".main__chat-info");
 const fileUpload = document.querySelectorAll(".upload__input");
 const filePreview = document.querySelector(".upload__preview");
 const fileDragnDrop = document.querySelector(".upload__dragndrop");
@@ -25,7 +28,6 @@ function docsPreview(files) {
   let src = "";
   for (const file of files) {
     let icon = returnFormat(file.name)[1];
-    // console.log(icon);
     if (icon === "ppt" || icon === "pptx") {
       src = "./assets/icons/home/file-powerpoint.svg";
     } else if (icon === "doc" || icon === "docx") {
@@ -79,4 +81,9 @@ fileUploadClick.forEach((upload) => {
     console.log(this);
     fileUpload[+this.dataset.value].click();
   });
+});
+
+toggleUploadBtn.addEventListener("click", (e)=>{
+    info.classList.toggle("none");
+    uploadCnt.classList.toggle("none");
 });

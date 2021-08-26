@@ -242,6 +242,12 @@
   max-width: 10rem;
   padding: 1rem;
   background-color: #c4c4c4;
+  cursor: pointer;
+}
+
+.main__img--send:hover,
+.main__img--file:hover{
+  background-color: #191a20;
 }
 
 .main__img--file {
