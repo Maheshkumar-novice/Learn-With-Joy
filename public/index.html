@@ -82,6 +82,11 @@
       </div>
       <div class="main__container no-padding">
         <div class="main__search-cnt none">
+          <div class="main__search-heading">
+            <h1>Search results</h1>
+            <img class="main__search-close-ic" src="./assets/icons/home/msg-clear.svg" alt="close">
+          </div>
+          <div class="main__search-resultcnt"></div>
         </div>
 
         <div class="main__chat">
@@ -95,7 +100,11 @@
               <p class="main__chat-username">Lorem Ipsum</p>
             </div>
             <div class="main__chat-body">
-              <p class="main__chat-info">Please select the friend to chat with them</p>
+              <!-- <p class="main__chat-info">Please select the friend to chat with them</p> -->
+              <div class="upload">
+                <img src="./assets/icons/home/file-upload.svg" alt="docs-upload">
+                <img src="./assets/icons/home/image-upload.svg" alt="img-upload">
+              </div>
               <div class="main__chat-container none">
                 <div class="main__message-container main__message-container--right">
                   <p class="main__message">Hello Lorem</p>
@@ -172,10 +181,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-    <!-- sha256 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9/core.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9/sha256.js"></script>
 
     <!-- Main script -->
     <script type="module" src="./js/main.js"></script>

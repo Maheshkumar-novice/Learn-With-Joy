@@ -41,7 +41,9 @@ auth.onAuthStateChanged(async (check_user) => {
 
 //selector
 const searchInp = document.querySelector(".main__input");
-const searchCnt = document.querySelector(".main__search-cnt");
+const searchWrap = document.querySelector(".main__search-cnt");
+const searchCnt = document.querySelector(".main__search-resultcnt");
+const searchCloseIc = document.querySelector(".main__search-close-ic");
 const chatCnt = document.querySelector(".main__chat");
 let addBtn;
 
@@ -52,6 +54,9 @@ function removeSerachFriendResult(e) {
   let remove_elem = document.querySelector(`.main__result-card[data-id="${id}"]`);
   console.log(remove_elem);
   searchCnt.removeChild(remove_elem);
+  if(searchCnt.childElementCount === 0){
+    searchCnt.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
+  }
 }
 
 // Update search Result
@@ -146,7 +151,7 @@ searchInp.addEventListener("input", (e) => {
 });
 
 searchInp.addEventListener("click", (e) => {
-  searchCnt.classList.remove("none");
+  searchWrap.classList.remove("none");
   chatCnt.classList.add("none");
   if (e.target.value === "") {
     searchCnt.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
@@ -162,6 +167,11 @@ function addBtnListener() {
     });
   });
 }
+
+searchCloseIc.addEventListener("click", function (e){
+  searchWrap.classList.toggle("none");
+  chatCnt.classList.toggle("none");
+})
 
 // ----------------------- update user page -------------------------------------
 const cnt = document.querySelectorAll(".main__req-cards");
