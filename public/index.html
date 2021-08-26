@@ -17,7 +17,11 @@
       </h1>
       <div class="header__notification-cnt">
         <div class="header__notification">
-          <img class="header__notification-ic" src="./assets/icons/home/notification.svg" alt="notification">
+          <img
+            class="header__notification-ic"
+            src="./assets/icons/home/notification.svg"
+            alt="notification"
+          />
           <div class="header__notification-display none" data-status="off">
             <!-- <p>No New notification</p> -->
             <!-- <div class="header__notification-eachmsg">
@@ -26,14 +30,13 @@
               </p>
               <img src="./assets/icons/home/msg-clear.svg" class="header__notification-clrmsg" alt="clear message">
             </div> -->
-
           </div>
         </div>
         <img
-        src="./assets/icons/home/user.svg"
-        alt="Profile Picture"
-        class="header__img"
-      />
+          src="./assets/icons/home/user.svg"
+          alt="Profile Picture"
+          class="header__img"
+        />
       </div>
     </header>
     <nav class="navbar">
@@ -84,7 +87,11 @@
         <div class="main__search-cnt none">
           <div class="main__search-heading">
             <h1>Search results</h1>
-            <img class="main__search-close-ic" src="./assets/icons/home/msg-clear.svg" alt="close">
+            <img
+              class="main__search-close-ic"
+              src="./assets/icons/home/msg-clear.svg"
+              alt="close"
+            />
           </div>
           <div class="main__search-resultcnt"></div>
         </div>
@@ -101,18 +108,57 @@
             </div>
             <div class="main__chat-body">
               <!-- <p class="main__chat-info">Please select the friend to chat with them</p> -->
+              
               <div class="upload">
-                <img src="./assets/icons/home/file-upload.svg" alt="docs-upload">
-                <img src="./assets/icons/home/image-upload.svg" alt="img-upload">
+                <div class="upload__preview none">
+                  <div class="upload__preview--imginfo">
+                    <img src="./assets/image/jsvbw.jpg" alt="" class="upload__preview-img">
+                    <span class="upload__preview--name">Image 1.jpg</span>
+                  </div>
+                </div>
+
+                <div class="upload__dragndrop">
+                  <div class="upload__dragndrop--info">
+                    <img class="upload__dragndrop-ic" src="./assets/icons/home/upload.svg" alt="">
+                    <h3>Drag and Drop to Upload Files</h4>
+                  </div>
+                </div>
+
+                <div class="upload__click">
+                  <div class="upload__click--each upload__image">
+                    <input type="file" accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, .pdf" hidden="hidden" multiple/>
+                    <img
+                      class="upload__click-ic"
+                      src="./assets/icons/home/file-upload.svg"
+                      alt="docs-upload"
+                    />
+                    <span>Images</span>
+                  </div>
+                  <div class="upload__click--each upload__file">
+                    <input type="file" accept="image/*" hidden="hidden" multiple/>
+                    <img
+                      class="upload__click-ic"
+                      src="./assets/icons/home/image-upload.svg"
+                      alt="img-upload"
+                    />
+                    <span>Files</span>
+                  </div>
+                
+                </div>
+
               </div>
               <div class="main__chat-container none">
-                <div class="main__message-container main__message-container--right">
+                <div
+                  class="main__message-container main__message-container--right"
+                >
                   <p class="main__message">Hello Lorem</p>
                   <span class="main__time-stamp main__time-stamp--right"
                     >23/02/20, 9:30pm</span
                   >
                 </div>
-                <div class="main__message-container main__message-container--left">
+                <div
+                  class="main__message-container main__message-container--left"
+                >
                   <p class="main__message">Poda Ipsum</p>
                   <span class="main__time-stamp main__time-stamp--left"
                     >23/20/23, 9:30pm</span
@@ -183,9 +229,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <!-- Main script -->
-    <script type="module" src="./js/main.js"></script>
+    <!-- <script type="module" src="./js/main.js"></script>
     <script type="module" src="./js/manage_friends.js"></script>
-    <script type="module" src="./js/notification.js"></script>
-
+    <script type="module" src="./js/notification.js"></script> -->
   </body>
 </html>
