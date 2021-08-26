@@ -81,10 +81,10 @@ async function sendRequest(uid) {
   // check for not resending the request
   await updateFriendList();
   if (checkUserPresent(friendlist, friendsUID, uid)) return;
-  let userUpdate = {},
-    friendUpdate = {};
-  userUpdate[uid] = "pending";
-  friendUpdate[user.uid] = user.displayName;
+  // let userUpdate = {},
+  //   friendUpdate = {};
+  // userUpdate[uid] = "pending";
+  // friendUpdate[user.uid] = user.displayName;
   addChlidDB(database, `friends/${user.uid}/sent`, uid, "pending");
   addChlidDB(database, `friends/${uid}/received`, user.uid, "pending");
 }
@@ -93,7 +93,7 @@ async function sendRequest(uid) {
 async function addFriend(e) {
   await updateFriendList();
   let fid = e.target.parentElement.dataset.id;
-  let hashtext = pushKey(database, `friends/${fid}`, "friends");
+  let hashtext = pushKey(database, `friends/${fid}`, "friends"); 
   addChlidDB(database, `friends/${user.uid}/friends`, fid, hashtext);
   addChlidDB(database, `friends/${fid}/friends`, user.uid, hashtext);
   removeDB(database, `friends/${user.uid}/received/${fid}`);
@@ -171,7 +171,7 @@ function addBtnListener() {
 searchCloseIc.addEventListener("click", function (e){
   searchWrap.classList.toggle("none");
   chatCnt.classList.toggle("none");
-})
+});
 
 // ----------------------- update user page -------------------------------------
 const cnt = document.querySelectorAll(".main__req-cards");

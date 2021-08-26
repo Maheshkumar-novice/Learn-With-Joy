@@ -52,7 +52,7 @@ fileUpload.forEach((fileUpload) => {
     filePreview.innerHTML = "";
     console.log(e.target.dataset.type);
     let files = e.target.files;
-    console.log("hello", e.target.files);
+    // console.log("hello", e.target.files);
     if (files.length > 5) {
       document.querySelector(".upload__info--no").style.color = "red";
       setTimeout(() => {
@@ -78,7 +78,6 @@ fileUpload.forEach((fileUpload) => {
 
 fileUploadClick.forEach((upload) => {
   upload.addEventListener("click", function (e) {
-    console.log(this);
     fileUpload[+this.dataset.value].click();
   });
 });

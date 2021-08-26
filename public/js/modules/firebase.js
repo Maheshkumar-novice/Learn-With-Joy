@@ -27,7 +27,7 @@ export function writeDB(db, referencce, value){
 
 // child data
 export function addChlidDB(db, referencce, key, value){
-    db.ref(referencce).child(key).set(value)
+    db.ref(referencce).child(key).set(value);
 }
 
 // read data
