@@ -411,11 +411,12 @@ async function updateChatWindow(friendCard) {
 }
 
 function addMessageToContainer(message, time, position) {
+  let datePart = new Date(time).toDateString();
+  let timePart = new Date(time).toTimeString().split(" ")[0];
+  let timeStamp = datePart + " " + timePart;
   chatContainer.innerHTML += `<div class="main__message-container main__message-container--${position}">
   <p class="main__message">${message}</p>  
-  <span class="main__time-stamp main__time-stamp--right">${new Date(
-    time
-  )}</span>
+  <span class="main__time-stamp main__time-stamp--right">${timeStamp}</span>
 </div>`;
 }
 
