@@ -495,3 +495,4 @@ window.addEventListener("keyup", (e) => {
 document
   .querySelector(".main__img--send")
   .addEventListener("click", sendMessage);
+

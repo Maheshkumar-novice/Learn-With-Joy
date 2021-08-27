@@ -1,8 +1,4 @@
-import {
-  firebaseConfig,
-  userSignOut,
-  readDB,
-} from "./modules/firebase.js";
+import { firebaseConfig, userSignOut, readDB } from "./modules/firebase.js";
 
 // firebase initialization
 firebase.initializeApp(firebaseConfig);
@@ -39,3 +35,21 @@ auth.onAuthStateChanged(async (check_user) => {
 userProfilePic.addEventListener("click", () => {
   userSignOut(auth);
 });
+
+// timer
+function displayTime() {
+  let date = new Date();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+  let currentTime =
+    (hours < 10 ? "0" + hours : hours) +
+    ":" +
+    (minutes < 10 ? "0" + minutes : minutes) +
+    ":" +
+    (seconds < 10 ? "0" + seconds : seconds);
+  document.querySelector(".footer__time").innerHTML = currentTime;
+  setTimeout(displayTime, 1000);
+}
+
+displayTime();
