@@ -53,3 +53,23 @@ function displayTime() {
 }
 
 displayTime();
+
+// greeting
+let d = new Date();
+let time = d.getHours();
+let greetHolder = document.querySelector(".header__title--greet");
+if (time < 12) {
+  greetHolder.textContent = "Good morning! ";
+}
+if (time > 12 && time <= 16) {
+  greetHolder.textContent = "Good afternoon! ";
+}
+if (time > 16 && time <= 20) {
+  greetHolder.textContent = "Good Evening! ";
+}
+if (time > 20) {
+  greetHolder.textContent = "Good Night! ";
+}
+if (time == 12) {
+  greetHolder.textContent = "Go Eat Lunch! ";
+}
