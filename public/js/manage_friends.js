@@ -487,6 +487,9 @@ window.addEventListener("keyup", (e) => {
   if (e.key === "Enter" && chatWindowMessageInput.value) {
     sendMessage();
   }
+  if (e.key === "Escape") {
+    document.querySelector(".main__search-close-ic").click();
+  }
 });
 
 document
