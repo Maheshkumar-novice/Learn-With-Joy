@@ -5,6 +5,7 @@ import {
   addChlidDB,
   pushKey,
   setDBListener,
+  firebaseConfig,
 } from "./modules/firebase.js";
 import { checkUserPresent } from "./modules/util.js";
 
@@ -207,11 +208,8 @@ async function addFriendList(data) {
     .forEach((reject) => {
       reject.addEventListener("click", removeFriend);
     });
-  document.querySelectorAll(".main__friend-card").forEach((friend) =>
-    friend.addEventListener("click", () => {
-      console.log("friend");
-    })
-  );
+  // click functionality to friends cards
+  addEventListenerToFriendCards();
 }
 
 // Remove friends from the friends list
@@ -362,3 +360,45 @@ function addDbListener() {
 // function setDBListener(reference, type, callBack) {
 //   database.ref(reference).on(type, callBack);
 // }
+
+// Chat
+function updateChatWindowData(friendCard) {
+  let chatWindowUsername = document.querySelector(".main__chat-username");
+  let chatWindowProfilePic = document.querySelector(".main__img--chat");
+  let noChatSelectedInfo = document.querySelector(".main__chat-info");
+  let chatWindowHeader = document.querySelector(".main__chat-header");
+  let chatWindowMessageSender = document.querySelector(
+    ".main__chat-message-sender"
+  );
+  let chatContainer = document.querySelector(".main__chat-container");
+
+  chatWindowHeader.classList.remove("none");
+  chatContainer.classList.remove("none");
+  chatWindowMessageSender.classList.remove("none");
+  noChatSelectedInfo.classList.add("none");
+
+  chatWindowUsername.textContent =
+    friendCard.querySelector(".main__friend-name").textContent;
+  chatWindowProfilePic.src = friendCard.querySelector(".main__img").src;
+  chatWindowMessageInput.dataset.chatHash = friendCard.dataset.hash;
+}
+
+function addEventListenerToFriendCards() {
+  let friends = document.querySelectorAll(".main__friend-card");
+  friends.forEach((friend) =>
+    friend.addEventListener("click", function (e) {
+      updateChatWindowData(this);
+    })
+  );
+}
+
+const chatWindowMessageInput = document.querySelector(".main__input--chat");
+chatWindowMessageInput.addEventListener("input", function (e) {
+  console.log(this.value);
+});
+
+window.addEventListener("keyup", (e) => {
+  if (e.key === "Enter") {
+    chatWindowMessageInput.value = "";
+  }
+});
