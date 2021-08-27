@@ -420,6 +420,10 @@ function addMessageToContainer(message, time, position) {
 </div>`;
 }
 
+function autoScroll() {
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
 function fillMessagesToChatBody(data) {
   if (!data) return;
 
@@ -430,6 +434,7 @@ function fillMessagesToChatBody(data) {
       addMessageToContainer(message.text, message.time, "left");
     }
   });
+  autoScroll();
 }
 
 async function addMessageToChatBody(chat) {
@@ -451,6 +456,7 @@ async function addMessageToChatBody(chat) {
   } else {
     addMessageToContainer(chatData.text, chatData.time, "left");
   }
+  autoScroll();
 }
 
 function sendMessage() {
