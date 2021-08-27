@@ -6,51 +6,77 @@ export const firebaseConfig = {
   messagingSenderId: "895559396675",
   appId: "1:895559396675:web:8d9c751063234b6efc13f6",
   measurementId: "G-8ZMNXHGZ6H",
-  databaseURL: "https://learn-with-joy-default-rtdb.asia-southeast1.firebasedatabase.app/"
+  databaseURL:
+    "https://learn-with-joy-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
 
+// ----------------------------------------Authentication-------------------------------------
+
 // sign In
-export async function userSignIn(auth, provider){
-    auth.signInWithPopup(provider).catch(error => { 
-    });
+export async function userSignIn(auth, provider) {
+  auth.signInWithPopup(provider).catch((error) => {});
 }
 
 // Sign Out
-export async function userSignOut(auth){
-    auth.signOut();
+export async function userSignOut(auth) {
+  auth.signOut();
 }
 
+// ----------------------------------------Database-------------------------------------
+
 // write data
-export function writeDB(db, referencce, value){
-    db.ref(referencce).set(value);
+export function writeDB(db, referencce, value) {
+  db.ref(referencce).set(value);
 }
 
 // child data
-export function addChlidDB(db, referencce, key, value){
-    db.ref(referencce).child(key).set(value);
+export function addChlidDB(db, referencce, key, value) {
+  db.ref(referencce).child(key).set(value);
 }
 
 // read data
-export async function readDB(db, reference){
-    return await db.ref(reference).get();
+export async function readDB(db, reference) {
+  return await db.ref(reference).get();
 }
 
 //update data
-export async function updateDB(db, reference, value){
-    db.ref(reference).update(value);
+export async function updateDB(db, reference, value) {
+  db.ref(reference).update(value);
 }
 
 // remove data
-export async function removeDB(db, referencce){
-    db.ref(referencce).remove();
+export async function removeDB(db, referencce) {
+  db.ref(referencce).remove();
 }
 
 // create key for a post
-export function pushKey(db, reference, key){
-    return db.ref(reference).child(key).push().key;
+export function pushKey(db, reference, key) {
+  return db.ref(reference).child(key).push().key;
 }
 
 // set Listener
 export function setDBListener(db, reference, type, callBack) {
-    db.ref(reference).on(type, callBack);
-  }
+  db.ref(reference).on(type, callBack);
+}
+
+// ----------------------------------------firestorage-------------------------------------
+
+// storage refrence
+export function storageRef(st, reference, file){
+    return st.ref(reference).child(file);
+}
+
+// upload file
+export function storageUpload(reference, file){
+    return reference.put(file);
+}
+
+// list all Files
+export async function storageList(st, reference){
+    return await st.ref(reference).listAll();
+}
+
+// delete file
+export async function storageDelete(item){
+    return await item.delete();
+}
