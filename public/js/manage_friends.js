@@ -209,13 +209,13 @@ async function addFriendList(data) {
     .forEach((reject) => {
       reject.addEventListener("click", removeFriend);
     });
-  // click functionality to friends cards
+  // Chat Listeners
   addEventListenerToFriendCards();
   setDBListener(
     database,
     `chat/${hash}/messages`,
     "child_added",
-    updateChatBody
+    addMessageToChatBody
   );
 }
 
@@ -369,61 +369,85 @@ function addDbListener() {
 // }
 
 // Chat
-function updateChatWindowData(friendCard) {
-  let chatWindowUsername = document.querySelector(".main__chat-username");
-  let chatWindowProfilePic = document.querySelector(".main__img--chat");
-  let noChatSelectedInfo = document.querySelector(".main__chat-info");
-  let chatWindowHeader = document.querySelector(".main__chat-header");
-  let chatWindowMessageSender = document.querySelector(
-    ".main__chat-message-sender"
-  );
-  let chatContainer = document.querySelector(".main__chat-container");
-  chatContainer.innerHTML = "";
+const chatWindowMessageInput = document.querySelector(".main__input--chat");
+let chatWindowUsername = document.querySelector(".main__chat-username");
+let chatWindowProfilePic = document.querySelector(".main__img--chat");
+let noChatSelectedInfo = document.querySelector(".main__chat-info");
+let chatWindowHeader = document.querySelector(".main__chat-header");
+let chatWindowMessageSender = document.querySelector(
+  ".main__chat-message-sender"
+);
+let chatContainer = document.querySelector(".main__chat-container");
 
+function cleanUpChatWindow() {
+  chatContainer.innerHTML = "";
   chatWindowHeader.classList.remove("none");
   chatContainer.classList.remove("none");
   chatWindowMessageSender.classList.remove("none");
   noChatSelectedInfo.classList.add("none");
+}
 
+function updateChatDataSet(friendCard) {
+  chatWindowMessageInput.dataset.chatHash = friendCard.dataset.hash;
+  chatWindowHeader.dataset.chatId = friendCard.dataset.id;
+}
+
+function updateFriendDataAtChatWindow(friendCard) {
   chatWindowUsername.textContent =
     friendCard.querySelector(".main__friend-name").textContent;
   chatWindowProfilePic.src = friendCard.querySelector(".main__img").src;
-  chatWindowMessageInput.dataset.chatHash = friendCard.dataset.hash;
-  chatWindowHeader.dataset.chatId = friendCard.dataset.id;
-
-  readDB(database, `chat/${friendCard.dataset.hash}/messages`).then((data) => {
-    fillChatBody(data.val());
-  });
 }
 
-function fillChatBody(data) {
+function setUpChatWindow(friendCard) {
+  cleanUpChatWindow();
+  updateFriendDataAtChatWindow(friendCard);
+  updateChatDataSet(friendCard);
+}
+
+async function updateChatWindow(friendCard) {
+  setUpChatWindow(friendCard);
+  let data = await readDB(database, `chat/${friendCard.dataset.hash}/messages`);
+  fillMessagesToChatBody(data.val());
+}
+
+function addMessageToContainer(message, position) {
+  chatContainer.innerHTML += `<div class="main__message-container main__message-container--${position}">
+  <p class="main__message">${message}</p>  
+  <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
+</div>`;
+}
+
+function fillMessagesToChatBody(data) {
   if (!data) return;
 
-  let chatContainer = document.querySelector(".main__chat-container");
   Object.values(data).forEach((message) => {
     if (message.sender === user.uid) {
-      chatContainer.innerHTML += `<div class="main__message-container main__message-container--right">
-      <p class="main__message">${message.text}</p>  
-      <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
-    </div>`;
+      addMessageToContainer(message.text, "right");
     } else {
-      chatContainer.innerHTML += `
-    <div class="main__message-container main__message-container--left">
-      <p class="main__message">${message.text}</p>  
-      <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
-    </div>
-    `;
+      addMessageToContainer(message.text, "left");
     }
   });
 }
 
-function addEventListenerToFriendCards() {
-  let friends = document.querySelectorAll(".main__friend-card");
-  friends.forEach((friend) =>
-    friend.addEventListener("click", function (e) {
-      updateChatWindowData(this);
-    })
+async function addMessageToChatBody(chat) {
+  let usersRawData = await readDB(
+    database,
+    `chat/${chatWindowMessageInput.dataset.chatHash}/user`
   );
+  let userData = usersRawData.val();
+  if (!userData) return;
+
+  let chatData = chat.val();
+  if (!chatData) return;
+
+  let userIds = Object.values(userData);
+  if (!userIds.includes(chatData.sender)) return;
+
+  if (chatData.sender === user.uid) {
+    addMessageToContainer(chatData.text, "right");
+  } else {
+    addMessageToContainer(chatData.text, "left");
+  }
 }
 
 function sendMessage() {
@@ -432,60 +456,21 @@ function sendMessage() {
   let text = chatWindowMessageInput.value;
   let sender = user.uid;
   let message = {
-    text: text,
-    sender: sender,
+    text,
+    sender,
   };
   addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
   chatWindowMessageInput.value = "";
 }
 
-const myChatTemplate = `
-<div class="main__message-container main__message-container--right">
-  <p class="main__message">Hello Lorem</p>  
-  <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
-</div>
-`;
-
-const friendChatTemplate = `
-<div class="main__message-container main__message-container--left">
-  <p class="main__message">Hello Lorem</p>  
-  <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
-</div>
-`;
-async function updateChatBody(chat) {
-  let chatWindowHeader = document.querySelector(".main__chat-header");
-  let a = await readDB(
-    database,
-    `chat/${chatWindowMessageInput.dataset.chatHash}/user`
+function addEventListenerToFriendCards() {
+  let friends = document.querySelectorAll(".main__friend-card");
+  friends.forEach((friend) =>
+    friend.addEventListener("click", function (e) {
+      updateChatWindow(this);
+    })
   );
-  let b = a.val();
-  if (!b) return;
-  let users = Object.values(b);
-  console.log(users);
-  let id = chatWindowHeader.dataset.chatId;
-
-  if (!chat.val()) return;
-  if (!users.includes(chat.val().sender)) return;
-  let chatContainer = document.querySelector(".main__chat-container");
-  if (chat.val().sender === user.uid) {
-    chatContainer.innerHTML += `<div class="main__message-container main__message-container--right">
-    <p class="main__message">${chat.val().text}</p>  
-    <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
-  </div>`;
-  } else {
-    chatContainer.innerHTML += `
-    <div class="main__message-container main__message-container--left">
-      <p class="main__message">${chat.val().text}</p>  
-      <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
-    </div>
-    `;
-  }
 }
-
-const chatWindowMessageInput = document.querySelector(".main__input--chat");
-chatWindowMessageInput.addEventListener("input", function (e) {
-  console.log(this.value);
-});
 
 window.addEventListener("keyup", (e) => {
   if (e.key === "Enter" && chatWindowMessageInput.value) {
