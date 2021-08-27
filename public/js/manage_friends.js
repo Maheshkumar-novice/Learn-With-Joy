@@ -410,10 +410,12 @@ async function updateChatWindow(friendCard) {
   fillMessagesToChatBody(data.val());
 }
 
-function addMessageToContainer(message, position) {
+function addMessageToContainer(message, time, position) {
   chatContainer.innerHTML += `<div class="main__message-container main__message-container--${position}">
   <p class="main__message">${message}</p>  
-  <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
+  <span class="main__time-stamp main__time-stamp--right">${new Date(
+    time
+  )}</span>
 </div>`;
 }
 
@@ -422,9 +424,9 @@ function fillMessagesToChatBody(data) {
 
   Object.values(data).forEach((message) => {
     if (message.sender === user.uid) {
-      addMessageToContainer(message.text, "right");
+      addMessageToContainer(message.text, message.time, "right");
     } else {
-      addMessageToContainer(message.text, "left");
+      addMessageToContainer(message.text, message.time, "left");
     }
   });
 }
@@ -444,9 +446,9 @@ async function addMessageToChatBody(chat) {
   if (!userIds.includes(chatData.sender)) return;
 
   if (chatData.sender === user.uid) {
-    addMessageToContainer(chatData.text, "right");
+    addMessageToContainer(chatData.text, chatData.time, "right");
   } else {
-    addMessageToContainer(chatData.text, "left");
+    addMessageToContainer(chatData.text, chatData.time, "left");
   }
 }
 
@@ -455,9 +457,11 @@ function sendMessage() {
   let messageKey = pushKey(database, `chat/${chatHash}/messages`, user.uid);
   let text = chatWindowMessageInput.value;
   let sender = user.uid;
+  let time = new Date().toISOString();
   let message = {
     text,
     sender,
+    time,
   };
   addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
   chatWindowMessageInput.value = "";
