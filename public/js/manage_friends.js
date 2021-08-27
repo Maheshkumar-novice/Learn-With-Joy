@@ -460,6 +460,7 @@ async function addMessageToChatBody(chat) {
 }
 
 function sendMessage() {
+  if (!chatWindowMessageInput.value) return;
   let chatHash = chatWindowMessageInput.dataset.chatHash;
   let messageKey = pushKey(database, `chat/${chatHash}/messages`, user.uid);
   let text = chatWindowMessageInput.value;
@@ -484,7 +485,7 @@ function addEventListenerToFriendCards() {
 }
 
 window.addEventListener("keyup", (e) => {
-  if (e.key === "Enter" && chatWindowMessageInput.value) {
+  if (e.key === "Enter") {
     sendMessage();
   }
   if (e.key === "Escape") {
@@ -495,4 +496,3 @@ window.addEventListener("keyup", (e) => {
 document
   .querySelector(".main__img--send")
   .addEventListener("click", sendMessage);
-
