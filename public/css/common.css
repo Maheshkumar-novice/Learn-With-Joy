@@ -1,3 +1,25 @@
+/* width */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px black;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: white;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -19,23 +41,23 @@
   cursor: pointer;
 }
 
-.header__notification-cnt{
+.header__notification-cnt {
   display: flex;
   align-items: center;
 }
 
-.header__notification{
+.header__notification {
   position: relative;
 }
 
-.header__notification-ic{
+.header__notification-ic {
   margin-right: 2rem;
   width: 30px;
   height: 30px;
   cursor: pointer;
 }
 
-.header__notification-display{
+.header__notification-display {
   position: absolute;
   font-size: 1.7rem;
   width: 300px;
@@ -49,19 +71,19 @@
   overflow: auto;
 }
 
-.header__notification-display p{
+.header__notification-display p {
   background-color: #272626;
   padding: 1rem;
   border-radius: 1rem;
   margin: 1rem;
 }
 
-.header__notification-eachmsg{
+.header__notification-eachmsg {
   display: flex;
   align-items: center;
 }
 
-.header__notification-clrmsg{
+.header__notification-clrmsg {
   width: 20px;
   height: 20px;
 }
