@@ -309,6 +309,58 @@
   font-weight: 500;
 }
 
+.main__message--image-cnt{
+  width: 350px;
+  height: 250px;
+  border: 4px solid var(--primary-color);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.main__message--image{
+  max-width: 350px;
+  max-height: 250px;
+  padding: 1rem;
+  
+  cursor: pointer;
+}
+
+.main__message--data{
+  position: absolute;
+  background-color: #0f0f0f8a;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 2rem;
+}
+
+.main__message--progress{
+  height: 20px;
+  width: 100%;
+  padding: 0 2rem;
+  border-radius: 1rem;
+  background-color: var(--primary-color);
+}
+
+.main__message--controls{
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
+}
+
+.main__message--downloaded{
+  font-size: 2rem;
+  color: white;
+}
+
 .main__time-stamp {
   position: absolute;
   top: 100%;
@@ -367,7 +419,8 @@
 }
 
 .upload__preview-img{
-  width: 100%;
+  max-width: 100%;
+  max-height: 240px;
   margin-bottom: 1rem;
 }
 
