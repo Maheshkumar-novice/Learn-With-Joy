@@ -482,3 +482,7 @@ window.addEventListener("keyup", (e) => {
     sendMessage();
   }
 });
+
+document
+  .querySelector(".main__img--send")
+  .addEventListener("click", sendMessage);
