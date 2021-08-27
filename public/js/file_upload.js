@@ -1,4 +1,4 @@
-import { pushKey, storageDelete, storageList, storageRef, storageUpload } from "./modules/firebase.js";
+import { pushKey, storageDelete, storageDownloadURL, storageList, storageRef, storageUpload } from "./modules/firebase.js";
 
 const toggleUploadBtn = document.querySelector(".main__img--file");
 const uploadCnt = document.querySelector(".upload");
@@ -98,25 +98,28 @@ toggleUploadBtn.addEventListener("click", (e)=>{
 
 let storage = firebase.storage();
 sendBtn.addEventListener("click", async (e) => {
-  console.log("initaited")
-  let lisfile = await storageList(storage, "chat/chat1");
-  lisfile.items.map(file => {
-    console.log(file)
-    storageDelete(file)
-  })
+  // console.log("initaited")
+  // let lisfile = await storageList(storage, "chat/chat1");
+  // lisfile.items.map(file => {
+  //   console.log(file)
+  //   storageDelete(file)
+  // })
   console.log(fileToUpload);
   for (let file in fileToUpload)
   {
     const ref = storageRef(storage, `chat/chat1`, `${fileToUpload[file].name}`);
     let val = storageUpload(ref, fileToUpload[file]);
-    console.log(ref, val);
-    task(val);
+    // let url = storageDownloadURL(ref);
+    console.log(ref);
+    task(val, ref);
   }
 });
 
 function task(uploadTask){
   uploadTask.on('state_changed', 
   (snapshot) => {
+    // Observe state change events such as progress, pause, and resume
+    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
     console.log('Upload is ' + progress + '% done');
     switch (snapshot.state) {
@@ -127,5 +130,14 @@ function task(uploadTask){
         console.log('Upload is running');
         break;
     }
-  });
+  }, 
+  (error) => {
+    // Handle unsuccessful uploads
+  }, 
+  async () => {
+    // Handle successful uploads on complete
+    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+    console.log(await storageDownloadURL(uploadTask.snapshot.ref));
+  }
+);
 }
