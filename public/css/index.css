@@ -361,6 +361,70 @@
   color: white;
 }
 
+.main__message--file-cnt{
+  width: 300px;
+  height: 130px;
+  background-color: #42444d;
+  border-radius: 1rem;
+  display: flex;
+  overflow: hidden;
+  font-size: 2rem;
+  color: white;
+}
+
+.main__message--file-data{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.main__message-file--controls{
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
+}
+
+.main__message-file--meta-status{
+  padding-left: 2rem;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.main__message--file-download{
+  background: #191a20;
+  border: 5px solid #42444d;
+  border-radius: 1rem 0 0 1rem;
+  width: 130px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.main__message--file-download img{
+  border-radius: 1rem;
+  width: 50px;
+  height: 50px;
+  padding: 1rem;
+  box-sizing: unset;
+  cursor: pointer;
+}
+
+.main__message--file-detail{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  text-align: center;
+  flex: 1;
+}
+
 .main__time-stamp {
   position: absolute;
   top: 100%;
