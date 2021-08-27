@@ -1,3 +1,5 @@
+import { pushKey, storageDelete, storageList, storageRef, storageUpload } from "./modules/firebase.js";
+
 const toggleUploadBtn = document.querySelector(".main__img--file");
 const uploadCnt = document.querySelector(".upload");
 const info = document.querySelector(".main__chat-info");
@@ -5,6 +7,9 @@ const fileUpload = document.querySelectorAll(".upload__input");
 const filePreview = document.querySelector(".upload__preview");
 const fileDragnDrop = document.querySelector(".upload__dragndrop");
 const fileUploadClick = document.querySelectorAll(".upload__click--each");
+const sendBtn = document.querySelector(".main__img--send");
+
+let fileToUpload = {}
 
 function returnFormat(txt) {
   return txt.match(/\.(.*)/i);
@@ -13,6 +18,7 @@ function returnFormat(txt) {
 function imagePreview(files) {
   let html = "";
   for (const file of files) {
+    fileToUpload[file.name] = file;
     html += `<div class="upload__preview--imginfo">
                         <img src=${URL.createObjectURL(
                           file
@@ -27,6 +33,7 @@ function docsPreview(files) {
   let html = "";
   let src = "";
   for (const file of files) {
+    fileToUpload[file.name] = file;
     let icon = returnFormat(file.name)[1];
     if (icon === "ppt" || icon === "pptx") {
       src = "./assets/icons/home/file-powerpoint.svg";
@@ -50,9 +57,11 @@ function docsPreview(files) {
 fileUpload.forEach((fileUpload) => {
   fileUpload.addEventListener("change", function (e) {
     filePreview.innerHTML = "";
+    fileToUpload = {};
     console.log(e.target.dataset.type);
     let files = e.target.files;
     // console.log("hello", e.target.files);
+
     if (files.length > 5) {
       document.querySelector(".upload__info--no").style.color = "red";
       setTimeout(() => {
@@ -86,3 +95,37 @@ toggleUploadBtn.addEventListener("click", (e)=>{
     info.classList.toggle("none");
     uploadCnt.classList.toggle("none");
 });
+
+let storage = firebase.storage();
+sendBtn.addEventListener("click", async (e) => {
+  console.log("initaited")
+  let lisfile = await storageList(storage, "chat/chat1");
+  lisfile.items.map(file => {
+    console.log(file)
+    storageDelete(file)
+  })
+  console.log(fileToUpload);
+  for (let file in fileToUpload)
+  {
+    const ref = storageRef(storage, `chat/chat1`, `${fileToUpload[file].name}`);
+    let val = storageUpload(ref, fileToUpload[file]);
+    console.log(ref, val);
+    task(val);
+  }
+});
+
+function task(uploadTask){
+  uploadTask.on('state_changed', 
+  (snapshot) => {
+    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log('Upload is ' + progress + '% done');
+    switch (snapshot.state) {
+      case firebase.storage.TaskState.PAUSED: // or 'paused'
+        console.log('Upload is paused');
+        break;
+      case firebase.storage.TaskState.RUNNING: // or 'running'
+        console.log('Upload is running');
+        break;
+    }
+  });
+}
