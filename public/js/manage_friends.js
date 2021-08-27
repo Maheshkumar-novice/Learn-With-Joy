@@ -6,6 +6,7 @@ import {
   pushKey,
   setDBListener,
   firebaseConfig,
+  userSignIn,
 } from "./modules/firebase.js";
 import { checkUserPresent } from "./modules/util.js";
 
@@ -451,10 +452,20 @@ const friendChatTemplate = `
   <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
 </div>
 `;
-function updateChatBody(chat) {
+async function updateChatBody(chat) {
   let chatWindowHeader = document.querySelector(".main__chat-header");
-  if (!chat.val() || chatWindowHeader.dataset.chatId !== chat.val().sender)
-    return;
+  let a = await readDB(
+    database,
+    `chat/${chatWindowMessageInput.dataset.chatHash}/user`
+  );
+  let b = a.val();
+  if (!b) return;
+  let users = Object.values(b);
+  console.log(users);
+  let id = chatWindowHeader.dataset.chatId;
+
+  if (!chat.val()) return;
+  if (!users.includes(chat.val().sender)) return;
   let chatContainer = document.querySelector(".main__chat-container");
   if (chat.val().sender === user.uid) {
     chatContainer.innerHTML += `<div class="main__message-container main__message-container--right">
