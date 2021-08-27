@@ -71,6 +71,11 @@ export function storageUpload(reference, file){
     return reference.put(file);
 }
 
+// download file
+export async function storageDownloadURL(referencce){
+    return await referencce.getDownloadURL();
+}
+
 // list all Files
 export async function storageList(st, reference){
     return await st.ref(reference).listAll();
