@@ -388,6 +388,32 @@ function updateChatWindowData(friendCard) {
     friendCard.querySelector(".main__friend-name").textContent;
   chatWindowProfilePic.src = friendCard.querySelector(".main__img").src;
   chatWindowMessageInput.dataset.chatHash = friendCard.dataset.hash;
+  chatWindowHeader.dataset.chatId = friendCard.dataset.id;
+
+  readDB(database, `chat/${friendCard.dataset.hash}/messages`).then((data) => {
+    fillChatBody(data.val());
+  });
+}
+
+function fillChatBody(data) {
+  if (!data) return;
+
+  let chatContainer = document.querySelector(".main__chat-container");
+  Object.values(data).forEach((message) => {
+    if (message.sender === user.uid) {
+      chatContainer.innerHTML += `<div class="main__message-container main__message-container--right">
+      <p class="main__message">${message.text}</p>  
+      <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
+    </div>`;
+    } else {
+      chatContainer.innerHTML += `
+    <div class="main__message-container main__message-container--left">
+      <p class="main__message">${message.text}</p>  
+      <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
+    </div>
+    `;
+    }
+  });
 }
 
 function addEventListenerToFriendCards() {
@@ -426,7 +452,9 @@ const friendChatTemplate = `
 </div>
 `;
 function updateChatBody(chat) {
-  if (!chat.val()) return;
+  let chatWindowHeader = document.querySelector(".main__chat-header");
+  if (!chat.val() || chatWindowHeader.dataset.chatId !== chat.val().sender)
+    return;
   let chatContainer = document.querySelector(".main__chat-container");
   if (chat.val().sender === user.uid) {
     chatContainer.innerHTML += `<div class="main__message-container main__message-container--right">
