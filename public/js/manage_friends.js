@@ -50,11 +50,13 @@ let addBtn;
 //remove from search result after add btn triggered
 function removeSerachFriendResult(e) {
   let id = e.target.parentElement.dataset.id;
-  console.log(e,e.target,id);
-  let remove_elem = document.querySelector(`.main__result-card[data-id="${id}"]`);
+  console.log(e, e.target, id);
+  let remove_elem = document.querySelector(
+    `.main__result-card[data-id="${id}"]`
+  );
   console.log(remove_elem);
   searchCnt.removeChild(remove_elem);
-  if(searchCnt.childElementCount === 0){
+  if (searchCnt.childElementCount === 0) {
     searchCnt.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
   }
 }
@@ -93,7 +95,7 @@ async function sendRequest(uid) {
 async function addFriend(e) {
   await updateFriendList();
   let fid = e.target.parentElement.dataset.id;
-  let hashtext = pushKey(database, `friends/${fid}`, "friends"); 
+  let hashtext = pushKey(database, `friends/${fid}`, "friends");
   addChlidDB(database, `friends/${user.uid}/friends`, fid, hashtext);
   addChlidDB(database, `friends/${fid}/friends`, user.uid, hashtext);
   removeDB(database, `friends/${user.uid}/received/${fid}`);
@@ -168,7 +170,7 @@ function addBtnListener() {
   });
 }
 
-searchCloseIc.addEventListener("click", function (e){
+searchCloseIc.addEventListener("click", function (e) {
   searchWrap.classList.toggle("none");
   chatCnt.classList.toggle("none");
 });
@@ -205,6 +207,11 @@ async function addFriendList(data) {
     .forEach((reject) => {
       reject.addEventListener("click", removeFriend);
     });
+  document.querySelectorAll(".main__friend-card").forEach((friend) =>
+    friend.addEventListener("click", () => {
+      console.log("friend");
+    })
+  );
 }
 
 // Remove friends from the friends list
