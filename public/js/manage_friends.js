@@ -5,6 +5,8 @@ import {
   addChlidDB,
   pushKey,
   setDBListener,
+  firebaseConfig,
+  userSignIn,
 } from "./modules/firebase.js";
 import { checkUserPresent } from "./modules/util.js";
 
@@ -50,11 +52,13 @@ let addBtn;
 //remove from search result after add btn triggered
 function removeSerachFriendResult(e) {
   let id = e.target.parentElement.dataset.id;
-  console.log(e,e.target,id);
-  let remove_elem = document.querySelector(`.main__result-card[data-id="${id}"]`);
+  console.log(e, e.target, id);
+  let remove_elem = document.querySelector(
+    `.main__result-card[data-id="${id}"]`
+  );
   console.log(remove_elem);
   searchCnt.removeChild(remove_elem);
-  if(searchCnt.childElementCount === 0){
+  if (searchCnt.childElementCount === 0) {
     searchCnt.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
   }
 }
@@ -93,7 +97,7 @@ async function sendRequest(uid) {
 async function addFriend(e) {
   await updateFriendList();
   let fid = e.target.parentElement.dataset.id;
-  let hashtext = pushKey(database, `friends/${fid}`, "friends"); 
+  let hashtext = pushKey(database, `friends/${fid}`, "friends");
   addChlidDB(database, `friends/${user.uid}/friends`, fid, hashtext);
   addChlidDB(database, `friends/${fid}/friends`, user.uid, hashtext);
   removeDB(database, `friends/${user.uid}/received/${fid}`);
@@ -168,7 +172,7 @@ function addBtnListener() {
   });
 }
 
-searchCloseIc.addEventListener("click", function (e){
+searchCloseIc.addEventListener("click", function (e) {
   searchWrap.classList.toggle("none");
   chatCnt.classList.toggle("none");
 });
@@ -205,6 +209,14 @@ async function addFriendList(data) {
     .forEach((reject) => {
       reject.addEventListener("click", removeFriend);
     });
+  // Chat Listeners
+  addEventListenerToFriendCards();
+  setDBListener(
+    database,
+    `chat/${hash}/messages`,
+    "child_added",
+    addMessageToChatBody
+  );
 }
 
 // Remove friends from the friends list
@@ -355,3 +367,132 @@ function addDbListener() {
 // function setDBListener(reference, type, callBack) {
 //   database.ref(reference).on(type, callBack);
 // }
+
+// Chat
+const chatWindowMessageInput = document.querySelector(".main__input--chat");
+let chatWindowUsername = document.querySelector(".main__chat-username");
+let chatWindowProfilePic = document.querySelector(".main__img--chat");
+let noChatSelectedInfo = document.querySelector(".main__chat-info");
+let chatWindowHeader = document.querySelector(".main__chat-header");
+let chatWindowMessageSender = document.querySelector(
+  ".main__chat-message-sender"
+);
+let chatContainer = document.querySelector(".main__chat-container");
+
+function cleanUpChatWindow() {
+  chatContainer.innerHTML = "";
+  chatWindowHeader.classList.remove("none");
+  chatContainer.classList.remove("none");
+  chatWindowMessageSender.classList.remove("none");
+  noChatSelectedInfo.classList.add("none");
+}
+
+function updateChatDataSet(friendCard) {
+  chatWindowMessageInput.dataset.chatHash = friendCard.dataset.hash;
+  chatWindowHeader.dataset.chatId = friendCard.dataset.id;
+}
+
+function updateFriendDataAtChatWindow(friendCard) {
+  chatWindowUsername.textContent =
+    friendCard.querySelector(".main__friend-name").textContent;
+  chatWindowProfilePic.src = friendCard.querySelector(".main__img").src;
+}
+
+function setUpChatWindow(friendCard) {
+  cleanUpChatWindow();
+  updateFriendDataAtChatWindow(friendCard);
+  updateChatDataSet(friendCard);
+}
+
+async function updateChatWindow(friendCard) {
+  setUpChatWindow(friendCard);
+  let data = await readDB(database, `chat/${friendCard.dataset.hash}/messages`);
+  fillMessagesToChatBody(data.val());
+}
+
+function addMessageToContainer(message, time, position) {
+  let datePart = new Date(time).toDateString();
+  let timePart = new Date(time).toTimeString().split(" ")[0];
+  let timeStamp = datePart + " " + timePart;
+  chatContainer.innerHTML += `<div class="main__message-container main__message-container--${position}">
+  <p class="main__message">${message}</p>  
+  <span class="main__time-stamp main__time-stamp--right">${timeStamp}</span>
+</div>`;
+}
+
+function autoScroll() {
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function fillMessagesToChatBody(data) {
+  if (!data) return;
+
+  Object.values(data).forEach((message) => {
+    if (message.sender === user.uid) {
+      addMessageToContainer(message.text, message.time, "right");
+    } else {
+      addMessageToContainer(message.text, message.time, "left");
+    }
+  });
+  autoScroll();
+}
+
+async function addMessageToChatBody(chat) {
+  let usersRawData = await readDB(
+    database,
+    `chat/${chatWindowMessageInput.dataset.chatHash}/user`
+  );
+  let userData = usersRawData.val();
+  if (!userData) return;
+
+  let chatData = chat.val();
+  if (!chatData) return;
+
+  let userIds = Object.values(userData);
+  if (!userIds.includes(chatData.sender)) return;
+
+  if (chatData.sender === user.uid) {
+    addMessageToContainer(chatData.text, chatData.time, "right");
+  } else {
+    addMessageToContainer(chatData.text, chatData.time, "left");
+  }
+  autoScroll();
+}
+
+function sendMessage() {
+  if (!chatWindowMessageInput.value) return;
+  let chatHash = chatWindowMessageInput.dataset.chatHash;
+  let messageKey = pushKey(database, `chat/${chatHash}/messages`, user.uid);
+  let text = chatWindowMessageInput.value;
+  let sender = user.uid;
+  let time = new Date().toISOString();
+  let message = {
+    text,
+    sender,
+    time,
+  };
+  addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
+  chatWindowMessageInput.value = "";
+}
+
+function addEventListenerToFriendCards() {
+  let friends = document.querySelectorAll(".main__friend-card");
+  friends.forEach((friend) =>
+    friend.addEventListener("click", function (e) {
+      updateChatWindow(this);
+    })
+  );
+}
+
+window.addEventListener("keyup", (e) => {
+  if (e.key === "Enter") {
+    sendMessage();
+  }
+  if (e.key === "Escape") {
+    document.querySelector(".main__search-close-ic").click();
+  }
+});
+
+document
+  .querySelector(".main__img--send")
+  .addEventListener("click", sendMessage);

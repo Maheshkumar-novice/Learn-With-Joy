@@ -2,7 +2,7 @@ import { pushKey, storageDelete, storageDownloadURL, storageList, storageRef, st
 
 const toggleUploadBtn = document.querySelector(".main__img--file");
 const uploadCnt = document.querySelector(".upload");
-const info = document.querySelector(".main__chat-info");
+const chat = document.querySelector(".main__chat-container");
 const fileUpload = document.querySelectorAll(".upload__input");
 const filePreview = document.querySelector(".upload__preview");
 const fileDragnDrop = document.querySelector(".upload__dragndrop");
@@ -92,7 +92,7 @@ fileUploadClick.forEach((upload) => {
 });
 
 toggleUploadBtn.addEventListener("click", (e)=>{
-    info.classList.toggle("none");
+    chat.classList.toggle("none");
     uploadCnt.classList.toggle("none");
 });
 

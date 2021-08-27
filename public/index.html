@@ -13,7 +13,7 @@
     <header class="header">
       <h1 class="header__title">
         <span class="header__title--greet">Good Morning! </span
-        ><span class="header__title--username"></span>
+        ><span class="header__title--username"></span>.
       </h1>
       <div class="header__notification-cnt">
         <div class="header__notification">
@@ -98,7 +98,7 @@
 
         <div class="main__chat">
           <div class="main__chat-window">
-            <div class="main__chat-header">
+            <div class="main__chat-header none">
               <img
                 src="./assets/icons/home/user.svg"
                 alt="User Profile Picture"
@@ -107,7 +107,7 @@
               <p class="main__chat-username">Lorem Ipsum</p>
             </div>
             <div class="main__chat-body">
-              <p class="main__chat-info none">Please select the friend to chat with them</p>
+              <p class="main__chat-info">Please select the friend to chat with them</p>
               
               <div class="upload none">
                 <div class="upload__info">
@@ -147,8 +147,8 @@
                 </div>
 
               </div>
-              <div class="main__chat-container">
-                <!-- <div class="main__message-container main__message-container--right">
+              <div class="main__chat-container none">
+                 <!-- <div class="main__message-container main__message-container--right">
                   <p class="main__message">Hello Lorem</p>
                   <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
                 </div>
@@ -189,7 +189,7 @@
                 </div> -->
               </div>
             </div>
-            <div class="main__chat-message-sender">
+            <div class="main__chat-message-sender none">
               <img
                 src="./assets/icons/home/add_file.svg"
                 alt="Send Message"
@@ -199,6 +199,7 @@
                 type="text"
                 placeholder="Enter Message..."
                 class="main__input main__input--chat"
+                data-chat-hash='null'
               />
               <img
                 src="./assets/icons/home/send.svg"
@@ -255,7 +256,8 @@
     <!-- Main script -->
     <script type="module" src="./js/main.js"></script>
     <script type="module" src="./js/manage_friends.js"></script>
-    <script type="module" src="./js/notification.js"></script>
+    <script type="module" src="./js/manage_friends.js"></script>
+    <script type="module" src="./js/chat.js"></script>
     <script type="module" src="./js/file_upload.js"></script>
   </body>
 </html>
