@@ -210,6 +210,12 @@ async function addFriendList(data) {
     });
   // click functionality to friends cards
   addEventListenerToFriendCards();
+  setDBListener(
+    database,
+    `chat/${hash}/messages`,
+    "child_added",
+    updateChatBody
+  );
 }
 
 // Remove friends from the friends list
@@ -371,6 +377,7 @@ function updateChatWindowData(friendCard) {
     ".main__chat-message-sender"
   );
   let chatContainer = document.querySelector(".main__chat-container");
+  chatContainer.innerHTML = "";
 
   chatWindowHeader.classList.remove("none");
   chatContainer.classList.remove("none");
@@ -392,13 +399,57 @@ function addEventListenerToFriendCards() {
   );
 }
 
+function sendMessage() {
+  let chatHash = chatWindowMessageInput.dataset.chatHash;
+  let messageKey = pushKey(database, `chat/${chatHash}/messages`, user.uid);
+  let text = chatWindowMessageInput.value;
+  let sender = user.uid;
+  let message = {
+    text: text,
+    sender: sender,
+  };
+  addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
+  chatWindowMessageInput.value = "";
+}
+
+const myChatTemplate = `
+<div class="main__message-container main__message-container--right">
+  <p class="main__message">Hello Lorem</p>  
+  <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
+</div>
+`;
+
+const friendChatTemplate = `
+<div class="main__message-container main__message-container--left">
+  <p class="main__message">Hello Lorem</p>  
+  <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
+</div>
+`;
+function updateChatBody(chat) {
+  if (!chat.val()) return;
+  let chatContainer = document.querySelector(".main__chat-container");
+  if (chat.val().sender === user.uid) {
+    chatContainer.innerHTML += `<div class="main__message-container main__message-container--right">
+    <p class="main__message">${chat.val().text}</p>  
+    <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
+  </div>`;
+  } else {
+    chatContainer.innerHTML += `
+    <div class="main__message-container main__message-container--left">
+      <p class="main__message">${chat.val().text}</p>  
+      <span class="main__time-stamp main__time-stamp--right">23/02/20, 9:30pm</span>
+    </div>
+    `;
+  }
+}
+
 const chatWindowMessageInput = document.querySelector(".main__input--chat");
 chatWindowMessageInput.addEventListener("input", function (e) {
   console.log(this.value);
 });
 
 window.addEventListener("keyup", (e) => {
-  if (e.key === "Enter") {
-    chatWindowMessageInput.value = "";
+  if (e.key === "Enter" && chatWindowMessageInput.value) {
+    sendMessage();
   }
 });
