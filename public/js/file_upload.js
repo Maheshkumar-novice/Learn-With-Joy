@@ -104,18 +104,42 @@ function toggleUploadWindow(){
 
 function createImagePreview(key, src, size){
   chatContainer.innerHTML += `
-  <div class="main__message-container main__message-container--right data-id="${key}">
-    <div class="main__message--image-cnt" data-id="${key}">
-      <div class="main__message--data">
+  <div class="main__message-container main__message-container--right local-cnt" data-id="${key}">
+    <div class="main__message--image-cnt local-data-cnt" data-id="${key}">
+      <div class="main__message--data local-remove">
         <img src="./assets/icons/home/pause.svg" class="main__message--controls"  alt="">  
-        <div class="main__message--progress"></div>
-        <span class="main__message--downloaded">${size}MB</span>
+        <div class="main__message--progress local-progress"></div>
+        <span class="main__message--downloaded local-size">${size}MB</span>
       </div>
-      <a href="" class="" download=""><img src="${src}" alt="preview" class="main__message--image"></a>
+      <a href="" class="main__message--link" download><img src="${src}" alt="preview" class="main__message--image"></a>
     </div>
     <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
   </div>
   `;
+}
+
+function createFilePrevieew(){
+  chatContainer.innerHTML += `
+                <div class="main__message-container main__message-container--right">
+                  <div class="main__message--file-cnt">
+                    <div class="main__message--file-data">
+                      <img src="./assets/icons/home/play.svg" class="main__message-file--controls"  alt="">  
+                      <div class="main__message-file--meta-status">
+                        <div class="main__message--name">Name.tst</div>
+                        <div class="main__message--progress"></div>
+                        <span class="main__message--downloaded">3 / 10 MB</span>
+                      </div>
+                    </div>
+                    <div class="main__message--file-download none">
+                      <a href="" download="name.txt"><img src="./assets/icons/home/download.svg" alt=""></a>
+                    </div>
+                    <div class="main__message--file-detail none">
+                      <h3 class="main__message--file-name">Name.txt</h3>
+                      <span class="main__message--file-size">5.5MB</span>
+                    </div>
+                  </div>
+                  <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
+                </div>`
 }
 
 const storage = firebase.storage();
@@ -147,8 +171,8 @@ function task(uploadTask, key){
     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
     let byteTransfer = (snapshot.bytesTransferred/(1024 * 1024)).toFixed(2);
     let byteTotal = (snapshot.totalBytes/(1024 * 1024)).toFixed(2);
-    document.querySelector(`.main__message--image-cnt[data-id="${key}"] .main__message--progress`).style.width = `${progress}%`; 
-    document.querySelector(`.main__message--image-cnt[data-id="${key}"] .main__message--downloaded`).innerText = `${byteTransfer} / ${byteTotal}%`; 
+    document.querySelector(`.local-cnt[data-id="${key}"] .local-progress`).style.width = `${progress}%`; 
+    document.querySelector(`.local-cnt[data-id="${key}"] .local-size`).innerText = `${byteTransfer} / ${byteTotal}MB`; 
     console.log('Upload is ' + progress + '% done');
     switch (snapshot.state) {
       case firebase.storage.TaskState.PAUSED: // or 'paused'
@@ -164,6 +188,14 @@ function task(uploadTask, key){
   }, 
   async () => {
     const downloadURL = await storageDownloadURL(uploadTask.snapshot.ref);
+    const img = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--image`);
+    const imgLink = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--link`);
+    img.src = downloadURL;
+    imgLink.href = downloadURL;
+    const cnt = document.querySelector(`.local-data-cnt[data-id="${key}"]`);
+    const toRemove = document.querySelector(`.local-data-cnt[data-id="${key}"] .local-remove`);
+    console.log(cnt, toRemove);
+    cnt.removeChild(toRemove); 
   }
 );
 }
