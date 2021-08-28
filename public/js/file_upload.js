@@ -8,8 +8,11 @@ const filePreview = document.querySelector(".upload__preview");
 const fileDragnDrop = document.querySelector(".upload__dragndrop");
 const fileUploadClick = document.querySelectorAll(".upload__click--each");
 const sendBtn = document.querySelector(".main__img--send");
+const inputChat = document.querySelector(".main__input--chat");
+const chatContainer = document.querySelector(".main__chat-container");
 
-let fileToUpload = {}
+
+let fileToUpload = [];
 
 function returnFormat(txt) {
   return txt.match(/\.(.*)/i);
@@ -18,7 +21,7 @@ function returnFormat(txt) {
 function imagePreview(files) {
   let html = "";
   for (const file of files) {
-    fileToUpload[file.name] = file;
+    fileToUpload.push(file);
     html += `<div class="upload__preview--imginfo">
                         <img src=${URL.createObjectURL(
                           file
@@ -33,7 +36,7 @@ function docsPreview(files) {
   let html = "";
   let src = "";
   for (const file of files) {
-    fileToUpload[file.name] = file;
+    fileToUpload.push(file);
     let icon = returnFormat(file.name)[1];
     if (icon === "ppt" || icon === "pptx") {
       src = "./assets/icons/home/file-powerpoint.svg";
@@ -57,10 +60,9 @@ function docsPreview(files) {
 fileUpload.forEach((fileUpload) => {
   fileUpload.addEventListener("change", function (e) {
     filePreview.innerHTML = "";
-    fileToUpload = {};
+    fileToUpload = [];
     console.log(e.target.dataset.type);
     let files = e.target.files;
-    // console.log("hello", e.target.files);
 
     if (files.length > 5) {
       document.querySelector(".upload__info--no").style.color = "red";
@@ -91,36 +93,62 @@ fileUploadClick.forEach((upload) => {
   });
 });
 
-toggleUploadBtn.addEventListener("click", (e)=>{
-    chat.classList.toggle("none");
-    uploadCnt.classList.toggle("none");
-});
+toggleUploadBtn.addEventListener("click", toggleUploadWindow);
 
-let storage = firebase.storage();
+function toggleUploadWindow(){
+  chat.classList.toggle("none");
+  uploadCnt.classList.toggle("none");
+  inputChat.value = "";
+  inputChat.disabled = !inputChat.disabled;
+}
+
+function createImagePreview(key, src, size){
+  chatContainer.innerHTML += `
+  <div class="main__message-container main__message-container--right data-id="${key}">
+    <div class="main__message--image-cnt" data-id="${key}">
+      <div class="main__message--data">
+        <img src="./assets/icons/home/pause.svg" class="main__message--controls"  alt="">  
+        <div class="main__message--progress"></div>
+        <span class="main__message--downloaded">${size}MB</span>
+      </div>
+      <a href="" class="" download=""><img src="${src}" alt="preview" class="main__message--image"></a>
+    </div>
+    <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
+  </div>
+  `;
+}
+
+const storage = firebase.storage();
+const database = firebase.database();
 sendBtn.addEventListener("click", async (e) => {
-  // console.log("initaited")
-  // let lisfile = await storageList(storage, "chat/chat1");
-  // lisfile.items.map(file => {
-  //   console.log(file)
-  //   storageDelete(file)
-  // })
-  console.log(fileToUpload);
-  for (let file in fileToUpload)
-  {
-    const ref = storageRef(storage, `chat/chat1`, `${fileToUpload[file].name}`);
-    let val = storageUpload(ref, fileToUpload[file]);
-    // let url = storageDownloadURL(ref);
+  if(uploadCnt.classList.contains("none")) return;
+  toggleUploadWindow();
+  fileToUpload.forEach(file => {
+    const size = (file.size/(1024*1024)).toFixed(2);
+    const ref = storageRef(storage, `chat/chat1`, `${file.name}`);
+    const key = pushKey(database, `chat/chat1`,`${inputChat.dataset.chatHash}`);
+    console.log(key);
+    
+    createImagePreview(key, URL.createObjectURL(file), size);
+
+    const metadata = {
+      name: file.name,
+      size 
+    };
+    let val = storageUpload(ref, file, metadata);
     console.log(ref);
-    task(val, ref);
-  }
+    task(val, key);
+  });
 });
 
-function task(uploadTask){
+function task(uploadTask, key){
   uploadTask.on('state_changed', 
   (snapshot) => {
-    // Observe state change events such as progress, pause, and resume
-    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    let byteTransfer = (snapshot.bytesTransferred/(1024 * 1024)).toFixed(2);
+    let byteTotal = (snapshot.totalBytes/(1024 * 1024)).toFixed(2);
+    document.querySelector(`.main__message--image-cnt[data-id="${key}"] .main__message--progress`).style.width = `${progress}%`; 
+    document.querySelector(`.main__message--image-cnt[data-id="${key}"] .main__message--downloaded`).innerText = `${byteTransfer} / ${byteTotal}%`; 
     console.log('Upload is ' + progress + '% done');
     switch (snapshot.state) {
       case firebase.storage.TaskState.PAUSED: // or 'paused'
@@ -135,9 +163,7 @@ function task(uploadTask){
     // Handle unsuccessful uploads
   }, 
   async () => {
-    // Handle successful uploads on complete
-    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-    console.log(await storageDownloadURL(uploadTask.snapshot.ref));
+    const downloadURL = await storageDownloadURL(uploadTask.snapshot.ref);
   }
 );
 }

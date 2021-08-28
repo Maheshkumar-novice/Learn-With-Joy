@@ -368,7 +368,7 @@ function addDbListener() {
 //   database.ref(reference).on(type, callBack);
 // }
 
-// Chat
+// ------------------------------------------- Chat js ----------------------------------------
 const chatWindowMessageInput = document.querySelector(".main__input--chat");
 let chatWindowUsername = document.querySelector(".main__chat-username");
 let chatWindowProfilePic = document.querySelector(".main__img--chat");
@@ -389,7 +389,7 @@ function cleanUpChatWindow() {
 
 function updateChatDataSet(friendCard) {
   chatWindowMessageInput.dataset.chatHash = friendCard.dataset.hash;
-  chatWindowHeader.dataset.chatId = friendCard.dataset.id;
+  chatWindowHeader.dataset.chatId = friendCard.dataset.id; //friend ID needs to be changed
 }
 
 function updateFriendDataAtChatWindow(friendCard) {

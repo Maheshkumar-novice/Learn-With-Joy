@@ -67,8 +67,8 @@ export function storageRef(st, reference, file){
 }
 
 // upload file
-export function storageUpload(reference, file){
-    return reference.put(file);
+export function storageUpload(reference, file, metadata){
+    return reference.put(file, metadata);
 }
 
 // download file
