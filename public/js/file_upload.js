@@ -1,5 +1,6 @@
 import {
   pushKey,
+  addChlidDB,
   storageDelete,
   storageDownloadURL,
   storageList,
@@ -212,6 +213,7 @@ function updateFilePreview(cnt, link) {
 
 const storage = firebase.storage();
 const database = firebase.database();
+const auth = firebase.auth();
 sendBtn.addEventListener("click", async (e) => {
   if (uploadCnt.classList.contains("none")) return;
   toggleUploadWindow();
@@ -220,8 +222,8 @@ sendBtn.addEventListener("click", async (e) => {
     const ref = storageRef(storage, `chat/chat1`, `${file.name}`);
     const key = pushKey(
       database,
-      `chat/chat1`,
-      `${inputChat.dataset.chatHash}`
+      `chat/${inputChat.dataset.chatHash}`,
+      `${auth.currentUser.uid}`
     );
     console.log(key);
 
@@ -234,11 +236,11 @@ sendBtn.addEventListener("click", async (e) => {
       ? createImagePreview(key, URL.createObjectURL(file), size, val)
       : createFilePrevieew(key, file.name, size, val);
     console.log(ref);
-    task(val, key);
+    task(val, key, inputChat.dataset.chatHash);
   });
 });
 
-function task(uploadTask, key) {
+function task(uploadTask, key, chatHash) {
   uploadTask.on(
     "state_changed",
     (snapshot) => {
@@ -296,15 +298,16 @@ function task(uploadTask, key) {
       cnt.dataset.type === "image"
         ? updateImagePreview(cnt, downloadURL)
         : updateFilePreview(cnt, downloadURL);
+        let message = {};
 
-      // const img = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--image`);
-      // const imgLink = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--link`);
-      // img.src = downloadURL;
-      // imgLink.href = downloadURL;
-      // const cnt = document.querySelector(`.local-data-cnt[data-id="${key}"]`);
-      // const toRemove = document.querySelector(`.local-data-cnt[data-id="${key}"] .local-remove`);
-      // console.log(cnt, toRemove);
-      // cnt.removeChild(toRemove);
+        let user = auth.currentUser;
+        let messageKey = key;
+        console.log("key", chatHash)
+        message[cnt.dataset.type] = downloadURL;
+        message["sender"] = user.uid;
+        message["time"] = firebase.database.ServerValue.TIMESTAMP;
+        addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
+        console.log(message);
     }
   );
 }

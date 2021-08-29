@@ -85,3 +85,8 @@ export async function storageList(st, reference){
 export async function storageDelete(item){
     return await item.delete();
 }
+
+// Meta Data
+export async function fileMetaData(reference){
+  return await reference.getMetadata();
+}

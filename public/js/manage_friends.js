@@ -7,6 +7,7 @@ import {
   setDBListener,
   firebaseConfig,
   userSignIn,
+  fileMetaData,
 } from "./modules/firebase.js";
 import { checkUserPresent } from "./modules/util.js";
 
@@ -420,6 +421,38 @@ function addMessageToContainer(message, time, position) {
 </div>`;
 }
 
+async function addFileToContainer(src, time, position, type){
+  let datePart = new Date(time).toDateString();
+  let timePart = new Date(time).toTimeString().split(" ")[0];
+  let timeStamp = datePart + " " + timePart;
+  var reference = firebase.storage().refFromURL(src);
+  let metaData = await fileMetaData(reference);
+  let size = (metaData.size / (1024 * 1024)).toFixed(2);
+  let name = metaData.name;
+  console.log(size)
+  chatContainer.innerHTML += type === "image" ? 
+  `<div class="main__message-container main__message-container--${position}">
+    <div class="main__message--image-cnt">
+      <a class="main__message--link" href="${src}" download target="_blank"><img src="${src}" alt="image" class="main__message--image"></a>
+      <span class="main__message--downloaded">${size} MB</span>
+    </div>
+    <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
+  </div>` :
+  `<div class="main__message-container main__message-container--${position}">
+  <div class="main__message--file-cnt">
+    <div class="main__message--file-download"> 
+      <a class="main__message--link" href="${src}" download="${name}"><img class="main__message--download-ic" src="./assets/icons/home/download.svg" alt=""></a>
+    </div>
+    <div class="main__message--file-detail">
+      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="main__message--cancel">
+      <h3 class="main__message--file-name">${name}</h3>
+      <span class="main__message--downloaded">${size} MB</span>
+    </div>
+  </div>
+  <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
+</div>`;
+}
+
 function autoScroll() {
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
@@ -429,9 +462,19 @@ function fillMessagesToChatBody(data) {
 
   Object.values(data).forEach((message) => {
     if (message.sender === user.uid) {
-      addMessageToContainer(message.text, message.time, "right");
+      "text" in message ?
+      addMessageToContainer(message.text, message.time, "right"):
+      ("image" in message ?
+      addFileToContainer(message.image, message.time, "right", "image") : 
+      addFileToContainer(message.file, message.time, "right", "file")
+      );
     } else {
-      addMessageToContainer(message.text, message.time, "left");
+      "text" in message ?
+      addMessageToContainer(message.text, message.time, "left"):
+      ("image" in message ?
+      addFileToContainer(message.image, message.time, "left", "image") : 
+      addFileToContainer(message.file, message.time, "left", "file")
+      );
     }
   });
   autoScroll();
@@ -447,6 +490,16 @@ async function addMessageToChatBody(chat) {
 
   let chatData = chat.val();
   if (!chatData) return;
+
+  if("image" in chatData){
+    if(document.querySelector(`.main__message-container[data-id="${chat.key}"]`)) return;
+    addFileToContainer(chatData.image, chatData.time, "left", "image");
+    return ;
+  }
+  if("file" in chatData){
+    if(document.querySelector(`.main__message-container[data-id="${chat.key}"]`)) return;
+    addFileToContainer(chatData.file, chatData.time, "left", "file");
+  }
 
   let userIds = Object.values(userData);
   if (!userIds.includes(chatData.sender)) return;
