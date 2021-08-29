@@ -73,7 +73,7 @@ fileUpload.forEach((fileUpload) => {
     }
     for (const file of files) {
       let size = file.size / (1024 * 1024).toFixed(2);
-      if (size > 5) {
+      if (size > 10) {
         document.querySelector(".upload__info--size").style.color = "red";
         setTimeout(() => {
           document.querySelector(".upload__info--size").style.color = "unset";
@@ -115,7 +115,7 @@ function createImagePreview(key, src, size){
                       </div>
                       <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="main__message--cancel">
                     </div>
-                    <a href="" download="test.jpeg"><img src="${src}" alt="" class="main__message--image"></a>
+                    <a class="main__message--link" href="" download target="_blank"><img src="${src}" alt="" class="main__message--image"></a>
                     <span class="main__message--downloaded">0/${size} MB</span>
                   </div>
                   <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
@@ -133,7 +133,7 @@ function createFilePrevieew(key, name, size){
                           <circle cx="40" cy="40" r="40"></circle>
                         </svg>
                       </div>
-                      <a href="" download="name.txt" none><img class="none" src="./assets/icons/home/download.svg" alt=""></a>
+                      <a class="main__message--link" href="" download="name.txt" none><img class="main__message--download-ic none" src="./assets/icons/home/download.svg" alt=""></a>
                     </div>
                     <div class="main__message--file-detail">
                       <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="main__message--cancel">
@@ -145,7 +145,43 @@ function createFilePrevieew(key, name, size){
               </div>`;
 }
 
-// function removeImageControls
+function updateImagePreview(cnt, link){
+
+  const imgLink = cnt.querySelector(".main__message--image");
+  const aLink = cnt.querySelector(".main__message--link");
+  const size = cnt.querySelector(".main__message--downloaded");
+  size.innerText = size.innerText.split("/")[1].trim();
+
+  imgLink.src = link;
+  aLink.href = link;
+
+  const fromRemove = cnt.querySelector(".main__message--image-cnt")
+  const toRemove = fromRemove.querySelector(".main__message--data");
+  fromRemove.removeChild(toRemove);
+}
+
+function updateFilePreview(cnt, link){
+
+  const imgLink = cnt.querySelector(".main__message--download-ic");
+  const aLink = cnt.querySelector(".main__message--link");
+  const name = cnt.querySelector(".main__message--file-name");
+  const size = cnt.querySelector(".main__message--downloaded");
+
+  size.innerText = size.innerText.split("/")[1].trim();
+  imgLink.classList.remove("none");
+  aLink.href = link;
+  aLink.download = name.innerText;
+
+  let fromRemove = cnt.querySelector(".main__message--file-download");
+  let toRemove = cnt.querySelector(".main__message--file-controls");
+  fromRemove.removeChild(toRemove);
+  toRemove = cnt.querySelector(".main__message--progress");
+  fromRemove.removeChild(toRemove);
+  fromRemove = cnt.querySelector(".main__message--file-detail");
+  toRemove = cnt.querySelector(".main__message--cancel");
+  fromRemove.removeChild(toRemove);
+
+}
 
 const storage = firebase.storage();
 const database = firebase.database();
@@ -181,8 +217,7 @@ function task(uploadTask, key){
     const cnt = document.querySelector(`.main__message-container[data-id="${key}"]`);
     const progressBar = cnt.querySelector(`.main__message--progress svg circle`);
     const size = cnt.querySelector(".main__message--downloaded");
-    console.log(cnt, progressBar, size);
-    progressBar.style.strokeDashoffset = cnt.dataset.type === "file" ? (380 - (380 * progress) / 100) : (260 - (260 * progress) / 100) ;
+    progressBar.style.strokeDashoffset = cnt.dataset.type === "image" ? (380 - (380 * progress) / 100) : (260 - (260 * progress) / 100) ;
     size.innerText = `${byteTransfer} / ${byteTotal}MB`; 
     console.log('Upload is ' + progress + '% done');
     switch (snapshot.state) {
@@ -200,6 +235,7 @@ function task(uploadTask, key){
   async () => {
     const downloadURL = await storageDownloadURL(uploadTask.snapshot.ref);
     const cnt = document.querySelector(`.main__message-container[data-id="${key}"]`);
+    cnt.dataset.type === "image" ? updateImagePreview(cnt, downloadURL) : updateFilePreview(cnt, downloadURL);
 
     // const img = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--image`);
     // const imgLink = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--link`);

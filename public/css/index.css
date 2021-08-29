@@ -362,13 +362,15 @@
   stroke-width: 7;
   stroke: var(--primary-color);
   transform: translate(5px, 5px);
-  stroke-dasharray: 380;
-  stroke-dashoffset: 380;
+  stroke-dasharray: 250;
+  stroke-dashoffset: 380; 
+  /* animation:  uploading-image 2s linear infinite; */
 }
 
-.main__message--progress svg circle{
+/* .main__message--progress svg circle{
   stroke-dashoffset: calc(380 - (380 * 100) / 100);
-}
+  260
+} */
 
 .main__message--cancel{
   width: 20px;
@@ -387,9 +389,40 @@
 .main__message--file-download svg circle{
   width: 90px;
   height: 90px;
-  stroke-dasharray: 260;
+  stroke-dasharray: 150;
   stroke-dashoffset: 260;
-} 
+  /* animation:  uploading-file 2s linear infinite; */
+}
+
+@keyframes uploading-image{
+  0%{
+    stroke-dasharray: 250;
+    stroke-dashoffset: 480; 
+  }
+  50%{
+    stroke-dasharray: 380;
+    stroke-dashoffset: 380; 
+  }
+  100%{
+    stroke-dasharray: 250;
+    stroke-dashoffset: 480; 
+  }
+}
+
+@keyframes uploading-file{
+  0%{
+    stroke-dasharray: 150;
+    stroke-dashoffset: 360; 
+  }
+  50%{
+    stroke-dasharray: 260;
+    stroke-dashoffset: 260; 
+  }
+  100%{
+    stroke-dasharray: 150;
+    stroke-dashoffset: 360; 
+  }
+}
 
 .main__message--controls{
   width: 70px;
@@ -452,7 +485,7 @@
   position: relative;
 }
 
-.main__message--file-download .main__message--file-controls{
+.main__message--file-download .main__message--file-controls, .main__message--download-ic{
   border-radius: 1rem;
   width: 40px;
   height: 40px;
