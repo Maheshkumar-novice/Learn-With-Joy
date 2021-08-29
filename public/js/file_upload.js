@@ -126,14 +126,18 @@ function createImagePreview(key, src, size, upTask) {
                   </div>
                   <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
                 </div>`;
-  let pausePlay = document.querySelector(
+  const pausePlay = document.querySelector(
     `.main__message-container[data-id="${key}"] .main__message--controls`
   );
+  const cancel = document.querySelector(`.main__message-container[data-id="${key}"] .main__message--cancel`);
   pausePlay.addEventListener("click", (e) => {
     console.log(e.target);
     e.target.src.includes("play")
       ? ((e.target.src = "./assets/icons/home/pause.svg"), upTask.pause())
       : ((e.target.src = "./assets/icons/home/play.svg"), upTask.resume());
+  });
+  cancel.addEventListener("click", (e) => {
+    upTask.cancel();
   });
 }
 
@@ -159,11 +163,15 @@ function createFilePrevieew(key, name, size, upTask) {
                   <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
               </div>`;
   const pausePlay = document.querySelector(`.main__message-container[data-id="${key}"] .main__message--file-controls`);
+  const cancel = document.querySelector(`.main__message-container[data-id="${key}"] .main__message--cancel`);
   pausePlay.addEventListener("click", (e) => {
     console.log(e.target);
     e.target.src.includes("play")
       ? ((e.target.src = "./assets/icons/home/pause.svg"), upTask.pause())
       : ((e.target.src = "./assets/icons/home/play.svg"), upTask.resume());
+  });
+  cancel.addEventListener("click", (e) => {
+    upTask.cancel();
   });
 }
 
@@ -275,6 +283,10 @@ function task(uploadTask, key) {
     (error) => {
       // Handle unsuccessful uploads
       console.log(error);
+      const toRemove = document.querySelector(
+        `.main__message-container[data-id="${key}"]`
+      );
+      chatContainer.removeChild(toRemove);
     },
     async () => {
       const downloadURL = await storageDownloadURL(uploadTask.snapshot.ref);
