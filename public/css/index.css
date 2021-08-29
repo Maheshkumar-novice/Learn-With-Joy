@@ -290,26 +290,24 @@
 
 .main__message-container--right {
   justify-content: flex-end;
-
 }
 
 .main__message-container--left {
   justify-content: flex-start;
-  max-width: 50%;
-  width: 50%;
 }
 
 .main__message {
   background-color: #c4c4c4;
   height: 100%;
+  max-width: 600px;
   width: 50%;
   border-radius: 15px;
-  text-align: center;
   display: flex;
   align-items: center;
   padding: 1rem;
   font-size: 1.5rem;
   font-weight: 500;
+  word-break: break-word;
 }
 
 .main__message--image-cnt{
