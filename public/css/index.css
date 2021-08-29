@@ -290,10 +290,13 @@
 
 .main__message-container--right {
   justify-content: flex-end;
+
 }
 
 .main__message-container--left {
   justify-content: flex-start;
+  max-width: 50%;
+  width: 50%;
 }
 
 .main__message {
@@ -505,6 +508,14 @@
   flex: 1;
 }
 
+.main__message--file-name{
+  max-width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1.6rem;
+}
+
 .main__time-stamp {
   position: absolute;
   top: 100%;
@@ -579,6 +590,14 @@
   align-items: center;
   /* justify-content: space-between; */
   margin: 0 4rem;
+}
+
+.upload__preview--name{
+  max-width: 160px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 1.6rem;
 }
 
 .upload__click{
