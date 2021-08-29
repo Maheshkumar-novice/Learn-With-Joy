@@ -118,11 +118,11 @@ function createImagePreview(key, src, size){
   `;
 }
 
-function createFilePrevieew(){
+function createFilePrevieew(key, name, size){
   chatContainer.innerHTML += `
-                <div class="main__message-container main__message-container--right">
-                  <div class="main__message--file-cnt">
-                    <div class="main__message--file-data">
+                <div class="main__message-container main__message-container--right local-cnt" data-id=${key}>
+                  <div class="main__message--file-cnt local-">
+                    <div class="main__message--file-data local-remove">
                       <img src="./assets/icons/home/play.svg" class="main__message-file--controls"  alt="">  
                       <div class="main__message-file--meta-status">
                         <div class="main__message--name">Name.tst</div>

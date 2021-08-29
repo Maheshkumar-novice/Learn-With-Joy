@@ -330,7 +330,7 @@
 
 .main__message--data{
   position: absolute;
-  background-color: #0f0f0f8a;
+  background-color: #0f0f0f96;
   top: 0;
   left: 0;
   height: 100%;
@@ -343,22 +343,43 @@
 }
 
 .main__message--progress{
-  height: 20px;
-  /* width: 100%; */
-  padding: 0 2rem;
-  border-radius: 1rem;
-  background-color: var(--primary-color);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.main__message--progress svg{
+  width: 130px;
+  height: 130px;
+  position: relative;
+}
+
+.main__message--progress svg circle{
+  width: 130px;
+  height: 130px;
+  fill: none;
+  stroke-width: 7;
+  stroke: var(--primary-color);
+  transform: translate(5px, 5px);
 }
 
 .main__message--controls{
   width: 70px;
   height: 70px;
   cursor: pointer;
+  z-index: 2;
 }
 
 .main__message--downloaded{
-  font-size: 2rem;
+  font-size: 1.2rem;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
   color: white;
+  border-radius: 1rem;
+  background-color: rgba(0, 0, 0, 0.438);
+  padding: .3rem 1rem;
 }
 
 .main__message--file-cnt{
