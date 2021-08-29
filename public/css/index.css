@@ -366,9 +366,18 @@
   stroke-dashoffset: 380;
 }
 
-/* .main__message--progress svg circle{
+.main__message--progress svg circle{
   stroke-dashoffset: calc(380 - (380 * 100) / 100);
-} */
+}
+
+.main__message--cancel{
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
 
 .main__message--file-download svg{
   width: 90px;
@@ -443,7 +452,7 @@
   position: relative;
 }
 
-.main__message--file-download img{
+.main__message--file-download .main__message--file-controls{
   border-radius: 1rem;
   width: 40px;
   height: 40px;

@@ -113,6 +113,7 @@ function createImagePreview(key, src, size){
                           <circle cx="60" cy="60" r="60"></circle>
                         </svg>
                       </div>
+                      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="main__message--cancel">
                     </div>
                     <a href="" download="test.jpeg"><img src="${src}" alt="" class="main__message--image"></a>
                     <span class="main__message--downloaded">0/${size} MB</span>
@@ -135,6 +136,7 @@ function createFilePrevieew(key, name, size){
                       <a href="" download="name.txt" none><img class="none" src="./assets/icons/home/download.svg" alt=""></a>
                     </div>
                     <div class="main__message--file-detail">
+                      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="main__message--cancel">
                       <h3 class="main__message--file-name">${name}</h3>
                       <span class="main__message--downloaded">0/${size} MB</span>
                     </div>
