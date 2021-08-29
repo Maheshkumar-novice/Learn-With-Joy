@@ -104,43 +104,46 @@ function toggleUploadWindow(){
 
 function createImagePreview(key, src, size){
   chatContainer.innerHTML += `
-  <div class="main__message-container main__message-container--right local-cnt" data-id="${key}">
-    <div class="main__message--image-cnt local-data-cnt" data-id="${key}">
-      <div class="main__message--data local-remove">
-        <img src="./assets/icons/home/pause.svg" class="main__message--controls"  alt="">  
-        <div class="main__message--progress local-progress"></div>
-        <span class="main__message--downloaded local-size">${size}MB</span>
-      </div>
-      <a href="" class="main__message--link" download><img src="${src}" alt="preview" class="main__message--image"></a>
-    </div>
-    <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
-  </div>
-  `;
+                <div class="main__message-container main__message-container--right" data-type="image" data-id="${key}">
+                  <div class="main__message--image-cnt">
+                    <div class="main__message--data">
+                      <img src="./assets/icons/home/play.svg" class="main__message--controls"  alt="">  
+                      <div class="main__message--progress">
+                        <svg>
+                          <circle cx="60" cy="60" r="60"></circle>
+                        </svg>
+                      </div>
+                    </div>
+                    <a href="" download="test.jpeg"><img src="${src}" alt="" class="main__message--image"></a>
+                    <span class="main__message--downloaded">0/${size} MB</span>
+                  </div>
+                  <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
+                </div>`;
 }
 
 function createFilePrevieew(key, name, size){
   chatContainer.innerHTML += `
-                <div class="main__message-container main__message-container--right local-cnt" data-id=${key}>
-                  <div class="main__message--file-cnt local-">
-                    <div class="main__message--file-data local-remove">
-                      <img src="./assets/icons/home/play.svg" class="main__message-file--controls"  alt="">  
-                      <div class="main__message-file--meta-status">
-                        <div class="main__message--name">Name.tst</div>
-                        <div class="main__message--progress"></div>
-                        <span class="main__message--downloaded">3 / 10 MB</span>
+                <div class="main__message-container main__message-container--right" data-type="file" data-id="${key}">
+                  <div class="main__message--file-cnt">
+                    <div class="main__message--file-download">
+                      <img class="main__message--file-controls" src="./assets/icons/home/play.svg" class="main__message--controls"  alt="">  
+                      <div class="main__message--progress">
+                        <svg>
+                          <circle cx="40" cy="40" r="40"></circle>
+                        </svg>
                       </div>
+                      <a href="" download="name.txt" none><img class="none" src="./assets/icons/home/download.svg" alt=""></a>
                     </div>
-                    <div class="main__message--file-download none">
-                      <a href="" download="name.txt"><img src="./assets/icons/home/download.svg" alt=""></a>
-                    </div>
-                    <div class="main__message--file-detail none">
-                      <h3 class="main__message--file-name">Name.txt</h3>
-                      <span class="main__message--file-size">5.5MB</span>
+                    <div class="main__message--file-detail">
+                      <h3 class="main__message--file-name">${name}</h3>
+                      <span class="main__message--downloaded">0/${size} MB</span>
                     </div>
                   </div>
                   <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
-                </div>`
+              </div>`;
 }
+
+// function removeImageControls
 
 const storage = firebase.storage();
 const database = firebase.database();
@@ -153,7 +156,7 @@ sendBtn.addEventListener("click", async (e) => {
     const key = pushKey(database, `chat/chat1`,`${inputChat.dataset.chatHash}`);
     console.log(key);
     
-    createImagePreview(key, URL.createObjectURL(file), size);
+    (file.type.match(/image\//i)) ? createImagePreview(key, URL.createObjectURL(file), size) : createFilePrevieew(key, file.name, size);
 
     const metadata = {
       name: file.name,
@@ -171,8 +174,14 @@ function task(uploadTask, key){
     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
     let byteTransfer = (snapshot.bytesTransferred/(1024 * 1024)).toFixed(2);
     let byteTotal = (snapshot.totalBytes/(1024 * 1024)).toFixed(2);
-    document.querySelector(`.local-cnt[data-id="${key}"] .local-progress`).style.width = `${progress}%`; 
-    document.querySelector(`.local-cnt[data-id="${key}"] .local-size`).innerText = `${byteTransfer} / ${byteTotal}MB`; 
+    
+    //update meta-data
+    const cnt = document.querySelector(`.main__message-container[data-id="${key}"]`);
+    const progressBar = cnt.querySelector(`.main__message--progress svg circle`);
+    const size = cnt.querySelector(".main__message--downloaded");
+    console.log(cnt, progressBar, size);
+    progressBar.style.strokeDashoffset = cnt.dataset.type === "file" ? (380 - (380 * progress) / 100) : (260 - (260 * progress) / 100) ;
+    size.innerText = `${byteTransfer} / ${byteTotal}MB`; 
     console.log('Upload is ' + progress + '% done');
     switch (snapshot.state) {
       case firebase.storage.TaskState.PAUSED: // or 'paused'
@@ -188,14 +197,16 @@ function task(uploadTask, key){
   }, 
   async () => {
     const downloadURL = await storageDownloadURL(uploadTask.snapshot.ref);
-    const img = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--image`);
-    const imgLink = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--link`);
-    img.src = downloadURL;
-    imgLink.href = downloadURL;
-    const cnt = document.querySelector(`.local-data-cnt[data-id="${key}"]`);
-    const toRemove = document.querySelector(`.local-data-cnt[data-id="${key}"] .local-remove`);
-    console.log(cnt, toRemove);
-    cnt.removeChild(toRemove); 
+    const cnt = document.querySelector(`.main__message-container[data-id="${key}"]`);
+
+    // const img = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--image`);
+    // const imgLink = document.querySelector(`.local-cnt[data-id="${key}"] .main__message--link`);
+    // img.src = downloadURL;
+    // imgLink.href = downloadURL;
+    // const cnt = document.querySelector(`.local-data-cnt[data-id="${key}"]`);
+    // const toRemove = document.querySelector(`.local-data-cnt[data-id="${key}"] .local-remove`);
+    // console.log(cnt, toRemove);
+    // cnt.removeChild(toRemove); 
   }
 );
 }

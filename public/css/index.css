@@ -330,7 +330,7 @@
 
 .main__message--data{
   position: absolute;
-  background-color: #0f0f0f96;
+  background-color: #0f0f0fb0;
   top: 0;
   left: 0;
   height: 100%;
@@ -362,7 +362,25 @@
   stroke-width: 7;
   stroke: var(--primary-color);
   transform: translate(5px, 5px);
+  stroke-dasharray: 380;
+  stroke-dashoffset: 380;
 }
+
+/* .main__message--progress svg circle{
+  stroke-dashoffset: calc(380 - (380 * 100) / 100);
+} */
+
+.main__message--file-download svg{
+  width: 90px;
+  height: 90px;
+}
+
+.main__message--file-download svg circle{
+  width: 90px;
+  height: 90px;
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+} 
 
 .main__message--controls{
   width: 70px;
@@ -401,11 +419,6 @@
   padding: 0 2rem;
 }
 
-.main__message-file--controls{
-  width: 70px;
-  height: 70px;
-  cursor: pointer;
-}
 
 .main__message-file--meta-status{
   padding-left: 2rem;
@@ -427,15 +440,18 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
 }
 
 .main__message--file-download img{
   border-radius: 1rem;
-  width: 50px;
-  height: 50px;
-  padding: 1rem;
-  box-sizing: unset;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
+  position: absolute;
+  top: calc(50% - 2.5px);
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .main__message--file-detail{
