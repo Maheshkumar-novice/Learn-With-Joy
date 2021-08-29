@@ -217,6 +217,12 @@ function task(uploadTask, key){
     const cnt = document.querySelector(`.main__message-container[data-id="${key}"]`);
     const progressBar = cnt.querySelector(`.main__message--progress svg circle`);
     const size = cnt.querySelector(".main__message--downloaded");
+    if(cnt.dataset.type === "file"){
+      progressBar.style.animation = progress === 0 || progress === 100 ? "uploading-file 2s linear infinite" : "unset";
+    }
+    else{
+      progressBar.style.animation = progress === 0 || progress === 100 ? "uploading-image 2s linear infinite" : "unset";
+    }
     progressBar.style.strokeDashoffset = cnt.dataset.type === "image" ? (380 - (380 * progress) / 100) : (260 - (260 * progress) / 100) ;
     size.innerText = `${byteTransfer} / ${byteTotal}MB`; 
     console.log('Upload is ' + progress + '% done');

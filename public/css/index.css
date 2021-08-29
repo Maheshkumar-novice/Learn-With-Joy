@@ -362,7 +362,7 @@
   stroke-width: 7;
   stroke: var(--primary-color);
   transform: translate(5px, 5px);
-  stroke-dasharray: 250;
+  stroke-dasharray: 380;
   stroke-dashoffset: 380; 
   /* animation:  uploading-image 2s linear infinite; */
 }
@@ -389,7 +389,7 @@
 .main__message--file-download svg circle{
   width: 90px;
   height: 90px;
-  stroke-dasharray: 150;
+  stroke-dasharray: 260;
   stroke-dashoffset: 260;
   /* animation:  uploading-file 2s linear infinite; */
 }
