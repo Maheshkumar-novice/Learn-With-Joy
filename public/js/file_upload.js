@@ -100,14 +100,29 @@ fileUploadClick.forEach((upload) => {
   });
 });
 
-toggleUploadBtn.addEventListener("click", toggleUploadWindow);
+toggleUploadBtn.addEventListener("click", ()=>{
+  clearUploadWindow();
+  toggleUploadWindow();
+});
+
+function clearUploadWindow(){
+  filePreview.innerHTML = "";
+  fileToUpload = [];
+}
 
 function toggleUploadWindow() {
   chat.classList.toggle("none");
   uploadCnt.classList.toggle("none");
   inputChat.value = "";
   inputChat.disabled = !inputChat.disabled;
+  fileDragnDrop.classList.remove("none");
+  filePreview.classList.add("none");
 }
+
+function autoScroll() {
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
 
 function createImagePreview(key, src, size, upTask) {
   chatContainer.innerHTML += `
@@ -125,8 +140,9 @@ function createImagePreview(key, src, size, upTask) {
                     <a class="main__message--link" href="" download target="_blank"><img src="${src}" alt="" class="main__message--image"></a>
                     <span class="main__message--downloaded">0/${size} MB</span>
                   </div>
-                  <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
+                  <span class="main__time-stamp main__time-stamp--left"></span>
                 </div>`;
+  autoScroll();
   const pausePlay = document.querySelector(
     `.main__message-container[data-id="${key}"] .main__message--controls`
   );
@@ -161,8 +177,9 @@ function createFilePrevieew(key, name, size, upTask) {
                       <span class="main__message--downloaded">0/${size} MB</span>
                     </div>
                   </div>
-                  <span class="main__time-stamp main__time-stamp--left">23/20/23, 9:30pm</span>
+                  <span class="main__time-stamp main__time-stamp--left"></span>
               </div>`;
+  autoScroll();
   const pausePlay = document.querySelector(`.main__message-container[data-id="${key}"] .main__message--file-controls`);
   const cancel = document.querySelector(`.main__message-container[data-id="${key}"] .main__message--cancel`);
   pausePlay.addEventListener("click", (e) => {
@@ -176,10 +193,16 @@ function createFilePrevieew(key, name, size, upTask) {
   });
 }
 
-function updateImagePreview(cnt, link) {
+function updateImagePreview(cnt, link, ts) {
   const imgLink = cnt.querySelector(".main__message--image");
   const aLink = cnt.querySelector(".main__message--link");
   const size = cnt.querySelector(".main__message--downloaded");
+  const timeHTML = cnt.querySelector(".main__time-stamp");
+  let datePart = new Date(ts).toDateString();
+  let timePart = new Date(ts).toTimeString().split(" ")[0];
+  let timeStamp = datePart + " " + timePart;
+
+  timeHTML.innerText = timeStamp;
   size.innerText = size.innerText.split("/")[1].trim();
 
   imgLink.src = link;
@@ -190,12 +213,17 @@ function updateImagePreview(cnt, link) {
   fromRemove.removeChild(toRemove);
 }
 
-function updateFilePreview(cnt, link) {
+function updateFilePreview(cnt, link, ts) {
   const imgLink = cnt.querySelector(".main__message--download-ic");
   const aLink = cnt.querySelector(".main__message--link");
   const name = cnt.querySelector(".main__message--file-name");
   const size = cnt.querySelector(".main__message--downloaded");
+  const timeHTML = cnt.querySelector(".main__time-stamp");
+  let datePart = new Date(ts).toDateString();
+  let timePart = new Date(ts).toTimeString().split(" ")[0];
+  let timeStamp = datePart + " " + timePart;
 
+  timeHTML.innerText = timeStamp;
   size.innerText = size.innerText.split("/")[1].trim();
   imgLink.classList.remove("none");
   aLink.href = link;
@@ -219,7 +247,7 @@ sendBtn.addEventListener("click", async (e) => {
   toggleUploadWindow();
   fileToUpload.forEach((file) => {
     const size = (file.size / (1024 * 1024)).toFixed(2);
-    const ref = storageRef(storage, `chat/chat1`, `${file.name}`);
+    const ref = storageRef(storage, `chat/${inputChat.dataset.chatHash}`, `${file.name}`);
     const key = pushKey(
       database,
       `chat/${inputChat.dataset.chatHash}`,
@@ -238,6 +266,7 @@ sendBtn.addEventListener("click", async (e) => {
     console.log(ref);
     task(val, key, inputChat.dataset.chatHash);
   });
+  clearUploadWindow();
 });
 
 function task(uploadTask, key, chatHash) {
@@ -295,9 +324,6 @@ function task(uploadTask, key, chatHash) {
       const cnt = document.querySelector(
         `.main__message-container[data-id="${key}"]`
       );
-      cnt.dataset.type === "image"
-        ? updateImagePreview(cnt, downloadURL)
-        : updateFilePreview(cnt, downloadURL);
         let message = {};
 
         let user = auth.currentUser;
@@ -305,7 +331,10 @@ function task(uploadTask, key, chatHash) {
         console.log("key", chatHash)
         message[cnt.dataset.type] = downloadURL;
         message["sender"] = user.uid;
-        message["time"] = firebase.database.ServerValue.TIMESTAMP;
+        message["time"] = new Date().toISOString();
+        cnt.dataset.type === "image"
+        ? updateImagePreview(cnt, downloadURL, message.time)
+        : updateFilePreview(cnt, downloadURL, message.time);
         addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
         console.log(message);
     }

@@ -407,6 +407,10 @@ function setUpChatWindow(friendCard) {
 
 async function updateChatWindow(friendCard) {
   setUpChatWindow(friendCard);
+  let upload = document.querySelector(".upload");
+  if(!upload.classList.contains("none")){
+    upload.classList.add("none");
+  }
   let data = await readDB(database, `chat/${friendCard.dataset.hash}/messages`);
   fillMessagesToChatBody(data.val());
 }
@@ -444,13 +448,13 @@ async function addFileToContainer(src, time, position, type){
       <a class="main__message--link" href="${src}" download="${name}"><img class="main__message--download-ic" src="./assets/icons/home/download.svg" alt=""></a>
     </div>
     <div class="main__message--file-detail">
-      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="main__message--cancel">
       <h3 class="main__message--file-name">${name}</h3>
       <span class="main__message--downloaded">${size} MB</span>
     </div>
   </div>
   <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
 </div>`;
+autoScroll();
 }
 
 function autoScroll() {
@@ -499,6 +503,7 @@ async function addMessageToChatBody(chat) {
   if("file" in chatData){
     if(document.querySelector(`.main__message-container[data-id="${chat.key}"]`)) return;
     addFileToContainer(chatData.file, chatData.time, "left", "file");
+    return ;
   }
 
   let userIds = Object.values(userData);

@@ -504,6 +504,7 @@
   justify-content: space-evenly;
   text-align: center;
   flex: 1;
+  position: relative;
 }
 
 .main__message--file-name{
