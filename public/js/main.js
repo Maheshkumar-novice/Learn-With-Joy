@@ -26,6 +26,8 @@ auth.onAuthStateChanged(async (check_user) => {
       window.location = "./sign_in.html";
     }
     updateUserDetails(check_user);
+    document.querySelector(".loader").classList.add("none");
+    document.querySelector("main").classList.remove("none");
   } else {
     window.location = "./sign_in.html";
   }
