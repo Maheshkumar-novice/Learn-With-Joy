@@ -13,8 +13,16 @@ export const firebaseConfig = {
 // ----------------------------------------Authentication-------------------------------------
 
 // sign In
-export async function userSignIn(auth, provider) {
+export async function userGSignIn(auth, provider) {
   auth.signInWithPopup(provider).catch((error) => {});
+}
+
+export async function userSignIn(auth, email, password){
+  auth.createUserWithEmailAndPassword(email, password).catch((error) => {});
+}
+
+export async function userLogIn(auth, email, password){
+  auth.signInWithEmailAndPassword(email, password).catch((error) => {});
 }
 
 // Sign Out
