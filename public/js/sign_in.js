@@ -14,7 +14,12 @@ const database = firebase.database();
 let namesList = [];
 
 // selectors
-const gsignIn = document.querySelector(".header__img");
+const gsignIn = document.querySelector(".header__login-img");
+const signinHead = document.querySelector(".header__login-head");
+const signinCnt = document.querySelector(".header__login-cnt");
+const inup = document.querySelectorAll(".header__login-inup");
+const inupBtn =document.querySelector(".header__login-btn");
+
 const newNameCnt = document.querySelector(".main__name");
 const newNameInput = document.querySelector(".main__name--input");
 const newNameErr = document.querySelector(".main__name--err");
@@ -53,6 +58,24 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 //event listener
+
+signinHead.addEventListener("click", (e) => {
+  signinCnt.classList.toggle("none");
+});
+
+inup.forEach(btn => {
+  btn.addEventListener("click", function(e){
+    let id = +this.dataset.id;
+    let oppid = id === 1 ? 0 : 1;
+    inup[oppid].style.backgroundColor = "white"; 
+    inup[oppid].style.color = "black"; 
+    inup[id].style.backgroundColor = "black"; 
+    inup[id].style.color = "white"; 
+    inupBtn.innerText = this.innerText;
+  });
+});
+
+
 gsignIn.addEventListener("click", (e) => {
   const provider = new firebase.auth.GoogleAuthProvider();
   userSignIn(auth, provider);

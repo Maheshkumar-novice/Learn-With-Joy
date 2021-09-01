@@ -35,6 +35,7 @@ auth.onAuthStateChanged(async (check_user) => {
     console.log(user);
     //releasing disabled
     searchInp.disabled = false;
+    setOffline();
   } else {
     window.location = "./sign_in.html";
   }
@@ -365,9 +366,6 @@ function addDbListener() {
   );
 }
 
-// function setDBListener(reference, type, callBack) {
-//   database.ref(reference).on(type, callBack);
-// }
 
 // ------------------------------------------- Chat js ----------------------------------------
 const chatWindowMessageInput = document.querySelector(".main__input--chat");

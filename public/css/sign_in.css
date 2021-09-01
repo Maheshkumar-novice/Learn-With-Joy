@@ -1,3 +1,96 @@
+.header__login-head{
+  cursor: pointer;
+  padding: 1rem 2rem;
+  border: 2px solid black;
+  border-radius: 1rem;
+}
+
+.header__login-head:hover{
+  background-color: black;
+  color: white;
+}
+
+.header__login-cnt{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.header__login-cnt input{
+  font-size: 4rem;
+  color: black;
+  padding: 1rem;
+  border: none;
+  border-bottom: 1px solid black;
+  align-self: center;
+  margin: 3rem 1rem;
+}
+
+.header__login-cnt input:focus{
+  outline: none;
+  border-color: red;
+}
+
+.header__login-switch{
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  font-size: 4rem;
+  text-align: center;
+  border-bottom: 2px solid black;
+  padding-bottom: 1rem;
+}
+
+.header__login-separator{
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  border: 2px solid black;
+}
+
+.header__login-inup{
+  padding: 1rem 0;
+  cursor: pointer;
+}
+
+.header__login-inupt:hover{
+  color: red;
+}
+
+.header__login-btn{
+  padding: 1rem 2rem;
+  border: none;
+  font-size: 3rem;
+  margin: 2rem 0;
+  width: 50%;
+  cursor: pointer;
+}
+
+.header__login-btn:hover{
+  background-color: black;
+  color: white;
+}
+
+.header__login-in{
+  background-color: black;
+  color: white;
+  height: 100%;
+}
+
+.header__login-img{
+  width: 65%;
+  height: 100px;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
 .main {
   height: calc(100vh - 100px);
   display: flex;
