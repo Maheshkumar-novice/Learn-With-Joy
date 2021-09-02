@@ -1,5 +1,72 @@
 /* header */
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+  padding: 2rem;
+  padding-right: 3rem;
+  background-color: var(--primary-color);
+}
+
+.header__title {
+  font-size: 5rem;
+  font-weight: 600;
+}
+
+.header__img {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.header__notification-cnt {
+  display: flex;
+  align-items: center;
+}
+
+.header__notification {
+  position: relative;
+}
+
+.header__notification-ic {
+  margin-right: 2rem;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.header__notification-display {
+  position: absolute;
+  font-size: 1.7rem;
+  width: 300px;
+  right: 10px;
+  top: 110%;
+  background-color: #191a20;
+  color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  max-height: 400px;
+  overflow: auto;
+}
+
+.header__notification-display p {
+  background-color: #272626;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 1rem;
+}
+
+.header__notification-eachmsg {
+  display: flex;
+  align-items: center;
+}
+
+.header__notification-clrmsg {
+  width: 20px;
+  height: 20px;
+}
+.header {
   height: 70px;
 }
 
@@ -66,11 +133,11 @@
   outline: none;
   border: none;
   font-size: inherit;
-  padding: 2rem ;
+  padding: 2rem;
   width: 100%;
 }
 
-.main__input:focus{
+.main__input:focus {
   background-color: #42444d;
   color: white;
 }
@@ -83,7 +150,7 @@
   padding: 1.5rem;
 }
 
-.no-padding{
+.no-padding {
   padding: 0;
 }
 
@@ -104,7 +171,7 @@
   cursor: pointer;
 }
 
-.main__friend-card:hover{
+.main__friend-card:hover {
   background-color: #42444d;
   color: white;
 }
@@ -119,20 +186,22 @@
 } */
 
 .main__remove-friend-ic,
-.main__add-friend-ic, .main__pending-friend-ic, .main__send-friend-ic{
+.main__add-friend-ic,
+.main__pending-friend-ic,
+.main__send-friend-ic {
   width: 40px;
   height: 40px;
-  margin: 0 .5rem;
+  margin: 0 0.5rem;
   cursor: pointer;
 }
 
 .main__remove-friend-ic:hover,
 .main__add-friend-ic:hover,
-.main__send-friend-ic:hover{
+.main__send-friend-ic:hover {
   transform: scale(1.2);
-} 
+}
 
-.main__friend-name{
+.main__friend-name {
   flex: 1;
   margin-left: 2rem;
 }
@@ -150,12 +219,12 @@
   overflow: hidden;
 }
 
-.main__search-cnt{
+.main__search-cnt {
   height: 100%;
   padding: 2rem;
 }
 
-.main__search-heading{
+.main__search-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -171,13 +240,14 @@
   margin-top: 1rem;
 }
 
-.main__search-close-ic{
+.main__search-close-ic {
   width: 40px;
   height: 40px;
   cursor: pointer;
 }
 
-.main__serach-msg, .main__chat-info{
+.main__serach-msg,
+.main__chat-info {
   font-size: 3rem;
   color: white;
   border: 3px dashed var(--primary-color);
@@ -246,7 +316,7 @@
 }
 
 .main__img--send:hover,
-.main__img--file:hover{
+.main__img--file:hover {
   background-color: #191a20;
 }
 
@@ -256,7 +326,7 @@
 }
 
 /* main --chat-body */
-.main__chat-body{
+.main__chat-body {
   height: 85%;
   display: flex;
   justify-content: flex-end;
@@ -310,7 +380,7 @@
   word-break: break-word;
 }
 
-.main__message--image-cnt{
+.main__message--image-cnt {
   width: 350px;
   height: 250px;
   border: 4px solid var(--primary-color);
@@ -321,15 +391,15 @@
   position: relative;
 }
 
-.main__message--image{
+.main__message--image {
   max-width: 350px;
   max-height: 250px;
   padding: 1rem;
-  
+
   cursor: pointer;
 }
 
-.main__message--data{
+.main__message--data {
   position: absolute;
   background-color: #0f0f0fb0;
   top: 0;
@@ -343,20 +413,20 @@
   padding: 2rem;
 }
 
-.main__message--progress{
+.main__message--progress {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.main__message--progress svg{
+.main__message--progress svg {
   width: 130px;
   height: 130px;
   position: relative;
 }
 
-.main__message--progress svg circle{
+.main__message--progress svg circle {
   width: 130px;
   height: 130px;
   fill: none;
@@ -364,7 +434,7 @@
   stroke: var(--primary-color);
   transform: translate(5px, 5px);
   stroke-dasharray: 380;
-  stroke-dashoffset: 380; 
+  stroke-dashoffset: 380;
   /* animation:  uploading-image 2s linear infinite; */
 }
 
@@ -373,7 +443,7 @@
   260
 } */
 
-.main__message--cancel{
+.main__message--cancel {
   width: 20px;
   height: 20px;
   position: absolute;
@@ -382,12 +452,12 @@
   cursor: pointer;
 }
 
-.main__message--file-download svg{
+.main__message--file-download svg {
   width: 90px;
   height: 90px;
 }
 
-.main__message--file-download svg circle{
+.main__message--file-download svg circle {
   width: 90px;
   height: 90px;
   stroke-dasharray: 260;
@@ -395,44 +465,44 @@
   /* animation:  uploading-file 2s linear infinite; */
 }
 
-@keyframes uploading-image{
-  0%{
+@keyframes uploading-image {
+  0% {
     stroke-dasharray: 250;
-    stroke-dashoffset: 480; 
+    stroke-dashoffset: 480;
   }
-  50%{
+  50% {
     stroke-dasharray: 380;
-    stroke-dashoffset: 380; 
+    stroke-dashoffset: 380;
   }
-  100%{
+  100% {
     stroke-dasharray: 250;
-    stroke-dashoffset: 480; 
+    stroke-dashoffset: 480;
   }
 }
 
-@keyframes uploading-file{
-  0%{
+@keyframes uploading-file {
+  0% {
     stroke-dasharray: 150;
-    stroke-dashoffset: 360; 
+    stroke-dashoffset: 360;
   }
-  50%{
+  50% {
     stroke-dasharray: 260;
-    stroke-dashoffset: 260; 
+    stroke-dashoffset: 260;
   }
-  100%{
+  100% {
     stroke-dasharray: 150;
-    stroke-dashoffset: 360; 
+    stroke-dashoffset: 360;
   }
 }
 
-.main__message--controls{
+.main__message--controls {
   width: 70px;
   height: 70px;
   cursor: pointer;
   z-index: 2;
 }
 
-.main__message--downloaded{
+.main__message--downloaded {
   font-size: 1.2rem;
   position: absolute;
   bottom: 10px;
@@ -440,10 +510,10 @@
   color: white;
   border-radius: 1rem;
   background-color: rgba(0, 0, 0, 0.438);
-  padding: .3rem 1rem;
+  padding: 0.3rem 1rem;
 }
 
-.main__message--file-cnt{
+.main__message--file-cnt {
   width: 300px;
   height: 130px;
   background-color: #42444d;
@@ -454,7 +524,7 @@
   color: white;
 }
 
-.main__message--file-data{
+.main__message--file-data {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -462,8 +532,7 @@
   padding: 0 2rem;
 }
 
-
-.main__message-file--meta-status{
+.main__message-file--meta-status {
   padding-left: 2rem;
   flex: 1;
   height: 100%;
@@ -473,7 +542,7 @@
   align-items: center;
 }
 
-.main__message--file-download{
+.main__message--file-download {
   background: #191a20;
   border: 5px solid #42444d;
   border-radius: 1rem 0 0 1rem;
@@ -486,7 +555,8 @@
   position: relative;
 }
 
-.main__message--file-download .main__message--file-controls, .main__message--download-ic{
+.main__message--file-download .main__message--file-controls,
+.main__message--download-ic {
   border-radius: 1rem;
   width: 40px;
   height: 40px;
@@ -498,7 +568,7 @@
   z-index: 10;
 }
 
-.main__message--file-detail{
+.main__message--file-detail {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -507,7 +577,7 @@
   position: relative;
 }
 
-.main__message--file-name{
+.main__message--file-name {
   max-width: 150px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -532,7 +602,7 @@
 } */
 
 /* upload */
-.upload{
+.upload {
   width: 100%;
   height: 100%;
   display: flex;
@@ -540,7 +610,7 @@
   justify-content: space-evenly;
 }
 
-.upload__preview{
+.upload__preview {
   align-self: center;
   display: flex;
   align-items: center;
@@ -550,7 +620,7 @@
   flex: 1;
 }
 
-.upload__info{
+.upload__info {
   margin: 0 2rem;
   display: flex;
   justify-content: space-between;
@@ -560,7 +630,7 @@
   height: 40px;
 }
 
-.upload__preview--imginfo{
+.upload__preview--imginfo {
   min-width: 400px;
   width: 400px;
   height: 300px;
@@ -572,13 +642,13 @@
   margin: 0 1rem;
 }
 
-.upload__preview-img{
+.upload__preview-img {
   max-width: 100%;
   max-height: 240px;
   margin-bottom: 1rem;
 }
 
-.upload__preview--docsinfo{
+.upload__preview--docsinfo {
   min-width: 100px;
   width: 100px;
   height: 200px;
@@ -591,7 +661,7 @@
   margin: 0 4rem;
 }
 
-.upload__preview--name{
+.upload__preview--name {
   max-width: 160px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -599,14 +669,14 @@
   font-size: 1.6rem;
 }
 
-.upload__click{
+.upload__click {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   height: 200px;
 }
 
-.upload__click--each{
+.upload__click--each {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -614,20 +684,21 @@
   color: var(--primary-color);
   font-size: 2rem;
   padding-bottom: 2rem;
-  transition: padding .5s linear;
+  transition: padding 0.5s linear;
   cursor: pointer;
 }
 
-.upload__click--each:hover{
+.upload__click--each:hover {
   padding-bottom: 0;
 }
 
-.upload__click-ic, .upload__dragndrop-ic{
+.upload__click-ic,
+.upload__dragndrop-ic {
   width: 80px;
   padding-bottom: 1rem;
 }
 
-.upload__dragndrop{
+.upload__dragndrop {
   align-self: center;
   font-size: 2rem;
   color: white;
@@ -642,10 +713,10 @@
   display: flex;
   align-items: center;
   overflow: auto;
-  cursor:grab;
+  cursor: grab;
 }
 
-.upload__dragndrop--info{
+.upload__dragndrop--info {
   width: 100%;
   height: 100%;
   display: flex;
@@ -705,6 +776,6 @@
   align-items: center;
 }
 
-.default{
+.default {
   cursor: default;
 }

@@ -14,7 +14,7 @@ const database = firebase.database();
 let namesList = [];
 
 // selectors
-const gsignIn = document.querySelector(".header__img");
+const gsignIn = document.querySelector(".signin__img");
 const newNameCnt = document.querySelector(".main__name");
 const newNameInput = document.querySelector(".main__name--input");
 const newNameErr = document.querySelector(".main__name--err");
@@ -31,12 +31,12 @@ function showInput() {
 async function updateNewUser() {
   let data = (await readDB(database, "users")).val();
   console.log(data);
-  if(data){
-    for(let id in data){
+  if (data) {
+    for (let id in data) {
       namesList.push(data[id].name);
     }
   }
-  console.log(namesList)
+  console.log(namesList);
   showInput();
 }
 
@@ -54,6 +54,7 @@ auth.onAuthStateChanged(async (user) => {
 
 //event listener
 gsignIn.addEventListener("click", (e) => {
+  console.log("hi");
   const provider = new firebase.auth.GoogleAuthProvider();
   userSignIn(auth, provider);
 });
@@ -96,3 +97,21 @@ next.addEventListener("click", function (e) {
       console.log(error);
     });
 });
+
+// timer
+function displayTime() {
+  let date = new Date();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+  let currentTime =
+    (hours < 10 ? "0" + hours : hours) +
+    ":" +
+    (minutes < 10 ? "0" + minutes : minutes) +
+    ":" +
+    (seconds < 10 ? "0" + seconds : seconds);
+  document.querySelector(".time").innerHTML = currentTime;
+  setTimeout(displayTime, 1000);
+}
+
+displayTime();

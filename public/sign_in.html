@@ -10,89 +10,63 @@
     <link rel="stylesheet" href="./css/sign_in.css" />
   </head>
   <body>
-
-    <p class="signin-prompt">
-      <span class="signin-prompt--bold">Sign In</span> to Learn With Joy!
-    </p>
-
-    <header class="header">
-      <h1 class="header__title">Learn With Joy</h1>
-      <img src="./assets/icons/sign_in/google.svg" class="header__img" />
-    </header>
+    <img src="./assets/icons/sign_in/google.svg" class="signin__img" />
+    <p class="time"></p>
 
     <main class="main">
       <div class="main__name none">
         <div class="main__name__inp">
-          <input class="main__name--input" type="text" name="name" id="name" placeholder="Enter your name" autocomplete="off">
+          <input
+            class="main__name--input"
+            type="text"
+            name="name"
+            id="name"
+            placeholder="Enter your name"
+            autocomplete="off"
+          />
           <p class="main__name--err"></p>
         </div>
         <div class="main__name--next">Next</div>
       </div>
-
-      <div class="main__feature-wrapper main__feature-wrapper--1">
-        <div class="main__features">
-          <img
-            src="./assets/icons/sign_in/puzzle.svg"
-            alt="Puzzle Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--puzzle">Solve Puzzles</p>
-        </div>
-        <div class="main__features">
-          <img
-            src="./assets/icons/sign_in/notes.svg"
-            alt="Notes Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--notes">Take Notes</p>
-        </div>
+      <h1 class="title">Learn With Joy</h1>
+      <div class="image__div">
+        <img
+          src="./assets/icons/sign_in/calculator.svg"
+          alt=""
+          class="content__img"
+        />
+        <img
+          src="./assets/icons/sign_in/calendar.svg"
+          alt=""
+          class="content__img"
+        />
+        <img
+          src="./assets/icons/sign_in/chat.svg"
+          alt=""
+          class="content__img"
+        />
+        <img
+          src="./assets/icons/sign_in/entertainment.svg"
+          alt=""
+          class="content__img"
+        />
+        <img
+          src="./assets/icons/sign_in/puzzle.svg"
+          alt=""
+          class="content__img"
+        />
+        <img
+          src="./assets/icons/sign_in/notes.svg"
+          alt=""
+          class="content__img"
+        />
+        <img
+          src="./assets/icons/sign_in/upload.svg"
+          alt=""
+          class="content__img"
+        />
       </div>
-      <div class="main__feature-wrapper main__feature-wrapper--2">
-        <div class="main__features">
-          <img
-            src="./assets/icons/sign_in/upload.svg"
-            alt="Store Files Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--files">Store Files</p>
-        </div>
-        <div class="main__features">
-          <img
-            src="./assets/icons/sign_in/entertainment.svg"
-            alt="Entertainment Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--entertainment">
-            Entertainment
-          </p>
-        </div>
-        <div class="main__features">
-          <img
-            src="./assets/icons/sign_in/calendar.svg"
-            alt="Calendar Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--calendar">Calendar</p>
-        </div>
-      </div>
-      <div class="main__feature-wrapper main__feature-wrapper--3">
-        <div class="main__features">
-          <img
-            src="./assets/icons/sign_in/chat.svg"
-            alt="Chat Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--chat">Chat With Friends</p>
-        </div>
-        <div class="main__features">
-          <img
-            src="./assets/icons/sign_in/calculator.svg"
-            alt="Calculator Logo"
-            class="main__img"
-          />
-          <p class="main__feature-text main__text--calculator">Calculator</p>
-        </div>
-      </div>
+      <h2 class="sub-title">All the tools you need for learning in on place</h2>
     </main>
 
     <!-- firebase script-->
