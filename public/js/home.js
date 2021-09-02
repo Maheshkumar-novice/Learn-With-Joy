@@ -14,7 +14,7 @@ const database = firebase.database();
 let namesList = [];
 
 // selectors
-const gsignIn = document.querySelector(".signin__img");
+const gsignIn = document.querySelector(".google__signup");
 const newNameCnt = document.querySelector(".main__name");
 const newNameInput = document.querySelector(".main__name--input");
 const newNameErr = document.querySelector(".main__name--err");
@@ -100,6 +100,7 @@ next.addEventListener("click", function (e) {
 
 // timer
 function displayTime() {
+  console.log("hi");
   let date = new Date();
   let hours = date.getHours();
   let minutes = date.getMinutes();
@@ -115,3 +116,71 @@ function displayTime() {
 }
 
 displayTime();
+
+//
+const loginTab = document.querySelector(".login__tab");
+const signupTab = document.querySelector(".signup__tab");
+const loginForm = document.querySelector(".login__form");
+
+loginTab.addEventListener("click", function () {
+  loginForm.innerHTML = `
+  <div class="input__field">
+  <label for="email"> Email </label>
+  <input type="email" id="email" class="form__input" />
+</div>
+
+<div class="input__field">
+  <label for="password"> Password </label>
+  <input type="password" id="password" class="form__input" />
+</div>
+
+<button type="submit" class="form__button">Log In</button>
+<button class="google__signup">
+  <img src="./assets/icons/sign_in/google.svg" alt="" /> Google
+</button>
+  `;
+  loginTab.classList.add("active");
+  signupTab.classList.remove("active");
+});
+
+signupTab.addEventListener("click", function () {
+  loginForm.innerHTML = `
+  <div class="input__field">
+  <label for="name"> User Name </label>
+  <input type="name" id="name" class="form__input" />
+</div>
+<div class="input__field">
+  <label for="email"> Email </label>
+  <input type="email" id="email" class="form__input" />
+</div>
+
+<div class="input__field">
+  <label for="password"> Password </label>
+  <input type="password" id="password" class="form__input" />
+</div>
+
+<div class="input__field">
+  <label for="re-enter-password"> Re-Enter Password </label>
+  <input type="password" id="re-enter-password" class="form__input" />
+</div>
+
+<button type="submit" class="form__button">Log In</button>
+<button class="google__signup">
+  <img src="./assets/icons/sign_in/google.svg" alt="" /> Google
+</button>`;
+  loginTab.classList.remove("active");
+  signupTab.classList.add("active");
+});
+
+const login = document.querySelector(".login");
+const title = document.querySelector(".title");
+const subTitle = document.querySelector(".sub-title");
+const features = document.querySelector(".features");
+const signinToggle = document.querySelector(".signin");
+signinToggle.addEventListener("click", function () {
+  console.log("hi");
+  login.classList.toggle("none");
+  title.classList.toggle("none");
+  features.classList.toggle("none");
+  subTitle.classList.toggle("none");
+});
