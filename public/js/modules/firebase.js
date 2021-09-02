@@ -27,6 +27,11 @@ export function userEmailLogIn(auth, email, password){
   auth.signInWithEmailAndPassword(email, password)
 }
 
+//E mail verification
+export async function userEmailVerification(user){
+  return await user.sendEmailVerification();
+}
+
 // Sign Out
 export async function userSignOut(auth) {
   auth.signOut();
