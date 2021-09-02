@@ -188,7 +188,7 @@ const login = document.querySelector(".login");
 const title = document.querySelector(".title");
 const subTitle = document.querySelector(".sub-title");
 const features = document.querySelector(".features");
-const signinToggle = document.querySelector(".signin");
+const signinToggle = document.querySelector(".sign-in");
 signinToggle.addEventListener("click", function () {
   console.log("hi");
   login.classList.toggle("none");
