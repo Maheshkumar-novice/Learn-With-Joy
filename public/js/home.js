@@ -134,7 +134,7 @@ loginTab.addEventListener("click", function () {
   <input type="password" id="password" class="form__input" />
 </div>
 
-<button type="submit" class="form__button">Log In</button>
+<button type="submit" class="form__button">Login</button>
 <button class="google__signup">
   <img src="./assets/icons/sign_in/google.svg" alt="" /> Google
 </button>
@@ -164,7 +164,7 @@ signupTab.addEventListener("click", function () {
   <input type="password" id="re-enter-password" class="form__input" />
 </div>
 
-<button type="submit" class="form__button">Log In</button>
+<button type="submit" class="form__button">Signup</button>
 <button class="google__signup">
   <img src="./assets/icons/sign_in/google.svg" alt="" /> Google
 </button>`;
