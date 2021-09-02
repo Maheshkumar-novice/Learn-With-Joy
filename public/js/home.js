@@ -135,9 +135,6 @@ loginTab.addEventListener("click", function () {
 </div>
 
 <button type="submit" class="form__button">Login</button>
-<button class="google__signup">
-  <img src="./assets/icons/sign_in/google.svg" alt="" /> Google
-</button>
   `;
   loginTab.classList.add("active");
   signupTab.classList.remove("active");
@@ -164,10 +161,7 @@ signupTab.addEventListener("click", function () {
   <input type="password" id="re-enter-password" class="form__input" />
 </div>
 
-<button type="submit" class="form__button">Signup</button>
-<button class="google__signup">
-  <img src="./assets/icons/sign_in/google.svg" alt="" /> Google
-</button>`;
+<button type="submit" class="form__button">Signup</button>`;
   loginTab.classList.remove("active");
   signupTab.classList.add("active");
 });

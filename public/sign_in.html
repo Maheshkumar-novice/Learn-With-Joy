@@ -10,11 +10,14 @@
     <link rel="stylesheet" href="./css/home.css" />
   </head>
   <body>
-   <button class="signin">Sign In</button>
+    <button class="google__signup signin__img">
+      <img src="./assets/icons/sign_in/google.svg" alt="" class="signin-img" /> Google
+    </button>
+    <button class="signin">Sign In</button>
     <p class="time"></p>
 
     <main class="main">
-      <div class="main__name ">
+      <div class="main__name none">
         <div class="main__name__inp">
           <input
             class="main__name--input"
@@ -29,7 +32,7 @@
         <div class="main__name--next">Next</div>
       </div>
       <!-- login/signup -->
-      <section class="login none ">
+      <section class="login none">
         <header class="login__header">
           <h2 class="login__tab active">Login</h2>
           <h2 class="signup__tab">Signup</h2>
@@ -46,9 +49,9 @@
           </div>
 
           <button type="submit" class="form__button">Login</button>
-          <button class="google__signup">
+          <!-- <button class="google__signup">
             <img src="./assets/icons/sign_in/google.svg" alt="" /> Google
-          </button>
+          </button> -->
         </form>
       </section>
       <h1 class="title">Learn With Joy</h1>
@@ -69,9 +72,7 @@
         <img src="./assets/icons/sign_in/notes.svg" alt="" class="feature" />
         <img src="./assets/icons/sign_in/upload.svg" alt="" class="feature" />
       </div>
-      <h2 class="sub-title">
-        All the tools you need for learning in on place
-      </h2>
+      <h2 class="sub-title">All the tools you need for learning in on place</h2>
     </main>
 
     <!-- firebase script-->
