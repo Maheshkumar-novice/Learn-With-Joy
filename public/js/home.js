@@ -3,6 +3,10 @@ import {
   firebaseConfig,
   userSignIn,
   writeDB,
+  userEmailSignUp,
+  userEmailLogIn,
+  userEmailVerification,
+  userSignOut,
 } from "./modules/firebase.js";
 
 // firebase initialization
@@ -19,6 +23,9 @@ const newNameCnt = document.querySelector(".main__name");
 const newNameInput = document.querySelector(".main__name--input");
 const newNameErr = document.querySelector(".main__name--err");
 const next = document.querySelector(".main__name--next");
+const verification = document.querySelector(".verification");
+const resend = document.querySelector(".verification__resend");
+
 
 function showInput() {
   document.querySelectorAll(".main>*:not(.main__name)").forEach((elem) => {
@@ -39,13 +46,36 @@ async function updateNewUser() {
   console.log(namesList);
 }
 
+let prev = null;
+function disableResend(){
+  if(prev !== null){
+    clearTimeout(prev);
+  }
+  console.log("hello");
+  prev = setTimeout((e) => {
+    resend.disabled = false;
+  }, 5000);
+}
+
+function enableVerification(){
+  login.classList.toggle("none");
+  title.classList.toggle("none");
+  features.classList.toggle("none");
+  subTitle.classList.toggle("none");
+  verification.classList.remove("none");
+  disableResend();
+}
+
 // sign In status change
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     console.log(user);
+    userSignOut(auth);
     if(!user.emailVerified){
-      updateUserName();
-      console.log(user);
+      updateUserName(0);
+      await userEmailVerification(user);
+      resend.disabled = true;
+      enableVerification();
       return;
     }
     let check_user = await readDB(database, `users/${user.uid}`);
@@ -59,6 +89,14 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 //event listener
+resend.addEventListener("click", async function(e) {
+  console.log("hello", this.disabled);
+  let user = auth.currentUser();
+  await userEmailVerification(user);
+  resend.disabled = true;
+  disableResend();
+});
+
 gsignIn.addEventListener("click", (e) => {
   console.log("hi");
   const provider = new firebase.auth.GoogleAuthProvider();
@@ -93,6 +131,7 @@ function changeLocation(){
 }
 
 function updateUserName(val){
+  if(userName === "") return;
   let user = auth.currentUser;
   user
     .updateProfile({
@@ -139,12 +178,12 @@ loginTab.addEventListener("click", function () {
   loginForm.innerHTML = `
   <div class="input__field">
   <label for="email"> Email </label>
-  <input type="email" id="email" class="form__input" required/>
+  <input type="email" id="email" class="form__input form__input-main" required/>
 </div>
 
 <div class="input__field">
   <label for="password"> Password </label>
-  <input type="password" id="password" class="form__input" required/>
+  <input type="password" id="password" class="form__input form__input-main" required/>
 </div>
 
 <button type="submit" class="form__button">Login</button>
@@ -162,12 +201,12 @@ signupTab.addEventListener("click", async function () {
 </div>
 <div class="input__field">
   <label for="email"> Email </label>
-  <input type="email" id="email" class="form__input" required/>
+  <input type="email" id="email" class="form__input form__input-main" required/>
 </div>
 
 <div class="input__field">
   <label for="password"> Password </label>
-  <input type="password" id="password" class="form__input" required/>
+  <input type="password" id="password" class="form__input form__input-main" required/>
 </div>
 
 <div class="input__field">
@@ -191,6 +230,7 @@ const features = document.querySelector(".features");
 const signinToggle = document.querySelector(".signin");
 signinToggle.addEventListener("click", function () {
   console.log("hi");
+  verification.classList.add("none");
   login.classList.toggle("none");
   title.classList.toggle("none");
   features.classList.toggle("none");
@@ -213,7 +253,10 @@ function addSignListener() {
   const signBtn = document.querySelector(".form__button");
   console.log(signBtn);
   signBtn.addEventListener("click", function (e) {
+    e.preventDefault();
     console.log(this.textContent);
+    const email = document.querySelectorAll(".form__input-main");
+    this.textContent === "Signup" ? userEmailSignUp(auth, email[0].value, email[1].value) : userEmailLogIn(auth, email[0].value, email[1].value);
   });
 }
 
