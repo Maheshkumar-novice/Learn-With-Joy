@@ -98,7 +98,7 @@ body {
   top: 15%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
+  background-color: #442656;
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -108,10 +108,11 @@ body {
 
 .main__name--input {
   font-size: 4rem;
-  color: black;
+  color: #fbae3c;
+  background-color: #442656;
   padding: 1rem;
   border: none;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #fbae3c;
   align-self: center;
 }
 
@@ -127,18 +128,18 @@ body {
 .main__name--next {
   align-self: flex-end;
   font-size: 3rem;
-  color: white;
+  color: #442656;
   cursor: pointer;
   margin-right: 1rem;
   margin-top: 1rem;
-  background-color: blue;
+  background-color: #fbae3c;
   padding: 0.5rem 1rem;
   border-radius: 1rem;
 }
 
 .main__name--next:hover {
-  background-color: transparent;
-  color: black;
+  background-color: #442656;
+  color: #fbae3c;
 }
 
 .login {
