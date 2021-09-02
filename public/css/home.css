@@ -1,0 +1,131 @@
+@import url("https://fonts.googleapis.com/css2?family=Klee+One&display=swap");
+body {
+  background: url("../assets/icons/sign_in/bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.signin__img {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s ease-in-out;
+}
+
+.signin__img:hover {
+  transform: scale(1.2) rotate(360deg);
+}
+
+.title {
+  font-size: 13rem;
+  font-family: "Klee One", cursive;
+  color: #fbae3c;
+  text-shadow: 0.03em 0.025em #442656;
+}
+
+.sub-title {
+  font-family: "Klee One", cursive;
+  font-size: 2.5rem;
+  font-weight: normal;
+  color: #fbae3c;
+}
+
+.time {
+  font-family: "Klee One", cursive;
+  font-size: 3rem;
+  position: absolute;
+  top: 15px;
+  left: 25px;
+  font-weight: bold;
+  color: #442656;
+  z-index: 2;
+  transition: all 0.3s ease-in-out;
+}
+
+.time:hover {
+  transform: scale(1.2);
+}
+
+.features {
+  display: flex;
+  gap: 3.5rem;
+}
+
+.feature {
+  width: 5rem;
+  height: 5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.feature:hover {
+  transform: scale(1.2);
+}
+
+.main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  background-color: transparent;
+  color: white;
+  overflow: hidden;
+  position: relative;
+}
+
+.main__name {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  z-index: 1;
+}
+
+.main__name--input {
+  font-size: 4rem;
+  color: black;
+  padding: 1rem;
+  border: none;
+  border-bottom: 1px solid black;
+  align-self: center;
+}
+
+.main__name--input:focus {
+  outline: none;
+}
+
+.main__name--err {
+  color: red;
+  font-size: 1.8rem;
+}
+
+.main__name--next {
+  align-self: flex-end;
+  font-size: 3rem;
+  color: white;
+  cursor: pointer;
+  margin-right: 1rem;
+  margin-top: 1rem;
+  background-color: blue;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+}
+
+.main__name--next:hover {
+  background-color: transparent;
+  color: black;
+}
+
+.none {
+  display: none;
+}
