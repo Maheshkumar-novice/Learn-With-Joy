@@ -20,16 +20,6 @@ body {
   transform: scale(1.2) rotate(360deg);
 }
 
-.content__img {
-  width: 5rem;
-  height: 5rem;
-  transition: all 0.3s ease-in-out;
-}
-
-.content__img:hover {
-  transform: scale(1.2);
-}
-
 .title {
   font-size: 13rem;
   font-family: "Klee One", cursive;
@@ -60,9 +50,19 @@ body {
   transform: scale(1.2);
 }
 
-.image__div {
+.features {
   display: flex;
   gap: 3.5rem;
+}
+
+.feature {
+  width: 5rem;
+  height: 5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.feature:hover {
+  transform: scale(1.2);
 }
 
 .main {
