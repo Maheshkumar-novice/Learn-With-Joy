@@ -32,8 +32,8 @@ export function userEmailLogIn(auth, email, password){
 }
 
 //E mail verification
-export async function userEmailVerification(user, actionCode){
-  return await user.sendEmailVerification(actionCode);
+export async function userEmailVerification(user){
+  return await user.sendEmailVerification();
 }
 
 // Sign Out

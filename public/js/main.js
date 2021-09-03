@@ -22,8 +22,9 @@ auth.onAuthStateChanged(async (check_user) => {
   if (check_user) {
     // check user redirected directly
     let check_presence = await readDB(database, `users/${check_user.uid}`);
-    if (!check_presence.val()) {
+    if (!check_user.emailVerified || !check_presence.val()) {
       window.location = "./sign_in.html";
+      return;
     }
     updateUserDetails(check_user);
     document.querySelector(".loader").classList.add("none");

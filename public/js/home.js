@@ -58,10 +58,12 @@ function disableResend() {
 }
 
 function enableVerification() {
-  login.classList.toggle("none");
-  title.classList.toggle("none");
-  features.classList.toggle("none");
-  subTitle.classList.toggle("none");
+  console.log("hello");
+
+  login.classList.add("none");
+  title.classList.add("none");
+  features.classList.add("none");
+  subTitle.classList.add("none");
   verification.classList.remove("none");
   disableResend();
 }
@@ -72,6 +74,7 @@ auth.onAuthStateChanged(async (user) => {
     console.log(user);
     if (!user.emailVerified) {
       console.log("hello");
+      enableVerification();
       updateUserName(0);
       return;
     }
@@ -93,7 +96,7 @@ resend.addEventListener("click", async function (e) {
     this.classList.add("none");
     return;
   }
-  await userEmailVerification(user, actionCodeVerify);
+  await userEmailVerification(user);
   resend.disabled = true;
   disableResend();
 });
@@ -149,9 +152,8 @@ function updateUserName(val) {
       if (val) {
         changeLocation();
       } else {
-        await userEmailVerification(user);
+        userEmailVerification(user);
         resend.disabled = true;
-        enableVerification();
       }
     })
     .catch((error) => {
@@ -285,28 +287,27 @@ function handleURL() {
   // Get the one-time code from the query parameter.
   const actionCode = getParameterByName(urlParams, "oobCode");
   // (Optional) Get the continue URL from the query parameter if available.
-  const continueUrl = getParameterByName(urlParams, "continueUrl");
+  // const continueUrl = getParameterByName(urlParams, "continueUrl");
 
   // Handle the user management action.
   switch (mode) {
     case "resetPassword":
       // Display reset password handler and UI.
-      handleResetPassword(auth, actionCode, continueUrl, lang);
+      handleResetPassword(auth, actionCode);
       break;
     case "verifyEmail":
       // Display email verification handler and UI.
-      handleVerifyEmail(auth, actionCode, continueUrl);
+      handleVerifyEmail(auth, actionCode);
       break;
     default:
     // Error: invalid mode.
   }
 }
 
-function handleVerifyEmail(auth, actionCode, continueUrl) {
+function handleVerifyEmail(auth, actionCode) {
   auth
     .applyActionCode(actionCode)
     .then((resp) => {
-      window.location = continueUrl;
     })
     .catch((error) => {
       console.log(error);
