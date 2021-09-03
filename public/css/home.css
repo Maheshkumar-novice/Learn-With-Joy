@@ -5,7 +5,7 @@ body {
   background-size: cover;
 }
 
-.verification{
+.verification {
   position: absolute;
   top: 20%;
   left: 50%;
@@ -21,7 +21,7 @@ body {
   align-items: flex-end;
 }
 
-.verification__resend{
+.verification__resend {
   padding: 1rem 3rem;
   margin-top: 2rem;
   font-size: 2rem;
@@ -33,80 +33,49 @@ body {
   color: #442656;
 }
 
-.verification__resend:hover{
+.verification__resend:hover {
   border-color: #fbae3c;
   color: #fbae3c;
   background-color: transparent;
 }
 
-.signin__img, .signin {
+.sign-in,
+.google__signup {
   position: absolute;
   top: 15px;
-  right: 25px;
-  width: 60px;
+  width: 150px;
   height: 60px;
+  font-size: 2rem;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  background-color: #442656;
+  color: #fbae3c;
   cursor: pointer;
   z-index: 2;
   transition: all 0.3s ease-in-out;
-  background-color: #442656;
-  color: #fbae3c;
 }
 
-.signin {
+.sign-in {
+  right: 15px;
+}
+
+.google__signup {
   right: 200px;
-  width: 150px;
-  font-size: 2rem;
-  background-color: #442656;
-  color: #fbae3c;
-  border: none;
-  height: 60px;
-  border-radius: 10px;
 }
 
-.signin:hover,
-.signin__img:hover {
+.sign-in:hover,
+.google__signup:hover {
   background-color: #fbae3c;
   color: #442656;
 }
 
-/* .signin__img:hover {
-  transform: scale(1.2) rotate(360deg);
-} */
-
-.google__signup {
-  font-size: 2rem;
-  /* color: #442656;
-  background-color: #fbae3c; */
-  border: none;
-  border-radius: 10px;
-  width: 150px;
-  height: 60px;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  cursor: pointer;
-}
-
-.title {
-  font-size: 13rem;
-  font-family: "Klee One", cursive;
-  color: #fbae3c;
-  text-shadow: 0.03em 0.025em #442656;
-}
-
-.sub-title {
-  font-family: "Klee One", cursive;
-  font-size: 2.5rem;
-  font-weight: normal;
-  color: #fbae3c;
-}
-
 .time {
-  font-family: "Klee One", cursive;
-  font-size: 3rem;
   position: absolute;
   top: 15px;
   left: 25px;
+  font-family: "Klee One", cursive;
+  font-size: 3rem;
   font-weight: bold;
   color: #442656;
   z-index: 2;
@@ -117,19 +86,20 @@ body {
   transform: scale(1.2);
 }
 
-.features {
-  display: flex;
-  gap: 3.5rem;
+.title,
+.sub-title {
+  font-family: "Klee One", cursive;
+  color: #fbae3c;
 }
 
-.feature {
-  width: 5rem;
-  height: 5rem;
-  transition: all 0.3s ease-in-out;
+.title {
+  font-size: 13rem;
+  text-shadow: 0.03em 0.025em #442656;
 }
 
-.feature:hover {
-  transform: scale(1.2);
+.sub-title {
+  font-size: 2.5rem;
+  font-weight: normal;
 }
 
 .main {
@@ -150,22 +120,22 @@ body {
   top: 15%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #442656;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   border-radius: 1rem;
+  background-color: #442656;
   z-index: 1;
 }
 
 .main__name--input {
+  align-self: center;
   font-size: 4rem;
-  color: #fbae3c;
-  background-color: #442656;
   padding: 1rem;
   border: none;
   border-bottom: 1px solid #fbae3c;
-  align-self: center;
+  color: #fbae3c;
+  background-color: #442656;
 }
 
 .main__name--input:focus {
@@ -179,19 +149,34 @@ body {
 
 .main__name--next {
   align-self: flex-end;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
   font-size: 3rem;
-  color: #442656;
-  cursor: pointer;
   margin-right: 1rem;
   margin-top: 1rem;
   background-color: #fbae3c;
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
+  color: #442656;
+  cursor: pointer;
 }
 
 .main__name--next:hover {
   background-color: #442656;
   color: #fbae3c;
+}
+
+.features {
+  display: flex;
+  gap: 3.5rem;
+}
+
+.feature {
+  width: 5rem;
+  height: 5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.feature:hover {
+  transform: scale(1.2);
 }
 
 .login {
@@ -203,8 +188,6 @@ body {
   width: 95%;
   height: 95%;
   max-height: 700px;
-  background-color: rgba(255, 255, 255, 0.5);
-  background-color: #fbae3c33;
   background-color: #44265666;
   border-radius: 15px;
   display: flex;
@@ -281,7 +264,7 @@ body {
 .form__button {
   width: 30%;
   margin: 0 auto;
-  height: 4rem;
+  height: 6rem;
   font-size: 2rem;
   background-color: #fbae3c;
   color: #442656;
@@ -291,13 +274,14 @@ body {
   cursor: pointer;
 }
 
+.form__button:hover {
+  background-color: #442656;
+  color: #fbae3c;
+}
+
 .active {
   background-color: #fbae3c;
   color: #442656;
-}
-
-.google__signup img {
-  height: 100%;
 }
 
 .none {
