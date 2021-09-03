@@ -7,6 +7,7 @@ import {
   userEmailLogIn,
   userEmailVerification,
   userSignOut,
+  actionCodeVerify,
 } from "./modules/firebase.js";
 
 // firebase initialization
@@ -25,7 +26,6 @@ const newNameErr = document.querySelector(".main__name--err");
 const next = document.querySelector(".main__name--next");
 const verification = document.querySelector(".verification");
 const resend = document.querySelector(".verification__resend");
-
 
 function showInput() {
   document.querySelectorAll(".main>*:not(.main__name)").forEach((elem) => {
@@ -47,8 +47,8 @@ async function updateNewUser() {
 }
 
 let prev = null;
-function disableResend(){
-  if(prev !== null){
+function disableResend() {
+  if (prev !== null) {
     clearTimeout(prev);
   }
   console.log("hello");
@@ -57,7 +57,7 @@ function disableResend(){
   }, 5000);
 }
 
-function enableVerification(){
+function enableVerification() {
   login.classList.toggle("none");
   title.classList.toggle("none");
   features.classList.toggle("none");
@@ -70,12 +70,9 @@ function enableVerification(){
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     console.log(user);
-    userSignOut(auth);
-    if(!user.emailVerified){
+    if (!user.emailVerified) {
+      console.log("hello");
       updateUserName(0);
-      await userEmailVerification(user);
-      resend.disabled = true;
-      enableVerification();
       return;
     }
     let check_user = await readDB(database, `users/${user.uid}`);
@@ -89,10 +86,14 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 //event listener
-resend.addEventListener("click", async function(e) {
+resend.addEventListener("click", async function (e) {
   console.log("hello", this.disabled);
-  let user = auth.currentUser();
-  await userEmailVerification(user);
+  let user = auth.currentUser;
+  if(user.emailVerified){
+    this.classList.add("none");
+    return;
+  }
+  await userEmailVerification(user, actionCodeVerify);
   resend.disabled = true;
   disableResend();
 });
@@ -124,27 +125,34 @@ next.addEventListener("click", function (e) {
   updateUserName(1);
 });
 
-function changeLocation(){
+function changeLocation() {
   setTimeout(() => {
     window.location = "../index.html";
   }, 200);
 }
 
-function updateUserName(val){
-  if(userName === "") return;
+function updateUserName(val) {
+  console.log(userName);
+  if (userName === undefined) return;
   let user = auth.currentUser;
   user
     .updateProfile({
       displayName: `${userName}`,
-      photoURL: user.photoURL,
+      photoURL: user.photoURL || "./assets/icons/home/user.svg",
     })
-    .then(() => {
+    .then(async () => {
       let value = {
         name: userName,
         photo: user.photoURL,
       };
       writeDB(database, `users/${user.uid}`, value);
-      val ? changeLocation() : "";
+      if (val) {
+        changeLocation();
+      } else {
+        await userEmailVerification(user);
+        resend.disabled = true;
+        enableVerification();
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -219,8 +227,9 @@ signupTab.addEventListener("click", async function () {
   signupTab.classList.add("active");
   addSignListener();
   await updateNewUser();
-  document.querySelector(".form__input-username").addEventListener("input", checkUniqueUser);
-  
+  document
+    .querySelector(".form__input-username")
+    .addEventListener("input", checkUniqueUser);
 });
 
 const login = document.querySelector(".login");
@@ -256,8 +265,54 @@ function addSignListener() {
     e.preventDefault();
     console.log(this.textContent);
     const email = document.querySelectorAll(".form__input-main");
-    this.textContent === "Signup" ? userEmailSignUp(auth, email[0].value, email[1].value) : userEmailLogIn(auth, email[0].value, email[1].value);
+    this.textContent === "Signup"
+      ? userEmailSignUp(auth, email[0].value, email[1].value)
+      : userEmailLogIn(auth, email[0].value, email[1].value);
   });
 }
 
 addSignListener();
+
+function getParameterByName(urlParams, name) {
+  return urlParams.get(name);
+}
+
+function handleURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // get mode of the link
+  const mode = getParameterByName(urlParams, "mode");
+  // Get the one-time code from the query parameter.
+  const actionCode = getParameterByName(urlParams, "oobCode");
+  // (Optional) Get the continue URL from the query parameter if available.
+  const continueUrl = getParameterByName(urlParams, "continueUrl");
+
+  // Handle the user management action.
+  switch (mode) {
+    case "resetPassword":
+      // Display reset password handler and UI.
+      handleResetPassword(auth, actionCode, continueUrl, lang);
+      break;
+    case "verifyEmail":
+      // Display email verification handler and UI.
+      handleVerifyEmail(auth, actionCode, continueUrl);
+      break;
+    default:
+    // Error: invalid mode.
+  }
+}
+
+function handleVerifyEmail(auth, actionCode, continueUrl) {
+  auth
+    .applyActionCode(actionCode)
+    .then((resp) => {
+      window.location = continueUrl;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+window.addEventListener("DOMContentLoaded", (e) => {
+  handleURL();
+});
