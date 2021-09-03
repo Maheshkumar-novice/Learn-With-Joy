@@ -10,6 +10,10 @@ export const firebaseConfig = {
     "https://learn-with-joy-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
 
+export const actionCodeVerify = {
+  url: 'http://localhost:5000'
+}
+
 // ----------------------------------------Authentication-------------------------------------
 
 // Google sign In
@@ -28,8 +32,8 @@ export function userEmailLogIn(auth, email, password){
 }
 
 //E mail verification
-export async function userEmailVerification(user){
-  return await user.sendEmailVerification();
+export async function userEmailVerification(user, actionCode){
+  return await user.sendEmailVerification(actionCode);
 }
 
 // Sign Out
