@@ -89,7 +89,7 @@ auth.onAuthStateChanged(async (user) => {
 resend.addEventListener("click", async function (e) {
   console.log("hello", this.disabled);
   let user = auth.currentUser;
-  if(user.emailVerified){
+  if (user.emailVerified) {
     this.classList.add("none");
     return;
   }
@@ -185,17 +185,16 @@ const loginForm = document.querySelector(".login__form");
 loginTab.addEventListener("click", function () {
   loginForm.innerHTML = `
   <div class="input__field">
-  <label for="email"> Email </label>
-  <input type="email" id="email" class="form__input form__input-main" required/>
-</div>
-
-<div class="input__field">
-  <label for="password"> Password </label>
-  <input type="password" id="password" class="form__input form__input-main" required/>
-</div>
-
-<button type="submit" class="form__button">Login</button>
-  `;
+    <label for="email"> Email </label>
+    <input type="email" id="email" class="form__input form__input-main" required/>
+    <p class="email-error error none">Invalid e-mail given.</p>
+  </div>
+  <div class="input__field">
+    <label for="password"> Password </label>
+    <input type="password" id="password" class="form__input form__input-main" required/>
+    <p class="password-error error none">Invalid password given.</p>
+  </div>
+  <button type="submit" class="form__button">Login</button>`;
   loginTab.classList.add("active");
   signupTab.classList.remove("active");
   addSignListener();
@@ -204,25 +203,26 @@ loginTab.addEventListener("click", function () {
 signupTab.addEventListener("click", async function () {
   loginForm.innerHTML = `
   <div class="input__field">
-  <label for="name"> User Name </label>
-  <input type="name" id="name" class="form__input form__input-username" required autocomplete="off"/>
-</div>
-<div class="input__field">
-  <label for="email"> Email </label>
-  <input type="email" id="email" class="form__input form__input-main" required/>
-</div>
-
-<div class="input__field">
-  <label for="password"> Password </label>
-  <input type="password" id="password" class="form__input form__input-main" required/>
-</div>
-
-<div class="input__field">
-  <label for="re-enter-password"> Re-Enter Password </label>
-  <input type="password" id="re-enter-password" class="form__input" required/>
-</div>
-
-<button type="submit" class="form__button">Signup</button>`;
+    <label for="name"> User Name </label>
+    <input type="name" id="name" class="form__input form__input-username" required autocomplete="off"/>
+    <p class="name-error error none">Invalid username given.</p>
+  </div>
+  <div class="input__field">
+    <label for="email"> Email </label>
+    <input type="email" id="email" class="form__input form__input-main" required/>
+    <p class="email-error error none">Invalid e-mail given.</p>
+  </div>
+  <div class="input__field">
+    <label for="password"> Password </label>
+    <input type="password" id="password" class="form__input form__input-main" required/>
+    <p class="password-error error none">Invalid password given.</p>
+  </div>
+  <div class="input__field">
+    <label for="re-enter-password"> Re-Enter Password </label>
+    <input type="password" id="re-enter-password" class="form__input" required/>
+    <p class="password-error error none">Invalid password given.</p>
+  </div>
+  <button type="submit" class="form__button">Signup</button>`;
   loginTab.classList.remove("active");
   signupTab.classList.add("active");
   addSignListener();

@@ -57,12 +57,14 @@
         <form action="#" class="login__form">
           <div class="input__field">
             <label for="email"> Email </label>
-            <input type="email" id="email" class="form__input form__input-main" />
+            <input type="email" id="email" class="form__input form__input-main" required/>
+            <p class="email-error error none">Invalid e-mail given.</p>
           </div>
 
           <div class="input__field">
             <label for="password"> Password </label>
-            <input type="password" id="password" class="form__input form__input-main" />
+            <input type="password" id="password" class="form__input form__input-main" required/>
+            <p class="password-error error none">Invalid password given.</p>
           </div>
 
           <button type="submit" class="form__button">Login</button>

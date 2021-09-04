@@ -287,3 +287,8 @@ body {
 .none {
   display: none;
 }
+
+.error {
+  color: red;
+  font-size: 1.7rem;
+}
