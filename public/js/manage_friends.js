@@ -14,35 +14,28 @@ import { checkUserPresent } from "./modules/util.js";
 const auth = firebase.auth();
 const database = firebase.database();
 let user,
-  namesList = [],
+  userDataList = [],
   uidList = [],
   friendsList = null,
   friendsUID = [];
 
-//Update names and uid list
-function appendList(data) {
+function addDataToTotalUsers(data) {
   uidList.push(data.key);
-  namesList.push(data.val());
+  userDataList.push(data.val());
 }
 
-// sign In status change
-auth.onAuthStateChanged(async (check_user) => {
-  if (check_user) {
-    // update on sign in
-    user = check_user;
+auth.onAuthStateChanged(async (currentUser) => {
+  if (currentUser) {
+    user = currentUser;
     await updateFriendsList();
-    addDbListeners();
-    console.log(user);
-    //releasing disabled
+    addDBListeners();
     searchInput.disabled = false;
   } else {
     window.location = "./index.html";
   }
 });
 
-// ------------------------------------------------------ friends js------------------------------------------------------
-
-//selector
+// ----------------------- SEARCH -------------------------------------
 const searchInput = document.querySelector(".main__input");
 const searchWrap = document.querySelector(".main__search-cnt");
 const searchResultContainer = document.querySelector(".main__search-resultcnt");
@@ -64,7 +57,8 @@ function removeFriendFromSearchResult(e) {
 function getUserSearchData(uid) {
   if (user.uid === uid || checkUserPresent(friendsList, friendsUID, uid))
     return "";
-  let searchedUser = namesList[uidList.findIndex((tot_uid) => tot_uid === uid)];
+  let searchedUser =
+    userDataList[uidList.findIndex((tot_uid) => tot_uid === uid)];
   return `<div class="main__result-card" data-id=${uid}>
             <img  src=${searchedUser.photo}  alt="Friend"  class="main__img"/>
             <p class="main__friend-name">${searchedUser.name}</p>
@@ -72,48 +66,16 @@ function getUserSearchData(uid) {
           </div>`;
 }
 
-async function sendRequest(uid) {
-  await updateFriendsList();
-  // check for not resending the request
-  if (checkUserPresent(friendsList, friendsUID, uid)) return;
-  addChlidDB(database, `friends/${user.uid}/sent`, uid, "pending");
-  addChlidDB(database, `friends/${uid}/received`, user.uid, "pending");
+function addFriendRequestIconListeners() {
+  addBtn = document.querySelectorAll(".main__send-friend-ic");
+  addBtn.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      sendFriendRequest(e.target.parentElement.dataset.id);
+      removeFriendFromSearchResult(e);
+    });
+  });
 }
 
-async function addFriend(e) {
-  await updateFriendsList();
-  let fid = e.target.parentElement.dataset.id;
-  let hashtext = pushKey(database, `friends/${fid}`, "friends");
-  addChlidDB(database, `friends/${user.uid}/friends`, fid, hashtext);
-  addChlidDB(database, `friends/${fid}/friends`, user.uid, hashtext);
-  removeDB(database, `friends/${user.uid}/received/${fid}`);
-  removeDB(database, `friends/${fid}/sent/${user.uid}`);
-  let value = {
-    user: {
-      user1: user.uid,
-      user2: fid,
-    },
-  };
-  writeDB(database, `chat/${hashtext}`, value);
-}
-
-async function rejectFriend(e) {
-  let fid = e.target.parentElement.dataset.id;
-  let key = pushKey(database, `friends/${fid}`, "notifications");
-  removeDB(database, `friends/${user.uid}/received/${fid}`);
-  removeDB(database, `friends/${fid}/sent/${user.uid}`);
-}
-
-async function removeFriend(e) {
-  await updateFriendsList();
-  let hash = e.target.parentElement.dataset.hash;
-  let fid = e.target.parentElement.dataset.id;
-  removeDB(database, `friends/${user.uid}/friends/${fid}`);
-  removeDB(database, `friends/${fid}/friends/${user.uid}`);
-  removeDB(database, `chat/${hash}`);
-}
-
-//listener
 searchInput.addEventListener("input", (e) => {
   let value = e.target.value;
   let html = "";
@@ -122,7 +84,7 @@ searchInput.addEventListener("input", (e) => {
     return;
   }
   let regex = new RegExp(value, "gi");
-  namesList.forEach((obj, idx) => {
+  userDataList.forEach((obj, idx) => {
     if (obj.name.match(regex)) {
       html += getUserSearchData(uidList[idx]);
     }
@@ -142,50 +104,80 @@ searchInput.addEventListener("click", (e) => {
   }
 });
 
-function addFriendRequestIconListeners() {
-  addBtn = document.querySelectorAll(".main__send-friend-ic");
-  addBtn.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      sendRequest(e.target.parentElement.dataset.id);
-      removeFriendFromSearchResult(e);
-    });
-  });
-}
-
 searchCloseIcon.addEventListener("click", function (e) {
   searchWrap.classList.toggle("none");
   chatArea.classList.toggle("none");
 });
 
-// ----------------------- update user page -------------------------------------
-const cnt = document.querySelectorAll(".main__req-cards");
+// ----------------------- FRIENDS -------------------------------------
+// friendRequests[0] => friend requests received, friendRequests[1] => friend requests sent
+const friendRequests = document.querySelectorAll(".main__req-cards");
+
+async function sendFriendRequest(uid) {
+  await updateFriendsList();
+  if (checkUserPresent(friendsList, friendsUID, uid)) return;
+  addChlidDB(database, `friends/${user.uid}/sent`, uid, "pending");
+  addChlidDB(database, `friends/${uid}/received`, user.uid, "pending");
+}
+
+async function rejectFriendRequest(e) {
+  let fid = e.target.parentElement.dataset.id;
+  let key = pushKey(database, `friends/${fid}`, "notifications");
+  removeDB(database, `friends/${user.uid}/received/${fid}`);
+  removeDB(database, `friends/${fid}/sent/${user.uid}`);
+}
+
+async function addFriend(e) {
+  await updateFriendsList();
+  let fid = e.target.parentElement.dataset.id;
+  let hashtext = pushKey(database, `friends/${fid}`, "friends");
+  addChlidDB(database, `friends/${user.uid}/friends`, fid, hashtext);
+  addChlidDB(database, `friends/${fid}/friends`, user.uid, hashtext);
+  removeDB(database, `friends/${user.uid}/received/${fid}`);
+  removeDB(database, `friends/${fid}/sent/${user.uid}`);
+  let value = {
+    user: {
+      user1: user.uid,
+      user2: fid,
+    },
+  };
+  writeDB(database, `chat/${hashtext}`, value);
+}
+
+async function removeFriend(e) {
+  await updateFriendsList();
+  let hash = e.target.parentElement.dataset.hash;
+  let fid = e.target.parentElement.dataset.id;
+  removeDB(database, `friends/${user.uid}/friends/${fid}`);
+  removeDB(database, `friends/${fid}/friends/${user.uid}`);
+  removeDB(database, `chat/${hash}`);
+}
 
 async function updateFriendsList() {
   let friendsData = await readDB(database, `friends/${user.uid}`);
   friendsList = friendsData.val();
 }
 
-// Add friends to the friends list
-async function addFriendList(data) {
+async function addFriendToFriendsList(data) {
   if (!data.val()) return;
-  console.log(data.val());
+
   let fid = data.key;
   let hash = data.val();
-  friendsUID.push(fid);
-  let cnt = document.querySelector(".main__friend-cnt");
-  // let chatUid = namesList[uidList.findIndex((UID) => UID === fid)];
+  let friendsContainer = document.querySelector(".main__friend-cnt");
   let chatUid = (await readDB(database, `users/${fid}`)).val();
-  cnt.innerHTML += `<div class="main__friend-card" data-id=${fid} data-hash=${hash}>
+
+  friendsUID.push(fid);
+  friendsContainer.innerHTML += `<div class="main__friend-card" data-id=${fid} data-hash=${hash}>
       <img  src="${chatUid.photo}"  alt="Friend"  class="main__img"/>
       <p class="main__friend-name">${chatUid.name}</p>
       <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
      </div>\n`;
+
   document
     .querySelectorAll(`.main__friend-card>.main__remove-friend-ic`)
-    .forEach((reject) => {
-      reject.addEventListener("click", removeFriend);
+    .forEach((rejectIcon) => {
+      rejectIcon.addEventListener("click", removeFriend);
     });
-  // Chat Listeners
   addEventListenerToFriendCards();
   setDBListener(
     database,
@@ -195,148 +187,133 @@ async function addFriendList(data) {
   );
 }
 
-// Remove friends from the friends list
-async function removeFriendList(data) {
+async function removeFriendFromFriendsList(data) {
   await updateFriendsList();
-  let cnt = document.querySelector(".main__friend-cnt");
+  let friendsContainer = document.querySelector(".main__friend-cnt");
   if (!data.val()) {
-    cnt.innerHTML = "";
+    friendsContainer.innerHTML = "";
     friendsUID = [];
     return;
   }
-  console.log(data.val());
-  let remove_friend_elem = document.querySelector(
+
+  let removedFriend = document.querySelector(
     `.main__friend-card[data-hash="${data.val()}"]`
   );
-  friendsUID.splice(remove_friend_elem.dataset.id, 1);
-  console.log(friendsUID);
-  cnt.removeChild(remove_friend_elem);
-  // console.log(friendsList);
+  friendsUID.splice(removedFriend.dataset.id, 1);
+  friendsContainer.removeChild(removedFriend);
 }
 
-// Update friend request received
-async function updateRequestReceived(data) {
+async function addFriendRequestReceived(data) {
   await updateFriendsList();
-  console.log(friendsList, data.val(), data.key);
   if (!data.val()) {
-    cnt[0].innerHTML = "";
+    friendRequests[0].innerHTML = "";
     return;
   }
+
   let receivedKey = data.key;
-  // let list_user = namesList[uidList.findIndex((UID) => UID === receivedKey)];
-  let list_user = (await readDB(database, `users/${receivedKey}`)).val();
-  console.log(list_user);
-  cnt[0].innerHTML += `<div class="main__received-card default" data-id=${receivedKey}>
-      <img  src="${list_user.photo}"  alt="Friend"  class="main__img"/>
-      <p class="main__friend-name">${list_user.name}</p>
+  let receivedFrom = (await readDB(database, `users/${receivedKey}`)).val();
+  friendRequests[0].innerHTML += `<div class="main__received-card default" data-id=${receivedKey}>
+      <img  src="${receivedFrom.photo}"  alt="Friend"  class="main__img"/>
+      <p class="main__friend-name">${receivedFrom.name}</p>
       <img class="main__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
       <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
      </div>`;
-  document.querySelectorAll(`.main__add-friend-ic`).forEach((accept) => {
-    accept.addEventListener("click", addFriend);
+
+  document.querySelectorAll(`.main__add-friend-ic`).forEach((acceptIcon) => {
+    acceptIcon.addEventListener("click", addFriend);
   });
-  document.querySelectorAll(`.main__remove-friend-ic`).forEach((reject) => {
-    reject.addEventListener("click", rejectFriend);
+  document.querySelectorAll(`.main__remove-friend-ic`).forEach((rejectIcon) => {
+    rejectIcon.addEventListener("click", rejectFriendRequest);
   });
 }
 
-// Remove friend request received
-async function removeRequestReceived(data) {
-  console.log(data.val(), data.key);
+async function removeFriendRequestReceived(data) {
   if (!data.val()) {
-    cnt[0].innerHTML = "";
+    friendRequests[0].innerHTML = "";
   }
-  let sent_frnd_elem = document.querySelector(
+
+  let removedRequest = document.querySelector(
     `.main__received-card[data-id="${data.key}"]`
   );
-  cnt[0].removeChild(sent_frnd_elem);
+  friendRequests[0].removeChild(removedRequest);
   await updateFriendsList();
 }
 
-// Update friend request sent
-async function updateRequestSent(data) {
+async function addFriendRequestSent(data) {
   await updateFriendsList();
   let sentData = data.val();
   if (!sentData) {
-    cnt[1].innerHTML = "";
+    friendRequests[1].innerHTML = "";
     return;
   }
+
   let sent = data.key;
-  console.log(sent);
-  // let list_user = namesList[uidList.findIndex((UID) => UID === sent)];
-  let list_user = (await readDB(database, `users/${sent}`)).val();
-  cnt[1].innerHTML += `<div class="main__sent-card default" data-id=${sent}>
-      <img  src="${list_user.photo}"  alt="Friend"  class="main__img"/>
-      <p class="main__friend-name">${list_user.name}</p>
+  let sentTo = (await readDB(database, `users/${sent}`)).val();
+
+  friendRequests[1].innerHTML += `<div class="main__sent-card default" data-id=${sent}>
+      <img  src="${sentTo.photo}"  alt="Friend"  class="main__img"/>
+      <p class="main__friend-name">${sentTo.name}</p>
       <img class="main__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
      </div>`;
 }
 
-// Remove friend request sent
-async function removeRequestSent(data) {
+async function removeFriendRequestSent(data) {
   if (!data.val()) {
-    cnt[1].innerHTML = "";
+    friendRequests[1].innerHTML = "";
   }
-  let sent_frnd_elem = document.querySelector(
+
+  let removedRequest = document.querySelector(
     `.main__sent-card[data-id="${data.key}"]`
   );
-  console.log(sent_frnd_elem, data.val(), data.key);
-  cnt[1].removeChild(sent_frnd_elem);
+  friendRequests[1].removeChild(removedRequest);
   await updateFriendsList();
 }
 
-// ------------------------- db listener --------------------------
-function addDbListeners() {
-  setDBListener(database, `users`, "child_added", appendList); //Listener for updating total users
+// ----------------------- DB -------------------------------------
+function addDBListeners() {
+  setDBListener(database, `users`, "child_added", addDataToTotalUsers);
 
-  // Listener for updating friends list
   setDBListener(
     database,
     `friends/${user.uid}/friends`,
     "child_added",
-    addFriendList
+    addFriendToFriendsList
   );
   setDBListener(
     database,
     `friends/${user.uid}/friends`,
     "child_removed",
-    removeFriendList
+    removeFriendFromFriendsList
   );
 
-  // Listener for updating friends requests sent
   setDBListener(
     database,
     `friends/${user.uid}/sent`,
     "child_added",
-    updateRequestSent
+    addFriendRequestSent
   );
   setDBListener(
     database,
     `friends/${user.uid}/sent`,
     "child_removed",
-    removeRequestSent
+    removeFriendRequestSent
   );
 
-  // Listener for updating friends requests received
   setDBListener(
     database,
     `friends/${user.uid}/received`,
     "child_added",
-    updateRequestReceived
+    addFriendRequestReceived
   );
   setDBListener(
     database,
     `friends/${user.uid}/received`,
     "child_removed",
-    removeRequestReceived
+    removeFriendRequestReceived
   );
 }
 
-// function setDBListener(reference, type, callBack) {
-//   database.ref(reference).on(type, callBack);
-// }
-
-// ------------------------------------------- Chat js ----------------------------------------
+// ----------------------- CHAT -------------------------------------
 const chatWindowMessageInput = document.querySelector(".main__input--chat");
 let chatWindowUsername = document.querySelector(".main__chat-username");
 let chatWindowProfilePic = document.querySelector(".main__img--chat");
@@ -400,7 +377,6 @@ async function addFileToContainer(src, time, position, type) {
   let metaData = await fileMetaData(reference);
   let size = (metaData.size / (1024 * 1024)).toFixed(2);
   let name = metaData.name;
-  console.log(size);
   chatContainer.innerHTML +=
     type === "image"
       ? `<div class="main__message-container main__message-container--${position}">
@@ -423,10 +399,6 @@ async function addFileToContainer(src, time, position, type) {
         <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
       </div>`;
   autoScroll();
-}
-
-function autoScroll() {
-  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 function fillMessagesToChatBody(data) {
@@ -514,6 +486,10 @@ function addEventListenerToFriendCards() {
   );
 }
 
+function autoScroll() {
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
 window.addEventListener("keyup", (e) => {
   if (e.key === "Enter") {
     sendMessage();
@@ -526,3 +502,7 @@ window.addEventListener("keyup", (e) => {
 document
   .querySelector(".main__img--send")
   .addEventListener("click", sendMessage);
+
+// function setDBListener(reference, type, callBack) {
+//   database.ref(reference).on(type, callBack);
+// }
