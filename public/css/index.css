@@ -148,6 +148,20 @@ body {
   color: #fbae3c;
 }
 
+.toggle-pass{
+  width: 40px;
+  position: absolute;
+  right: 5%;
+  top: 70%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #fbae3c;
+}
+
+.toggle-pass:hover{
+  color: #994cc5;
+}
+
 .login {
   position: absolute;
   top: 50%;
@@ -212,6 +226,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  position: relative;
 }
 
 .input__field label {
