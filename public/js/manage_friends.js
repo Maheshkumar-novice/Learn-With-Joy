@@ -16,7 +16,7 @@ const database = firebase.database();
 let user,
   namesList = [],
   uidList = [],
-  friendlist = null,
+  friendsList = null,
   friendsUID = [];
 
 //Update names and uid list
@@ -30,11 +30,11 @@ auth.onAuthStateChanged(async (check_user) => {
   if (check_user) {
     // update on sign in
     user = check_user;
-    await updateFriendList();
-    addDbListener();
+    await updateFriendsList();
+    addDbListeners();
     console.log(user);
     //releasing disabled
-    searchInp.disabled = false;
+    searchInput.disabled = false;
   } else {
     window.location = "./index.html";
   }
@@ -43,60 +43,45 @@ auth.onAuthStateChanged(async (check_user) => {
 // ------------------------------------------------------ friends js------------------------------------------------------
 
 //selector
-const searchInp = document.querySelector(".main__input");
+const searchInput = document.querySelector(".main__input");
 const searchWrap = document.querySelector(".main__search-cnt");
-const searchCnt = document.querySelector(".main__search-resultcnt");
-const searchCloseIc = document.querySelector(".main__search-close-ic");
-const chatCnt = document.querySelector(".main__chat");
+const searchResultContainer = document.querySelector(".main__search-resultcnt");
+const searchCloseIcon = document.querySelector(".main__search-close-ic");
+const chatArea = document.querySelector(".main__chat");
 let addBtn;
 
-//remove from search result after add btn triggered
-function removeSerachFriendResult(e) {
+function removeFriendFromSearchResult(e) {
   let id = e.target.parentElement.dataset.id;
-  console.log(e, e.target, id);
-  let remove_elem = document.querySelector(
+  let elementToRemove = document.querySelector(
     `.main__result-card[data-id="${id}"]`
   );
-  console.log(remove_elem);
-  searchCnt.removeChild(remove_elem);
-  if (searchCnt.childElementCount === 0) {
-    searchCnt.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
+  searchResultContainer.removeChild(elementToRemove);
+  if (searchResultContainer.childElementCount === 0) {
+    searchResultContainer.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
   }
 }
 
-// Update search Result
-function updateSearchResult(uid) {
-  // check for not resending the request
-  if (user.uid === uid || checkUserPresent(friendlist, friendsUID, uid))
+function getUserSearchData(uid) {
+  if (user.uid === uid || checkUserPresent(friendsList, friendsUID, uid))
     return "";
-  let search_user = namesList[uidList.findIndex((tot_uid) => tot_uid === uid)];
+  let searchedUser = namesList[uidList.findIndex((tot_uid) => tot_uid === uid)];
   return `<div class="main__result-card" data-id=${uid}>
-                              <img
-                                src=${search_user.photo}
-                                alt="Friend"
-                                class="main__img"
-                              />
-                              <p class="main__friend-name">${search_user.name}</p>
-                              <img class="main__send-friend-ic" src="./assets/icons/home/accept.svg" alt="Add friend">
-                            </div>`;
+            <img  src=${searchedUser.photo}  alt="Friend"  class="main__img"/>
+            <p class="main__friend-name">${searchedUser.name}</p>
+            <img class="main__send-friend-ic" src="./assets/icons/home/accept.svg" alt="Add friend">
+          </div>`;
 }
 
-// update Friends list
 async function sendRequest(uid) {
+  await updateFriendsList();
   // check for not resending the request
-  await updateFriendList();
-  if (checkUserPresent(friendlist, friendsUID, uid)) return;
-  // let userUpdate = {},
-  //   friendUpdate = {};
-  // userUpdate[uid] = "pending";
-  // friendUpdate[user.uid] = user.displayName;
+  if (checkUserPresent(friendsList, friendsUID, uid)) return;
   addChlidDB(database, `friends/${user.uid}/sent`, uid, "pending");
   addChlidDB(database, `friends/${uid}/received`, user.uid, "pending");
 }
 
-// add and remove friend
 async function addFriend(e) {
-  await updateFriendList();
+  await updateFriendsList();
   let fid = e.target.parentElement.dataset.id;
   let hashtext = pushKey(database, `friends/${fid}`, "friends");
   addChlidDB(database, `friends/${user.uid}/friends`, fid, hashtext);
@@ -115,18 +100,12 @@ async function addFriend(e) {
 async function rejectFriend(e) {
   let fid = e.target.parentElement.dataset.id;
   let key = pushKey(database, `friends/${fid}`, "notifications");
-  // console.log(key);
-  // let notification = {
-  //   0: namesList[uidList.findIndex((uid) => uid === fid)].name,
-  // };
-  // addChlidDB(database, `friends/${fid}/notifications`, key, notification);
-
   removeDB(database, `friends/${user.uid}/received/${fid}`);
   removeDB(database, `friends/${fid}/sent/${user.uid}`);
 }
 
 async function removeFriend(e) {
-  await updateFriendList();
+  await updateFriendsList();
   let hash = e.target.parentElement.dataset.hash;
   let fid = e.target.parentElement.dataset.id;
   removeDB(database, `friends/${user.uid}/friends/${fid}`);
@@ -135,55 +114,55 @@ async function removeFriend(e) {
 }
 
 //listener
-searchInp.addEventListener("input", (e) => {
-  if (e.target.value === "")
-    searchCnt.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
+searchInput.addEventListener("input", (e) => {
   let value = e.target.value;
-  // searchCnt.innerHTML = "";
   let html = "";
-  if (value === "") return;
+  if (value === "") {
+    searchResultContainer.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
+    return;
+  }
   let regex = new RegExp(value, "gi");
   namesList.forEach((obj, idx) => {
     if (obj.name.match(regex)) {
-      html += updateSearchResult(uidList[idx], idx);
+      html += getUserSearchData(uidList[idx]);
     }
   });
-  searchCnt.innerHTML =
+  searchResultContainer.innerHTML =
     html === ""
       ? `<p class="main__serach-msg">Sorry! no results found</p>`
       : html;
-  addBtnListener();
+  addFriendRequestIconListeners();
 });
 
-searchInp.addEventListener("click", (e) => {
+searchInput.addEventListener("click", (e) => {
   searchWrap.classList.remove("none");
-  chatCnt.classList.add("none");
+  chatArea.classList.add("none");
   if (e.target.value === "") {
-    searchCnt.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
+    searchResultContainer.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
   }
 });
 
-function addBtnListener() {
+function addFriendRequestIconListeners() {
   addBtn = document.querySelectorAll(".main__send-friend-ic");
   addBtn.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       sendRequest(e.target.parentElement.dataset.id);
-      removeSerachFriendResult(e);
+      removeFriendFromSearchResult(e);
     });
   });
 }
 
-searchCloseIc.addEventListener("click", function (e) {
+searchCloseIcon.addEventListener("click", function (e) {
   searchWrap.classList.toggle("none");
-  chatCnt.classList.toggle("none");
+  chatArea.classList.toggle("none");
 });
 
 // ----------------------- update user page -------------------------------------
 const cnt = document.querySelectorAll(".main__req-cards");
 
-async function updateFriendList() {
-  let friends_data = await readDB(database, `friends/${user.uid}`);
-  friendlist = friends_data.val();
+async function updateFriendsList() {
+  let friendsData = await readDB(database, `friends/${user.uid}`);
+  friendsList = friendsData.val();
 }
 
 // Add friends to the friends list
@@ -197,14 +176,10 @@ async function addFriendList(data) {
   // let chatUid = namesList[uidList.findIndex((UID) => UID === fid)];
   let chatUid = (await readDB(database, `users/${fid}`)).val();
   cnt.innerHTML += `<div class="main__friend-card" data-id=${fid} data-hash=${hash}>
-      <img
-        src="${chatUid.photo}"
-        alt="Friend"
-        class="main__img"
-      />
+      <img  src="${chatUid.photo}"  alt="Friend"  class="main__img"/>
       <p class="main__friend-name">${chatUid.name}</p>
       <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
-    </div>\n`;
+     </div>\n`;
   document
     .querySelectorAll(`.main__friend-card>.main__remove-friend-ic`)
     .forEach((reject) => {
@@ -222,7 +197,7 @@ async function addFriendList(data) {
 
 // Remove friends from the friends list
 async function removeFriendList(data) {
-  await updateFriendList();
+  await updateFriendsList();
   let cnt = document.querySelector(".main__friend-cnt");
   if (!data.val()) {
     cnt.innerHTML = "";
@@ -236,13 +211,13 @@ async function removeFriendList(data) {
   friendsUID.splice(remove_friend_elem.dataset.id, 1);
   console.log(friendsUID);
   cnt.removeChild(remove_friend_elem);
-  // console.log(friendlist);
+  // console.log(friendsList);
 }
 
 // Update friend request received
 async function updateRequestReceived(data) {
-  await updateFriendList();
-  console.log(friendlist, data.val(), data.key);
+  await updateFriendsList();
+  console.log(friendsList, data.val(), data.key);
   if (!data.val()) {
     cnt[0].innerHTML = "";
     return;
@@ -252,15 +227,11 @@ async function updateRequestReceived(data) {
   let list_user = (await readDB(database, `users/${receivedKey}`)).val();
   console.log(list_user);
   cnt[0].innerHTML += `<div class="main__received-card default" data-id=${receivedKey}>
-    <img
-      src="${list_user.photo}"
-      alt="Friend"
-      class="main__img"
-    />
-    <p class="main__friend-name">${list_user.name}</p>
-    <img class="main__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
-    <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
-  </div>`;
+      <img  src="${list_user.photo}"  alt="Friend"  class="main__img"/>
+      <p class="main__friend-name">${list_user.name}</p>
+      <img class="main__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
+      <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
+     </div>`;
   document.querySelectorAll(`.main__add-friend-ic`).forEach((accept) => {
     accept.addEventListener("click", addFriend);
   });
@@ -279,12 +250,12 @@ async function removeRequestReceived(data) {
     `.main__received-card[data-id="${data.key}"]`
   );
   cnt[0].removeChild(sent_frnd_elem);
-  await updateFriendList();
+  await updateFriendsList();
 }
 
 // Update friend request sent
 async function updateRequestSent(data) {
-  await updateFriendList();
+  await updateFriendsList();
   let sentData = data.val();
   if (!sentData) {
     cnt[1].innerHTML = "";
@@ -295,14 +266,10 @@ async function updateRequestSent(data) {
   // let list_user = namesList[uidList.findIndex((UID) => UID === sent)];
   let list_user = (await readDB(database, `users/${sent}`)).val();
   cnt[1].innerHTML += `<div class="main__sent-card default" data-id=${sent}>
-      <img
-        src="${list_user.photo}"
-        alt="Friend"
-        class="main__img"
-      />
+      <img  src="${list_user.photo}"  alt="Friend"  class="main__img"/>
       <p class="main__friend-name">${list_user.name}</p>
       <img class="main__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
-    </div>`;
+     </div>`;
 }
 
 // Remove friend request sent
@@ -315,11 +282,11 @@ async function removeRequestSent(data) {
   );
   console.log(sent_frnd_elem, data.val(), data.key);
   cnt[1].removeChild(sent_frnd_elem);
-  await updateFriendList();
+  await updateFriendsList();
 }
 
 // ------------------------- db listener --------------------------
-function addDbListener() {
+function addDbListeners() {
   setDBListener(database, `users`, "child_added", appendList); //Listener for updating total users
 
   // Listener for updating friends list
@@ -408,7 +375,7 @@ function setUpChatWindow(friendCard) {
 async function updateChatWindow(friendCard) {
   setUpChatWindow(friendCard);
   let upload = document.querySelector(".upload");
-  if(!upload.classList.contains("none")){
+  if (!upload.classList.contains("none")) {
     upload.classList.add("none");
   }
   let data = await readDB(database, `chat/${friendCard.dataset.hash}/messages`);
@@ -420,12 +387,12 @@ function addMessageToContainer(message, time, position) {
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
   chatContainer.innerHTML += `<div class="main__message-container main__message-container--${position}">
-  <p class="main__message">${message}</p>  
-  <span class="main__time-stamp main__time-stamp--right">${timeStamp}</span>
-</div>`;
+    <p class="main__message">${message}</p>  
+    <span class="main__time-stamp main__time-stamp--right">${timeStamp}</span>
+   </div>`;
 }
 
-async function addFileToContainer(src, time, position, type){
+async function addFileToContainer(src, time, position, type) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
@@ -433,28 +400,29 @@ async function addFileToContainer(src, time, position, type){
   let metaData = await fileMetaData(reference);
   let size = (metaData.size / (1024 * 1024)).toFixed(2);
   let name = metaData.name;
-  console.log(size)
-  chatContainer.innerHTML += type === "image" ? 
-  `<div class="main__message-container main__message-container--${position}">
-    <div class="main__message--image-cnt">
-      <a class="main__message--link" href="${src}" download target="_blank"><img src="${src}" alt="image" class="main__message--image"></a>
-      <span class="main__message--downloaded">${size} MB</span>
-    </div>
-    <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
-  </div>` :
-  `<div class="main__message-container main__message-container--${position}">
-  <div class="main__message--file-cnt">
-    <div class="main__message--file-download"> 
-      <a class="main__message--link" href="${src}" download="${name}"><img class="main__message--download-ic" src="./assets/icons/home/download.svg" alt=""></a>
-    </div>
-    <div class="main__message--file-detail">
-      <h3 class="main__message--file-name">${name}</h3>
-      <span class="main__message--downloaded">${size} MB</span>
-    </div>
-  </div>
-  <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
-</div>`;
-autoScroll();
+  console.log(size);
+  chatContainer.innerHTML +=
+    type === "image"
+      ? `<div class="main__message-container main__message-container--${position}">
+        <div class="main__message--image-cnt">
+          <a class="main__message--link" href="${src}" download target="_blank"><img src="${src}" alt="image" class="main__message--image"></a>
+          <span class="main__message--downloaded">${size} MB</span>
+        </div>
+        <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
+      </div>`
+      : `<div class="main__message-container main__message-container--${position}">
+        <div class="main__message--file-cnt">
+          <div class="main__message--file-download"> 
+            <a class="main__message--link" href="${src}" download="${name}"><img class="main__message--download-ic" src="./assets/icons/home/download.svg" alt=""></a>
+          </div>
+          <div class="main__message--file-detail">
+            <h3 class="main__message--file-name">${name}</h3>
+            <span class="main__message--downloaded">${size} MB</span>
+          </div>
+        </div>
+        <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
+      </div>`;
+  autoScroll();
 }
 
 function autoScroll() {
@@ -466,19 +434,17 @@ function fillMessagesToChatBody(data) {
 
   Object.values(data).forEach((message) => {
     if (message.sender === user.uid) {
-      "text" in message ?
-      addMessageToContainer(message.text, message.time, "right"):
-      ("image" in message ?
-      addFileToContainer(message.image, message.time, "right", "image") : 
-      addFileToContainer(message.file, message.time, "right", "file")
-      );
+      "text" in message
+        ? addMessageToContainer(message.text, message.time, "right")
+        : "image" in message
+        ? addFileToContainer(message.image, message.time, "right", "image")
+        : addFileToContainer(message.file, message.time, "right", "file");
     } else {
-      "text" in message ?
-      addMessageToContainer(message.text, message.time, "left"):
-      ("image" in message ?
-      addFileToContainer(message.image, message.time, "left", "image") : 
-      addFileToContainer(message.file, message.time, "left", "file")
-      );
+      "text" in message
+        ? addMessageToContainer(message.text, message.time, "left")
+        : "image" in message
+        ? addFileToContainer(message.image, message.time, "left", "image")
+        : addFileToContainer(message.file, message.time, "left", "file");
     }
   });
   autoScroll();
@@ -495,15 +461,21 @@ async function addMessageToChatBody(chat) {
   let chatData = chat.val();
   if (!chatData) return;
 
-  if("image" in chatData){
-    if(document.querySelector(`.main__message-container[data-id="${chat.key}"]`)) return;
+  if ("image" in chatData) {
+    if (
+      document.querySelector(`.main__message-container[data-id="${chat.key}"]`)
+    )
+      return;
     addFileToContainer(chatData.image, chatData.time, "left", "image");
-    return ;
+    return;
   }
-  if("file" in chatData){
-    if(document.querySelector(`.main__message-container[data-id="${chat.key}"]`)) return;
+  if ("file" in chatData) {
+    if (
+      document.querySelector(`.main__message-container[data-id="${chat.key}"]`)
+    )
+      return;
     addFileToContainer(chatData.file, chatData.time, "left", "file");
-    return ;
+    return;
   }
 
   let userIds = Object.values(userData);

@@ -33,7 +33,6 @@ auth.onAuthStateChanged(async (check_user) => {
   }
 });
 
-// listener
 userProfilePic.addEventListener("click", () => {
   userSignOut(auth);
 });

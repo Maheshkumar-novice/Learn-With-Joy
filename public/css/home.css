@@ -150,10 +150,6 @@
   padding: 1.5rem;
 }
 
-.no-padding {
-  padding: 0;
-}
-
 /* main - friends & search */
 .main__friend-card,
 .main__result-card,
@@ -175,15 +171,6 @@
   background-color: #42444d;
   color: white;
 }
-
-/* .main__remove-friend,
-.main__add-friend {
-  outline: none;
-  border: none;
-  background-color: transparent;
-  color: red;
-  cursor: pointer;
-} */
 
 .main__remove-friend-ic,
 .main__add-friend-ic,
@@ -593,14 +580,6 @@
   color: white;
 }
 
-/* .main__time-stamp--right {
-  left: 52%;
-}
-
-.main__time-stamp--left {
-  right: 52%;
-} */
-
 /* upload */
 .upload {
   width: 100%;
@@ -778,4 +757,8 @@
 
 .default {
   cursor: default;
+}
+
+.no-padding {
+  padding: 0;
 }
