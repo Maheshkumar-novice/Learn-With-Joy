@@ -115,7 +115,7 @@ body {
   position: relative;
 }
 
-.main__name {
+.google-signin-user-name {
   position: absolute;
   top: 15%;
   left: 50%;
@@ -128,7 +128,7 @@ body {
   z-index: 1;
 }
 
-.main__name--input {
+.google-signin-user-name__input {
   align-self: center;
   font-size: 4rem;
   padding: 1rem;
@@ -138,16 +138,16 @@ body {
   background-color: #442656;
 }
 
-.main__name--input:focus {
+.google-signin-user-name__input:focus {
   outline: none;
 }
 
-.main__name--err {
+.google-signin-user-name__error {
   color: red;
   font-size: 1.8rem;
 }
 
-.main__name--next {
+.google-signin-user-name__next {
   align-self: flex-end;
   padding: 0.5rem 1rem;
   border-radius: 1rem;
@@ -159,7 +159,7 @@ body {
   cursor: pointer;
 }
 
-.main__name--next:hover {
+.google-signin-user-name__next:hover {
   background-color: #442656;
   color: #fbae3c;
 }
