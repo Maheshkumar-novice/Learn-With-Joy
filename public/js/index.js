@@ -19,19 +19,23 @@ const database = firebase.database();
 let namesList = [];
 
 // selectors
-const gsignIn = document.querySelector(".google__signup");
-const newNameCnt = document.querySelector(".main__name");
-const newNameInput = document.querySelector(".main__name--input");
-const newNameErr = document.querySelector(".main__name--err");
-const next = document.querySelector(".main__name--next");
-const verification = document.querySelector(".verification");
-const resend = document.querySelector(".verification__resend");
+const googleSignIn = document.querySelector(".google__signin");
+const newNameContainer = document.querySelector(".google-signin-user-name");
+const newNameInput = document.querySelector(".google-signin-user-name__input");
+const newNameError = document.querySelector(".google-signin-user-name__error");
+const nextButton = document.querySelector(".google-signin-user-name__next");
+const verificationMessageContainer = document.querySelector(".verification");
+const resendVerificationButton = document.querySelector(
+  ".verification__resend"
+);
 
 function showInput() {
-  document.querySelectorAll(".main>*:not(.main__name)").forEach((elem) => {
-    elem.style.filter = "blur(2rem)";
-  });
-  newNameCnt.classList.remove("none");
+  document
+    .querySelectorAll(".main>*:not(.google-signin-user-name)")
+    .forEach((elem) => {
+      elem.style.filter = "blur(2rem)";
+    });
+  newNameContainer.classList.remove("none");
   newNameInput.focus();
 }
 
@@ -53,7 +57,7 @@ function disableResend() {
   }
   console.log("hello");
   prev = setTimeout((e) => {
-    resend.disabled = false;
+    resendVerificationButton.disabled = false;
   }, 5000);
 }
 
@@ -64,7 +68,7 @@ function enableVerification() {
   title.classList.add("none");
   features.classList.add("none");
   subTitle.classList.add("none");
-  verification.classList.remove("none");
+  verificationMessageContainer.classList.remove("none");
   disableResend();
 }
 
@@ -83,25 +87,25 @@ auth.onAuthStateChanged(async (user) => {
       await updateNewUser();
       showInput();
     } else {
-      window.location = "../index.html";
+      window.location = "../home.html";
     }
   }
 });
 
 //event listener
-resend.addEventListener("click", async function (e) {
+resendVerificationButton.addEventListener("click", async function (e) {
   console.log("hello", this.disabled);
   let user = auth.currentUser;
-  if(user.emailVerified){
+  if (user.emailVerified) {
     this.classList.add("none");
     return;
   }
   await userEmailVerification(user);
   resend.disabled = true;
-  disableResend();
+  disableresendVerificationButton();
 });
 
-gsignIn.addEventListener("click", (e) => {
+googleSignIn.addEventListener("click", (e) => {
   console.log("hi");
   const provider = new firebase.auth.GoogleAuthProvider();
   userSignIn(auth, provider);
@@ -114,23 +118,23 @@ newNameInput.addEventListener("input", function (e) {
   if (newNameInput.value === "") return;
   check_name = namesList.find((name) => name.toLowerCase() === userLower);
   newNameInput.style.borderBottom = "1px solid black";
-  newNameErr.innerText = "";
-  next.classList.remove("none");
+  newNameError.innerText = "";
+  nextButton.classList.remove("none");
   if (check_name) {
-    newNameErr.innerText = "User Name Already Taken";
+    newNameError.innerText = "User Name Already Taken";
     newNameInput.style.borderBottom = "1px solid red";
-    next.classList.add("none");
+    nextButton.classList.add("none");
   }
 });
 
-next.addEventListener("click", function (e) {
+nextButton.addEventListener("click", function (e) {
   if (newNameInput.value === "") return;
   updateUserName(1);
 });
 
 function changeLocation() {
   setTimeout(() => {
-    window.location = "../index.html";
+    window.location = "../home.html";
   }, 200);
 }
 
@@ -161,25 +165,7 @@ function updateUserName(val) {
     });
 }
 
-// timer
-function displayTime() {
-  let date = new Date();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-  let currentTime =
-    (hours < 10 ? "0" + hours : hours) +
-    ":" +
-    (minutes < 10 ? "0" + minutes : minutes) +
-    ":" +
-    (seconds < 10 ? "0" + seconds : seconds);
-  document.querySelector(".time").innerHTML = currentTime;
-  setTimeout(displayTime, 1000);
-}
-
-displayTime();
-
-//
+// login-signup-form
 const loginTab = document.querySelector(".login__tab");
 const signupTab = document.querySelector(".signup__tab");
 const loginForm = document.querySelector(".login__form");
@@ -187,17 +173,16 @@ const loginForm = document.querySelector(".login__form");
 loginTab.addEventListener("click", function () {
   loginForm.innerHTML = `
   <div class="input__field">
-  <label for="email"> Email </label>
-  <input type="email" id="email" class="form__input form__input-main" required/>
-</div>
-
-<div class="input__field">
-  <label for="password"> Password </label>
-  <input type="password" id="password" class="form__input form__input-main" required/>
-</div>
-
-<button type="submit" class="form__button">Login</button>
-  `;
+    <label for="email"> Email </label>
+    <input type="email" id="email" class="form__input form__input-main" required/>
+    <p class="email-error error none">Invalid e-mail given.</p>
+  </div>
+  <div class="input__field">
+    <label for="password"> Password </label>
+    <input type="password" id="password" class="form__input form__input-main" required/>
+    <p class="password-error error none">Invalid password given.</p>
+  </div>
+  <button type="submit" class="form__button">Login</button>`;
   loginTab.classList.add("active");
   signupTab.classList.remove("active");
   addSignListener();
@@ -206,25 +191,26 @@ loginTab.addEventListener("click", function () {
 signupTab.addEventListener("click", async function () {
   loginForm.innerHTML = `
   <div class="input__field">
-  <label for="name"> User Name </label>
-  <input type="name" id="name" class="form__input form__input-username" required autocomplete="off"/>
-</div>
-<div class="input__field">
-  <label for="email"> Email </label>
-  <input type="email" id="email" class="form__input form__input-main" required/>
-</div>
-
-<div class="input__field">
-  <label for="password"> Password </label>
-  <input type="password" id="password" class="form__input form__input-main" required/>
-</div>
-
-<div class="input__field">
-  <label for="re-enter-password"> Re-Enter Password </label>
-  <input type="password" id="re-enter-password" class="form__input" required/>
-</div>
-
-<button type="submit" class="form__button">Signup</button>`;
+    <label for="name"> User Name </label>
+    <input type="name" id="name" class="form__input form__input-username" required autocomplete="off"/>
+    <p class="name-error error none">Invalid username given.</p>
+  </div>
+  <div class="input__field">
+    <label for="email"> Email </label>
+    <input type="email" id="email" class="form__input form__input-main" required/>
+    <p class="email-error error none">Invalid e-mail given.</p>
+  </div>
+  <div class="input__field">
+    <label for="password"> Password </label>
+    <input type="password" id="password" class="form__input form__input-main" required/>
+    <p class="password-error error none">Invalid password given.</p>
+  </div>
+  <div class="input__field">
+    <label for="re-enter-password"> Re-Enter Password </label>
+    <input type="password" id="re-enter-password" class="form__input" required/>
+    <p class="password-error error none">Invalid password given.</p>
+  </div>
+  <button type="submit" class="form__button">Signup</button>`;
   loginTab.classList.remove("active");
   signupTab.classList.add("active");
   addSignListener();
@@ -241,7 +227,7 @@ const features = document.querySelector(".features");
 const signinToggle = document.querySelector(".sign-in");
 signinToggle.addEventListener("click", function () {
   console.log("hi");
-  verification.classList.add("none");
+  verificationMessageContainer.classList.add("none");
   login.classList.toggle("none");
   title.classList.toggle("none");
   features.classList.toggle("none");
@@ -317,3 +303,21 @@ function handleVerifyEmail(auth, actionCode) {
 window.addEventListener("DOMContentLoaded", (e) => {
   handleURL();
 });
+
+// timer
+function displayTime() {
+  let date = new Date();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+  let currentTime =
+    (hours < 10 ? "0" + hours : hours) +
+    ":" +
+    (minutes < 10 ? "0" + minutes : minutes) +
+    ":" +
+    (seconds < 10 ? "0" + seconds : seconds);
+  document.querySelector(".time").innerHTML = currentTime;
+  setTimeout(displayTime, 1000);
+}
+
+displayTime();
