@@ -8,7 +8,10 @@ import {
   userEmailVerification,
   userSignOut,
   actionCodeVerify,
+  addChlidDB,
+  setDBListener,
 } from "./modules/firebase.js";
+import { hidePassIC, showPassIC } from "./modules/util.js";
 
 // firebase initialization
 firebase.initializeApp(firebaseConfig);
@@ -17,6 +20,13 @@ firebase.analytics();
 const auth = firebase.auth();
 const database = firebase.database();
 let namesList = [];
+
+// Check regex - input condition
+let checkInputCondition = {
+  username: false,
+  password: false,
+  "re-password": false,
+};
 
 // selectors
 const googleSignIn = document.querySelector(".google__signin");
@@ -39,8 +49,9 @@ function showInput() {
   newNameInput.focus();
 }
 
-async function updateNewUser() {
-  let data = (await readDB(database, "users")).val();
+async function updateNewUser(user_data) {
+  namesList = [];
+  let data = user_data.val();
   console.log(data);
   if (data) {
     for (let id in data) {
@@ -49,6 +60,8 @@ async function updateNewUser() {
   }
   console.log(namesList);
 }
+
+setDBListener(database, "users", "value", updateNewUser);
 
 let prev = null;
 function disableResend() {
@@ -84,7 +97,6 @@ auth.onAuthStateChanged(async (user) => {
     }
     let check_user = await readDB(database, `users/${user.uid}`);
     if (!check_user.val()) {
-      await updateNewUser();
       showInput();
     } else {
       window.location = "../home.html";
@@ -180,11 +192,14 @@ loginTab.addEventListener("click", function () {
   <div class="input__field">
     <label for="password"> Password </label>
     <input type="password" id="password" class="form__input form__input-main" required/>
+    ${showPassIC}
+    ${hidePassIC}
     <p class="password-error error none">Invalid password given.</p>
   </div>
   <button type="submit" class="form__button">Login</button>`;
   loginTab.classList.add("active");
   signupTab.classList.remove("active");
+  togglePassword();
   addSignListener();
 });
 
@@ -193,7 +208,7 @@ signupTab.addEventListener("click", async function () {
   <div class="input__field">
     <label for="name"> User Name </label>
     <input type="name" id="name" class="form__input form__input-username" required autocomplete="off"/>
-    <p class="name-error error none">Invalid username given.</p>
+    <p class="name-error error none">Username already Taken.</p>
   </div>
   <div class="input__field">
     <label for="email"> Email </label>
@@ -203,18 +218,20 @@ signupTab.addEventListener("click", async function () {
   <div class="input__field">
     <label for="password"> Password </label>
     <input type="password" id="password" class="form__input form__input-main" required/>
-    <p class="password-error error none">Invalid password given.</p>
+    ${showPassIC}
+    ${hidePassIC}
+    <p class="password-error error none">Minimum 8 character Length.</p>
   </div>
   <div class="input__field">
     <label for="re-enter-password"> Re-Enter Password </label>
     <input type="password" id="re-enter-password" class="form__input" required/>
-    <p class="password-error error none">Invalid password given.</p>
+    <p class="password-error error none">Password does not match.</p>
   </div>
   <button type="submit" class="form__button">Signup</button>`;
   loginTab.classList.remove("active");
   signupTab.classList.add("active");
   addSignListener();
-  await updateNewUser();
+  togglePassword();
   document
     .querySelector(".form__input-username")
     .addEventListener("input", checkUniqueUser);
@@ -241,8 +258,12 @@ function checkUniqueUser() {
   if (this.value === "") return;
   check_name = namesList.find((name) => name.toLowerCase() === userLower);
   this.style.borderBottom = "1px solid #fbae3c";
+  checkInputCondition["username"] = true;
+  document.querySelector(".name-error").classList.add("none");
   if (check_name) {
     this.style.borderBottom = "1px solid red";
+    document.querySelector(".name-error").classList.remove("none");
+    checkInputCondition["username"] = false;
   }
 }
 
@@ -260,6 +281,22 @@ function addSignListener() {
 }
 
 addSignListener();
+
+function togglePassword() {
+  const passwordIC = document.querySelectorAll(".toggle-pass");
+  const passwordInp = document.querySelectorAll("input[type='password']");
+  passwordIC.forEach((IC) => {
+    IC.addEventListener("click", function (e) {
+      let change = passwordIC[this.dataset.id === "1" ? 0 : 1];
+      this.classList.toggle("none");
+      change.classList.toggle("none");
+      passwordInp.forEach((inp) => {
+        inp.type = inp.type === "password" ? "text" : "password";
+      });
+    });
+  });
+}
+togglePassword();
 
 function getParameterByName(urlParams, name) {
   return urlParams.get(name);
@@ -293,8 +330,7 @@ function handleURL() {
 function handleVerifyEmail(auth, actionCode) {
   auth
     .applyActionCode(actionCode)
-    .then((resp) => {
-    })
+    .then((resp) => {})
     .catch((error) => {
       console.log(error);
     });
