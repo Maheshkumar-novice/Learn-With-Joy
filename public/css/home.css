@@ -5,6 +5,53 @@ body {
   background-size: cover;
 }
 
+.sign-in,
+.google__signin {
+  position: absolute;
+  top: 15px;
+  width: 150px;
+  height: 60px;
+  font-size: 2rem;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  background-color: #442656;
+  color: #fbae3c;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s ease-in-out;
+}
+
+.sign-in {
+  right: 15px;
+}
+
+.google__signin {
+  right: 200px;
+}
+
+.sign-in:hover,
+.google__signin:hover {
+  background-color: #fbae3c;
+  color: #442656;
+}
+
+.time {
+  position: absolute;
+  top: 15px;
+  left: 25px;
+  font-family: "Klee One", cursive;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #442656;
+  z-index: 2;
+  transition: all 0.3s ease-in-out;
+}
+
+.time:hover {
+  transform: scale(1.2);
+}
+
 .verification {
   position: absolute;
   top: 20%;
@@ -37,69 +84,6 @@ body {
   border-color: #fbae3c;
   color: #fbae3c;
   background-color: transparent;
-}
-
-.sign-in,
-.google__signup {
-  position: absolute;
-  top: 15px;
-  width: 150px;
-  height: 60px;
-  font-size: 2rem;
-  outline: none;
-  border: none;
-  border-radius: 10px;
-  background-color: #442656;
-  color: #fbae3c;
-  cursor: pointer;
-  z-index: 2;
-  transition: all 0.3s ease-in-out;
-}
-
-.sign-in {
-  right: 15px;
-}
-
-.google__signup {
-  right: 200px;
-}
-
-.sign-in:hover,
-.google__signup:hover {
-  background-color: #fbae3c;
-  color: #442656;
-}
-
-.time {
-  position: absolute;
-  top: 15px;
-  left: 25px;
-  font-family: "Klee One", cursive;
-  font-size: 3rem;
-  font-weight: bold;
-  color: #442656;
-  z-index: 2;
-  transition: all 0.3s ease-in-out;
-}
-
-.time:hover {
-  transform: scale(1.2);
-}
-
-.title,
-.sub-title {
-  font-family: "Klee One", cursive;
-  color: #fbae3c;
-}
-
-.title {
-  font-size: 13rem;
-  text-shadow: 0.03em 0.025em #442656;
-}
-
-.sub-title {
-  font-size: 2.5rem;
-  font-weight: normal;
 }
 
 .main {
@@ -162,21 +146,6 @@ body {
 .google-signin-user-name__next:hover {
   background-color: #442656;
   color: #fbae3c;
-}
-
-.features {
-  display: flex;
-  gap: 3.5rem;
-}
-
-.feature {
-  width: 5rem;
-  height: 5rem;
-  transition: all 0.3s ease-in-out;
-}
-
-.feature:hover {
-  transform: scale(1.2);
 }
 
 .login {
@@ -277,6 +246,37 @@ body {
 .form__button:hover {
   background-color: #442656;
   color: #fbae3c;
+}
+
+.features {
+  display: flex;
+  gap: 3.5rem;
+}
+
+.feature {
+  width: 5rem;
+  height: 5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.feature:hover {
+  transform: scale(1.2);
+}
+
+.title,
+.sub-title {
+  font-family: "Klee One", cursive;
+  color: #fbae3c;
+}
+
+.title {
+  font-size: 13rem;
+  text-shadow: 0.03em 0.025em #442656;
+}
+
+.sub-title {
+  font-size: 2.5rem;
+  font-weight: normal;
 }
 
 .active {

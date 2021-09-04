@@ -19,19 +19,23 @@ const database = firebase.database();
 let namesList = [];
 
 // selectors
-const gsignIn = document.querySelector(".google__signup");
-const newNameCnt = document.querySelector(".main__name");
-const newNameInput = document.querySelector(".main__name--input");
-const newNameErr = document.querySelector(".main__name--err");
-const next = document.querySelector(".main__name--next");
-const verification = document.querySelector(".verification");
-const resend = document.querySelector(".verification__resend");
+const googleSignIn = document.querySelector(".google__signin");
+const newNameContainer = document.querySelector(".google-signin-user-name");
+const newNameInput = document.querySelector(".google-signin-user-name__input");
+const newNameError = document.querySelector(".google-signin-user-name__error");
+const nextButton = document.querySelector(".google-signin-user-name__next");
+const verificationMessageContainer = document.querySelector(".verification");
+const resendVerificationButton = document.querySelector(
+  ".verification__resend"
+);
 
 function showInput() {
-  document.querySelectorAll(".main>*:not(.main__name)").forEach((elem) => {
-    elem.style.filter = "blur(2rem)";
-  });
-  newNameCnt.classList.remove("none");
+  document
+    .querySelectorAll(".main>*:not(.google-signin-user-name)")
+    .forEach((elem) => {
+      elem.style.filter = "blur(2rem)";
+    });
+  newNameContainer.classList.remove("none");
   newNameInput.focus();
 }
 
@@ -53,7 +57,7 @@ function disableResend() {
   }
   console.log("hello");
   prev = setTimeout((e) => {
-    resend.disabled = false;
+    resendVerificationButton.disabled = false;
   }, 5000);
 }
 
@@ -62,7 +66,7 @@ function enableVerification() {
   title.classList.toggle("none");
   features.classList.toggle("none");
   subTitle.classList.toggle("none");
-  verification.classList.remove("none");
+  verificationMessageContainer.classList.remove("none");
   disableResend();
 }
 
@@ -86,7 +90,7 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 //event listener
-resend.addEventListener("click", async function (e) {
+resendVerificationButton.addEventListener("click", async function (e) {
   console.log("hello", this.disabled);
   let user = auth.currentUser;
   if (user.emailVerified) {
@@ -95,10 +99,10 @@ resend.addEventListener("click", async function (e) {
   }
   await userEmailVerification(user, actionCodeVerify);
   resend.disabled = true;
-  disableResend();
+  disableresendVerificationButton();
 });
 
-gsignIn.addEventListener("click", (e) => {
+googleSignIn.addEventListener("click", (e) => {
   console.log("hi");
   const provider = new firebase.auth.GoogleAuthProvider();
   userSignIn(auth, provider);
@@ -111,16 +115,16 @@ newNameInput.addEventListener("input", function (e) {
   if (newNameInput.value === "") return;
   check_name = namesList.find((name) => name.toLowerCase() === userLower);
   newNameInput.style.borderBottom = "1px solid black";
-  newNameErr.innerText = "";
-  next.classList.remove("none");
+  newNameError.innerText = "";
+  nextButton.classList.remove("none");
   if (check_name) {
-    newNameErr.innerText = "User Name Already Taken";
+    newNameError.innerText = "User Name Already Taken";
     newNameInput.style.borderBottom = "1px solid red";
-    next.classList.add("none");
+    nextButton.classList.add("none");
   }
 });
 
-next.addEventListener("click", function (e) {
+nextButton.addEventListener("click", function (e) {
   if (newNameInput.value === "") return;
   updateUserName(1);
 });
@@ -150,7 +154,7 @@ function updateUserName(val) {
         changeLocation();
       } else {
         await userEmailVerification(user);
-        resend.disabled = true;
+        resendVerificationButton.disabled = true;
         enableVerification();
       }
     })
@@ -159,25 +163,7 @@ function updateUserName(val) {
     });
 }
 
-// timer
-function displayTime() {
-  let date = new Date();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-  let currentTime =
-    (hours < 10 ? "0" + hours : hours) +
-    ":" +
-    (minutes < 10 ? "0" + minutes : minutes) +
-    ":" +
-    (seconds < 10 ? "0" + seconds : seconds);
-  document.querySelector(".time").innerHTML = currentTime;
-  setTimeout(displayTime, 1000);
-}
-
-displayTime();
-
-//
+// login-signup-form
 const loginTab = document.querySelector(".login__tab");
 const signupTab = document.querySelector(".signup__tab");
 const loginForm = document.querySelector(".login__form");
@@ -239,7 +225,7 @@ const features = document.querySelector(".features");
 const signinToggle = document.querySelector(".sign-in");
 signinToggle.addEventListener("click", function () {
   console.log("hi");
-  verification.classList.add("none");
+  verificationMessageContainer.classList.add("none");
   login.classList.toggle("none");
   title.classList.toggle("none");
   features.classList.toggle("none");
@@ -316,3 +302,21 @@ function handleVerifyEmail(auth, actionCode, continueUrl) {
 window.addEventListener("DOMContentLoaded", (e) => {
   handleURL();
 });
+
+// timer
+function displayTime() {
+  let date = new Date();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+  let currentTime =
+    (hours < 10 ? "0" + hours : hours) +
+    ":" +
+    (minutes < 10 ? "0" + minutes : minutes) +
+    ":" +
+    (seconds < 10 ? "0" + seconds : seconds);
+  document.querySelector(".time").innerHTML = currentTime;
+  setTimeout(displayTime, 1000);
+}
+
+displayTime();
