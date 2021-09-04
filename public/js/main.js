@@ -6,26 +6,21 @@ firebase.analytics();
 
 const auth = firebase.auth();
 const database = firebase.database();
-
-// selector
 const userProfilePic = document.querySelector(".header__img");
 const userName = document.querySelector(".header__title--username");
 
-//update profile and name
 function updateUserDetails(user) {
   userProfilePic.src = user.photoURL;
   userName.innerText = user.displayName;
 }
 
-// sign In status change
-auth.onAuthStateChanged(async (check_user) => {
-  if (check_user) {
-    // check user redirected directly
-    let check_presence = await readDB(database, `users/${check_user.uid}`);
+auth.onAuthStateChanged(async (currentUser) => {
+  if (currentUser) {
+    let check_presence = await readDB(database, `users/${currentUser.uid}`);
     if (!check_presence.val()) {
       window.location = "./index.html";
     }
-    updateUserDetails(check_user);
+    updateUserDetails(currentUser);
     document.querySelector(".loader").classList.add("none");
     document.querySelector("main").classList.remove("none");
   } else {
@@ -37,7 +32,6 @@ userProfilePic.addEventListener("click", () => {
   userSignOut(auth);
 });
 
-// timer
 function displayTime() {
   let date = new Date();
   let hours = date.getHours();
@@ -55,9 +49,8 @@ function displayTime() {
 
 displayTime();
 
-// greeting
-let d = new Date();
-let time = d.getHours();
+let dateObject = new Date();
+let time = dateObject.getHours();
 let greetHolder = document.querySelector(".header__title--greet");
 if (time < 12) {
   greetHolder.textContent = "Good morning! ";
