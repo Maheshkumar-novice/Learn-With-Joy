@@ -23,13 +23,13 @@ auth.onAuthStateChanged(async (check_user) => {
     // check user redirected directly
     let check_presence = await readDB(database, `users/${check_user.uid}`);
     if (!check_presence.val()) {
-      window.location = "./sign_in.html";
+      window.location = "./index.html";
     }
     updateUserDetails(check_user);
     document.querySelector(".loader").classList.add("none");
     document.querySelector("main").classList.remove("none");
   } else {
-    window.location = "./sign_in.html";
+    window.location = "./index.html";
   }
 });
 

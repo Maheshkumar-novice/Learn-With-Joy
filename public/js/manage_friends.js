@@ -36,7 +36,7 @@ auth.onAuthStateChanged(async (check_user) => {
     //releasing disabled
     searchInp.disabled = false;
   } else {
-    window.location = "./sign_in.html";
+    window.location = "./index.html";
   }
 });
 

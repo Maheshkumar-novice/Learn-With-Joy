@@ -4,225 +4,96 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | Learn With Joy</title>
+    <title>Learn With Joy | Home</title>
     <link rel="stylesheet" href="./css/custom_reset.css" />
     <link rel="stylesheet" href="./css/common.css" />
-    <link rel="stylesheet" href="./css/index.css" />
-    <link rel="stylesheet" href="./css/loader.css">
+    <link rel="stylesheet" href="./css/home.css" />
   </head>
   <body>
-    <header class="header">
-      <h1 class="header__title">
-        <span class="header__title--greet">Good Morning! </span
-        ><span class="header__title--username"></span>.
-      </h1>
-      <div class="header__notification-cnt">
-        <div class="header__notification">
-          <img
-            class="header__notification-ic"
-            src="./assets/icons/home/notification.svg"
-            alt="notification"
-          />
-          <div class="header__notification-display none" data-status="off">
-            <!-- <p>No New notification</p> -->
-            <!-- <div class="header__notification-eachmsg">
-              <p class="header__notification-msg">
-                <span class="header__notification-name">Lorem</span> has <span class="header__notifcation-status">accepted</span> your friend request
-              </p>
-              <img src="./assets/icons/home/msg-clear.svg" class="header__notification-clrmsg" alt="clear message">
-            </div> -->
-          </div>
-        </div>
-        <img
-          src="./assets/icons/home/user.svg"
-          alt="Profile Picture"
-          class="header__img"
-        />
+    <button class="sign-in">Sign In</button>
+    <button class="google__signin">Google</button>
+    <p class="time"></p>
+
+    <div class="verification none">
+      <div class="verification__text">
+        Please check your mail and verify to continue
       </div>
-    </header>
-    <nav class="navbar">
-      <h2 class="navbar__title navbar__tab navbar__tab--active">Friends</h2>
-      <h2 class="navbar__title navbar__tab">Groups</h2>
-      <h2 class="navbar__title navbar__tab">Notes</h2>
-      <h2 class="navbar__title navbar__tab">Calendar</h2>
-      <h2 class="navbar__title navbar__tab">Entertainment</h2>
-      <h2 class="navbar__title navbar__tab">Timer</h2>
-      <img
-        src="./assets/icons/home/drop down.svg"
-        alt="Drop Down Menu"
-        class="navbar__img"
-      />
-    </nav>
-    <div class="loader">
-      <div class="lds-dual-ring"></div>
+      <button class="verification__resend">Resend</button>
     </div>
-    <main class="main none">
-      <div class="main__container main__friends">
-        <div class="main__search-trigger">
+
+    <main class="main">
+      <div class="google-signin-user-name none">
+        <div class="google-signin-user-name__input-container">
           <input
+            class="google-signin-user-name__input"
             type="text"
-            placeholder="Search New Friends..."
-            class="main__input"
-            disabled
+            name="name"
+            id="name"
+            placeholder="Username"
+            autocomplete="off"
           />
+          <p class="google-signin-user-name__error"></p>
         </div>
-        <div class="main__friend-cnt">
-          <!-- <div class="main__friend-card">
-            <img
-              src="./assets/icons/home/user.svg"
-              alt="Friend"
-              class="main__img"
-            />
-            <p class="main__friend-name">Lorem Ipsum</p>
-            <button class="main__remove-friend">Remove</button>
-          </div>
-          <div class="main__friend-card">
-            <img
-              src="./assets/icons/home/user.svg"
-              alt="Friend"
-              class="main__img"
-            />
-            <p class="main__friend-name">Lorem Ipsum</p>
-            <button class="main__remove-friend">Remove</button>
-          </div> -->
-        </div>
+        <div class="google-signin-user-name__next">Next</div>
       </div>
-      <div class="main__container no-padding">
-        <div class="main__search-cnt none">
-          <div class="main__search-heading">
-            <h1>Search results</h1>
-            <img
-              class="main__search-close-ic"
-              src="./assets/icons/home/msg-clear.svg"
-              alt="close"
+      <section class="login none">
+        <header class="login__header">
+          <h2 class="login__tab active">Login</h2>
+          <h2 class="signup__tab">Signup</h2>
+        </header>
+        <form action="#" class="login__form">
+          <div class="input__field">
+            <label for="email"> Email </label>
+            <input
+              type="email"
+              id="email"
+              class="form__input form__input-main"
+              required
             />
+            <p class="email-error error none">Invalid e-mail given.</p>
           </div>
-          <div class="main__search-resultcnt"></div>
-        </div>
 
-        <div class="main__chat">
-          <div class="main__chat-window">
-            <div class="main__chat-header none">
-              <img
-                src="./assets/icons/home/user.svg"
-                alt="User Profile Picture"
-                class="main__img--chat"
-              />
-              <p class="main__chat-username">Lorem Ipsum</p>
-            </div>
-            <div class="main__chat-body">
-              <p class="main__chat-info">Please select the friend to chat with them</p>
-              
-              <div class="upload none">
-                <div class="upload__info">
-                  <h4 class="upload__info--no">Max file Limit: 5</h4>
-                  <h4 class="upload__info--size">Max file Size: 10MB</h4>
-                </div>
-                <div class="upload__preview none">
-                </div>
-
-                <div class="upload__dragndrop">
-                  <div class="upload__dragndrop--info">
-                    <img class="upload__dragndrop-ic" src="./assets/icons/home/upload.svg" alt="">
-                    <h3>Drag and Drop to Upload Files</h4>
-                  </div>
-                </div>
-
-                <div class="upload__click">
-                  <div class="upload__click--each upload__file" data-value="0">
-                    <input class="upload__input upload__input-file" type="file" accept=".xlsx, .xl, .doc,.docx, .ppt, .pptx, .txt, .pdf" hidden="hidden" multiple data-type="docs"/>
-                    <img
-                      class="upload__click-ic"
-                      src="./assets/icons/home/file-upload.svg"
-                      alt="docs-upload"
-                    />
-                    <span>Files</span>
-                  </div>
-                  <div class="upload__click--each upload__image" data-value="1">
-                    <input class="upload__input upload__input-image" type="file" accept="image/*" hidden="hidden" multiple data-type="image"/>
-                    <img
-                      class="upload__click-ic"
-                      src="./assets/icons/home/image-upload.svg"
-                      alt="img-upload"
-                    />
-                    <span>Images</span>
-                  </div>
-                
-                </div>
-
-              </div>
-              <div class="main__chat-container none">
-              </div>
-            </div>
-            <div class="main__chat-message-sender none">
-              <img
-                src="./assets/icons/home/add_file.svg"
-                alt="Send Message"
-                class="main__img--file"
-              />
-              <input
-                type="text"
-                placeholder="Enter Message..."
-                class="main__input main__input--chat"
-                data-chat-hash='null'
-              />
-              <img
-                src="./assets/icons/home/send.svg"
-                alt="Send Message"
-                class="main__img--send"
-              />
-            </div>
+          <div class="input__field">
+            <label for="password"> Password </label>
+            <input
+              type="password"
+              id="password"
+              class="form__input form__input-main"
+              required
+            />
+            <p class="password-error error none">Invalid password given.</p>
           </div>
-        </div>
+
+          <button type="submit" class="form__button">Login</button>
+        </form>
+      </section>
+      <h1 class="title">Learn With Joy</h1>
+      <div class="features">
+        <img
+          src="./assets/icons/sign_in/calculator.svg"
+          alt=""
+          class="feature"
+        />
+        <img src="./assets/icons/sign_in/calendar.svg" alt="" class="feature" />
+        <img src="./assets/icons/sign_in/chat.svg" alt="" class="feature" />
+        <img
+          src="./assets/icons/sign_in/entertainment.svg"
+          alt=""
+          class="feature"
+        />
+        <img src="./assets/icons/sign_in/puzzle.svg" alt="" class="feature" />
+        <img src="./assets/icons/sign_in/notes.svg" alt="" class="feature" />
+        <img src="./assets/icons/sign_in/upload.svg" alt="" class="feature" />
       </div>
-      <div class="main__container main__requests">
-        <div class="main__req-rec">
-          <h2 class="main__req-header">Requests Received</h2>
-          <div class="main__req-cards">
-            <!-- <div class="main__friend-card default">
-              <img
-                src="./assets/icons/home/user.svg"
-                alt="Friend"
-                class="main__img"
-              />
-              <p class="main__friend-name">Lorem Ipsum</p>
-              <img class="main__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
-              <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
-            </div> -->
-          </div>
-        </div>
-        <div class="main__req-sent">
-          <h2 class="main__req-header">Requests Sent</h2>
-          <div class="main__req-cards">
-            <!-- <div class="main__friend-card default">
-              <img
-                src="./assets/icons/home/user.svg"
-                alt="Friend"
-                class="main__img"
-              />
-              <p class="main__friend-name">Lorem Ipsum</p>
-              <img class="main__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
-            </div> -->
-          </div>
-        </div>
-      </div>
+      <h2 class="sub-title">All the tools you need for learning in on place</h2>
     </main>
-    <footer class="footer">
-      <p class="footer__time">01:21:19</p>
-    </footer>
 
     <!-- firebase script-->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-
     <!-- Main script -->
-    <script type="module" src="./js/main.js"></script>
-    <script type="module" src="./js/manage_friends.js"></script>
-    <!-- <script type="module" src="./js/manage_friends.js"></script> -->
-    <!-- <script type="module" src="./js/chat.js"></script> -->
-    <script type="module" src="./js/file_upload.js"></script>
+    <script type="module" src="./js/index.js"></script>
   </body>
 </html>
