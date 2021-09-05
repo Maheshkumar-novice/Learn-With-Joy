@@ -17,7 +17,7 @@ function updateUserDetails(user) {
 auth.onAuthStateChanged(async (currentUser) => {
   if (currentUser) {
     let check_presence = await readDB(database, `users/${currentUser.uid}`);
-    if (!check_presence.val()) {
+    if (!currentUser.emailVerified || !check_presence.val()) {
       window.location = "./index.html";
     }
     updateUserDetails(currentUser);

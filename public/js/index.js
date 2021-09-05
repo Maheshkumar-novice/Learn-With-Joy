@@ -6,12 +6,9 @@ import {
   userEmailSignUp,
   userEmailLogIn,
   userEmailVerification,
-  userSignOut,
-  actionCodeVerify,
-  addChlidDB,
   setDBListener,
 } from "./modules/firebase.js";
-import { hidePassIC, showPassIC } from "./modules/util.js";
+import { loginTemplate, signupTemplate } from "./modules/template.js";
 
 // firebase initialization
 firebase.initializeApp(firebaseConfig);
@@ -183,20 +180,7 @@ const signupTab = document.querySelector(".signup__tab");
 const loginForm = document.querySelector(".login__form");
 
 loginTab.addEventListener("click", function () {
-  loginForm.innerHTML = `
-  <div class="input__field">
-    <label for="email"> Email </label>
-    <input type="email" id="email" class="form__input form__input-main" required/>
-    <p class="email-error error none">Invalid e-mail given.</p>
-  </div>
-  <div class="input__field">
-    <label for="password"> Password </label>
-    <input type="password" id="password" class="form__input form__input-main" required/>
-    ${showPassIC}
-    ${hidePassIC}
-    <p class="password-error error none">Invalid password given.</p>
-  </div>
-  <button type="submit" class="form__button">Login</button>`;
+  loginForm.innerHTML = loginTemplate;
   loginTab.classList.add("active");
   signupTab.classList.remove("active");
   togglePassword();
@@ -204,30 +188,7 @@ loginTab.addEventListener("click", function () {
 });
 
 signupTab.addEventListener("click", async function () {
-  loginForm.innerHTML = `
-  <div class="input__field">
-    <label for="name"> User Name </label>
-    <input type="name" id="name" class="form__input form__input-username" required autocomplete="off"/>
-    <p class="name-error error none">Username already Taken.</p>
-  </div>
-  <div class="input__field">
-    <label for="email"> Email </label>
-    <input type="email" id="email" class="form__input form__input-main" required/>
-    <p class="email-error error none">Invalid e-mail given.</p>
-  </div>
-  <div class="input__field">
-    <label for="password"> Password </label>
-    <input type="password" id="password" class="form__input form__input-main" required/>
-    ${showPassIC}
-    ${hidePassIC}
-    <p class="password-error error none">Minimum 8 character Length.</p>
-  </div>
-  <div class="input__field">
-    <label for="re-enter-password"> Re-Enter Password </label>
-    <input type="password" id="re-enter-password" class="form__input" required/>
-    <p class="password-error error none">Password does not match.</p>
-  </div>
-  <button type="submit" class="form__button">Signup</button>`;
+  loginForm.innerHTML = signupTemplate;
   loginTab.classList.remove("active");
   signupTab.classList.add("active");
   addSignListener();
@@ -267,16 +228,36 @@ function checkUniqueUser() {
   }
 }
 
+let errorElem;
 function addSignListener() {
   const signBtn = document.querySelector(".form__button");
   console.log(signBtn);
-  signBtn.addEventListener("click", function (e) {
+  signBtn.addEventListener("click", async function (e) {
     e.preventDefault();
-    console.log(this.textContent);
+    errorElem ? errorElem.classList.add("none") : "";
     const email = document.querySelectorAll(".form__input-main");
-    this.textContent === "Signup"
-      ? userEmailSignUp(auth, email[0].value, email[1].value)
-      : userEmailLogIn(auth, email[0].value, email[1].value);
+
+    try {
+      if (
+        this.textContent === "Signup" &&
+        checkInputCondition["username"] &&
+        checkInputCondition["password"] &&
+        checkInputCondition["re-password"]
+      ) {
+        await userEmailSignUp(auth, email[0].value, email[1].value);
+      } else if (
+        this.textContent === "Login" &&
+        checkInputCondition["password"]
+      ) {
+        await userEmailLogIn(auth, email[0].value, email[1].value);
+      }
+    } catch (error) {
+      let errorMessage = error.code.split("auth/")[1];
+      let errorShowElem = errorElem = error.code.includes("wrong-password") ? document.querySelector(".password-error") : document.querySelector(".email-error");
+      errorShowElem.classList.remove("none");
+      errorShowElem.textContent = errorMessage;
+      console.log(error);
+    }
   });
 }
 
@@ -295,8 +276,48 @@ function togglePassword() {
       });
     });
   });
+  passwordInp[0].addEventListener("input", function (e) {
+    if (this.value.length === 0) {
+      document.querySelector(".password-error").classList.add("none");
+      checkInputCondition["password"] = false;
+      passwordInp.length === 2
+        ? checkReEnterPassword(passwordInp[0], passwordInp[1])
+        : "";
+      return;
+    }
+    if (this.value.length < 8) {
+      document.querySelector(".password-error").classList.remove("none");
+      checkInputCondition["password"] = false;
+      return;
+    }
+    document.querySelector(".password-error").classList.add("none");
+    checkInputCondition["password"] = true;
+    passwordInp.length === 2
+      ? checkReEnterPassword(passwordInp[0], passwordInp[1])
+      : "";
+  });
+  if (passwordInp.length === 2) {
+    passwordInp[1].addEventListener("input", function (e) {
+      checkReEnterPassword(passwordInp[0], passwordInp[1]);
+    });
+  }
 }
 togglePassword();
+
+function checkReEnterPassword(orignial, reEnter) {
+  if (reEnter.value.length === 0) {
+    document.querySelector(".re-password-error").classList.add("none");
+    checkInputCondition["re-password"] = false;
+    return;
+  }
+  if (orignial.value !== reEnter.value) {
+    document.querySelector(".re-password-error").classList.remove("none");
+    checkInputCondition["re-password"] = false;
+    return;
+  }
+  document.querySelector(".re-password-error").classList.add("none");
+  checkInputCondition["re-password"] = true;
+}
 
 function getParameterByName(urlParams, name) {
   return urlParams.get(name);

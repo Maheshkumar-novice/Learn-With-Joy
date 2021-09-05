@@ -306,4 +306,6 @@ body {
 .error {
   color: red;
   font-size: 1.7rem;
+  position: absolute;
+  top: 100%;
 }
