@@ -11,7 +11,7 @@ export const firebaseConfig = {
 };
 
 export const actionCodeVerify = {
-  url: 'http://localhost:5000'
+  url: 'http://localhost:5000/home.html'
 }
 
 // ----------------------------------------Authentication-------------------------------------
@@ -32,8 +32,8 @@ export async function userEmailLogIn(auth, email, password){
 }
 
 //E mail verification
-export async function userEmailVerification(user){
-  return await user.sendEmailVerification();
+export async function userEmailVerification(user, actionCode){
+  return await user.sendEmailVerification(actionCode);
 }
 
 // Sign Out

@@ -7,6 +7,7 @@ import {
   userEmailLogIn,
   userEmailVerification,
   setDBListener,
+  actionCodeVerify,
 } from "./modules/firebase.js";
 import { loginTemplate, signupTemplate } from "./modules/template.js";
 
@@ -61,7 +62,7 @@ async function updateNewUser(user_data) {
 setDBListener(database, "users", "value", updateNewUser);
 
 let prev = null;
-function disableResend() {
+function disableresendVerificationButton() {
   if (prev !== null) {
     clearTimeout(prev);
   }
@@ -79,7 +80,7 @@ function enableVerification() {
   features.classList.add("none");
   subTitle.classList.add("none");
   verificationMessageContainer.classList.remove("none");
-  disableResend();
+  disableresendVerificationButton();
 }
 
 // sign In status change
@@ -96,6 +97,7 @@ auth.onAuthStateChanged(async (user) => {
     if (!check_user.val()) {
       showInput();
     } else {
+      console.log("helo");
       window.location = "../home.html";
     }
   }
@@ -109,8 +111,8 @@ resendVerificationButton.addEventListener("click", async function (e) {
     this.classList.add("none");
     return;
   }
-  await userEmailVerification(user);
-  resend.disabled = true;
+  await userEmailVerification(user, actionCodeVerify);
+  resendVerificationButton.disabled = true;
   disableresendVerificationButton();
 });
 
@@ -165,8 +167,8 @@ function updateUserName(val) {
       if (val) {
         changeLocation();
       } else {
-        userEmailVerification(user);
-        resend.disabled = true;
+        userEmailVerification(user, actionCodeVerify);
+        resendVerificationButton.disabled = true;
       }
     })
     .catch((error) => {
@@ -331,7 +333,7 @@ function handleURL() {
   // Get the one-time code from the query parameter.
   const actionCode = getParameterByName(urlParams, "oobCode");
   // (Optional) Get the continue URL from the query parameter if available.
-  // const continueUrl = getParameterByName(urlParams, "continueUrl");
+  const continueUrl = getParameterByName(urlParams, "continueUrl");
 
   // Handle the user management action.
   switch (mode) {
@@ -341,17 +343,19 @@ function handleURL() {
       break;
     case "verifyEmail":
       // Display email verification handler and UI.
-      handleVerifyEmail(auth, actionCode);
+      handleVerifyEmail(auth, actionCode, continueUrl);
       break;
     default:
     // Error: invalid mode.
   }
 }
 
-function handleVerifyEmail(auth, actionCode) {
+function handleVerifyEmail(auth, actionCode, continueURL) {
   auth
     .applyActionCode(actionCode)
-    .then((resp) => {})
+    .then((resp) => {
+      window.location.href = continueURL;
+    })
     .catch((error) => {
       console.log(error);
     });
