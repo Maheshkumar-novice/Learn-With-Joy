@@ -22,13 +22,13 @@ export async function userSignIn(auth, provider) {
 }
 
 // Email Sign Up
-export function userEmailSignUp(auth, email, password){
-  auth.createUserWithEmailAndPassword(email, password);
+export async function userEmailSignUp(auth, email, password){
+  return await auth.createUserWithEmailAndPassword(email, password);
 }
 
 // Email Sign In
-export function userEmailLogIn(auth, email, password){
-  auth.signInWithEmailAndPassword(email, password)
+export async function userEmailLogIn(auth, email, password){
+  return await auth.signInWithEmailAndPassword(email, password);
 }
 
 //E mail verification
