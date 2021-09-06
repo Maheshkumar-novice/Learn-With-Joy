@@ -169,12 +169,13 @@
 .chat__input--chat {
   height: 100%;
   font-size: 2rem;
-  background-color: var(--gray-bg);
+  background-color: var(--container-bg);
+  border-top: 2px solid var(--gray);
+  border-left: 2px solid var(--gray);
+  border-right: 2px solid var(--gray);
   padding: 2rem;
   overflow: auto;
-  border-radius: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  border-radius: 2rem 2rem 0 0;
   flex: 10;
 }
 
@@ -186,20 +187,21 @@
 .chat__img--file {
   height: 100%;
   max-width: 10rem;
-  padding: 1rem;
-  background-color: var(--gray-bg);
-  cursor: pointer;
-}
-
-.chat__img--send:hover,
-.chat__img--file:hover {
+  padding: 1rem 2rem;
   background-color: var(--container-bg);
+  cursor: pointer;
+  border-radius: 2rem 2rem 0 0;
 }
 
-.chat__img--file {
-  flex: 1;
-  background-color: var(--gray-bg);
+.chat__img--send:hover path,
+.chat__img--file:hover path{
+  fill: var(--primary-color);
 }
+
+/* .chat__img--file {
+  flex: 1;
+  background-color: var(--container-bg);
+} */
 
 /* main --chat-body */
 .chat__chat-body {
