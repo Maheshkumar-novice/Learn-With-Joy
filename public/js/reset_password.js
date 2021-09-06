@@ -4,13 +4,16 @@ import {
   userPasswordReset,
   userSignOut,
 } from "./modules/firebase.js";
+import { getLocalStorage, updateLocalStorage } from "./modules/util.js";
 
 const forms = document.querySelectorAll("form");
 const notification = document.querySelector(".notification");
+const loader = document.querySelector(".form__loader");
 
 const emailErr = document.querySelector(".email-error");
 const emailInp = document.getElementById("email");
 const sendBtn = document.querySelector(".form__send");
+const formText = document.querySelector(".form__text");
 
 const passwordInp = document.getElementById("password");
 const passErr = document.querySelector(".password-error");
@@ -31,7 +34,7 @@ firebase.analytics();
 const auth = firebase.auth();
 
 emailInp.addEventListener("change", (e) => {
-  sendBtn.innerText = "send";
+  formText.innerText = "send";
 });
 
 passwordInp.addEventListener("input", function (e) {
@@ -81,7 +84,10 @@ sendBtn.addEventListener("click", async (e) => {
   e.preventDefault();
 
   const email = emailInp.value;
-  sendBtn.innerText = "resend";
+  formText.innerText = "resend";
+  console.log(loader);
+  loader.classList.remove("none");
+  sendBtn.disabled = true;
 
   try {
     console.log(email);
@@ -92,11 +98,15 @@ sendBtn.addEventListener("click", async (e) => {
     setTimeout(() => {
       notification.classList.add("none");
     }, 2000);
+    loader.classList.add("none");
+    coolDown();
   } catch (error) {
-    sendBtn.innerText = "Send";
+    formText.innerText = "Send";
     const code = error.code.split("auth/")[1];
     emailErr.innerText = code;
     emailErr.classList.remove("none");
+    loader.classList.add("none");
+    sendBtn.disabled = false;
   }
 });
 
@@ -107,11 +117,26 @@ resetBtn.addEventListener("click", (e) => {
   resetPasswordUtil(pass);
 });
 
+let count = 60;
+function coolDown() {
+  if (count === 0) {
+    updateLocalStorage("count", "disabled");
+    count = 60;
+    sendBtn.disabled = false;
+    formText.innerText = "Resend";
+    return;
+  }
+  updateLocalStorage("count", "enabled");
+  formText.innerText = count;
+  count--;
+  setTimeout(coolDown, 1000);
+}
+
 function resetPassword(actionCode, newPassword) {
   auth
     .confirmPasswordReset(actionCode, newPassword)
     .then((resp) => {
-      if(auth.currentUser) userSignOut(auth);
+      if (auth.currentUser) userSignOut(auth);
       window.location.href = "http://localhost:5000";
     })
     .catch((error) => {
@@ -142,6 +167,9 @@ function getParameterByName(urlParams, name) {
 }
 
 window.onload = () => {
+  if (getLocalStorage("count") === "enabled") {
+    coolDown();
+  }
   const urlParams = new URLSearchParams(window.location.search);
   if (getParameterByName(urlParams, "enable") === "false") {
     forms[0].classList.remove("none");

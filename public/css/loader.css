@@ -31,6 +31,26 @@
   align-items: center;
   justify-content: center;
 }
+
+/* password__reset.html */
+.form__loader{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -40%;
+  width: 40px;
+  height: 40px;
+}
+
+.form__loader::after{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid #fbae3c;
+  border-color: #fbae3c transparent #fbae3c transparent;
+  animation: lds-dual-ring 1s linear infinite;
+}
+
 /* home.html */
 .loader {
   height: calc(100vh - 145px);
