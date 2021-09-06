@@ -242,8 +242,16 @@
   justify-content: flex-start;
 }
 
+.chat__message-container--right .chat__message {
+  border: 4px solid var(--secondary-color);
+}
+.chat__message-container--left .chat__message {
+  border: 4px solid var(--primary-color);
+}
+
 .chat__message {
-  background-color: var(--gray-bg);
+  background-color: var(--white);
+  color: var(--black);
   height: 100%;
   max-width: 600px;
   width: 50%;
