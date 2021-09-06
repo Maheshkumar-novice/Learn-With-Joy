@@ -232,7 +232,6 @@
   position: relative;
   height: max-content;
   display: flex;
-  font-size: 2rem;
 }
 
 .chat__message-container--right {
@@ -252,9 +251,10 @@
   display: flex;
   align-items: center;
   padding: 1rem;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 500;
   word-break: break-word;
+  margin-top: 0.2rem;
 }
 
 .chat__message--image-cnt {
@@ -465,8 +465,9 @@
 .chat__time-stamp {
   position: absolute;
   top: 100%;
-  font-size: 1rem;
-  font-weight: 400;
+  margin-top: 0.3rem;
+  font-size: 1.2rem;
+  font-weight: 500;
   color: var(--white);
 }
 
