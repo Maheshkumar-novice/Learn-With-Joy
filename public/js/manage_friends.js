@@ -369,12 +369,12 @@ function addMessageToContainer(message, time, position) {
    </div>`;
 }
 
-async function addFileToContainer(src, time, position, type) {
+ function addFileToContainer(src, time, position, type) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
   var reference = firebase.storage().refFromURL(src);
-  let metaData = await fileMetaData(reference);
+  let metaData = fileMetaData(reference);
   let size = (metaData.size / (1024 * 1024)).toFixed(2);
   let name = metaData.name;
   chatContainer.innerHTML +=
