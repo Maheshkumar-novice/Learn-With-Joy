@@ -10,8 +10,12 @@
 }
 
 .header__title {
-  font-size: 5rem;
-  font-weight: 600;
+  font-size: 3rem;
+  font-weight: 400;
+}
+
+.header__title--username {
+  font-weight: bold;
 }
 
 .header__img {
@@ -42,8 +46,8 @@
   width: 300px;
   right: 10px;
   top: 110%;
-  background-color: #191a20;
-  color: white;
+  background-color: var(--container-bg);
+  color: var(--secondary-color);
   padding: 1rem;
   border-radius: 1rem;
   max-height: 400px;
@@ -51,7 +55,7 @@
 }
 
 .header__notification-display p {
-  background-color: #272626;
+  background-color: var(--container-bg);
   padding: 1rem;
   border-radius: 1rem;
   margin: 1rem;
@@ -70,19 +74,14 @@
   height: 70px;
 }
 
-.header__title {
-  font-size: 3rem;
-  font-weight: bold;
-}
-
 /* navbar */
 .navbar {
   height: 45px;
   padding: 1rem;
   padding-bottom: 0;
   padding-top: 0;
-  background-color: #191a20;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -103,8 +102,8 @@
 }
 
 .navbar__tab--active {
-  color: red;
-  border-bottom: 5px solid red;
+  color: var(--error-color);
+  border-bottom: 5px solid var(--error-color);
 }
 
 .navbar__img {
@@ -123,8 +122,8 @@
 .footer {
   height: 30px;
   font-size: 1.5rem;
-  background-color: #191a20;
-  color: white;
+  background-color: var(--container-bg);
+  color: var(--primary-color);
   display: flex;
   justify-content: center;
   align-items: center;
