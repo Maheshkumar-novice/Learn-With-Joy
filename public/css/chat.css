@@ -113,6 +113,7 @@
 .chat__search-result-heading {
   font-size: 2rem;
   font-weight: 500;
+  color: var(--primary-color);
 }
 
 .chat__search-result-cnt {
