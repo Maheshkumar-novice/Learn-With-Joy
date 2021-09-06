@@ -9,7 +9,7 @@ import {
   setDBListener,
   actionCodeVerify,
 } from "./modules/firebase.js";
-import { loginTemplate, signupTemplate } from "./modules/template.js";
+import { loader, loginTemplate, signupTemplate } from "./modules/template.js";
 
 // firebase initialization
 firebase.initializeApp(firebaseConfig);
@@ -152,6 +152,7 @@ function changeLocation() {
 function updateUserName(val) {
   console.log(userName);
   if (userName === undefined) return;
+  loginForm.innerHTML = loader;
   let user = auth.currentUser;
   user
     .updateProfile({
@@ -339,7 +340,7 @@ function handleURL() {
   switch (mode) {
     case "resetPassword":
       // Display reset password handler and UI.
-      handleResetPassword(auth, actionCode);
+      handleResetPassword(auth, actionCode, continueUrl);
       break;
     case "verifyEmail":
       // Display email verification handler and UI.
@@ -350,6 +351,7 @@ function handleURL() {
   }
 }
 
+// Hnadle verify email
 function handleVerifyEmail(auth, actionCode, continueURL) {
   auth
     .applyActionCode(actionCode)
@@ -359,6 +361,40 @@ function handleVerifyEmail(auth, actionCode, continueURL) {
     .catch((error) => {
       console.log(error);
     });
+}
+
+function handleResetPassword(auth, actionCode, continueUrl) {
+  // Localize the UI to the selected language as determined by the lang
+  // parameter.
+
+  // Verify the password reset code is valid.
+  auth.verifyPasswordResetCode(actionCode).then((email) => {
+    window.location.href = `${continueUrl}?enable=true&oobCode=${actionCode}&email=${email}`;
+    var accountEmail = email;
+
+    // TODO: Show the reset screen with the user's email and ask the user for
+    // the new password.
+    var newPassword = "...";
+
+    // Save the new password.
+    auth.confirmPasswordReset(actionCode, newPassword).then((resp) => {
+      // Password reset has been confirmed and new password updated.
+
+      // TODO: Display a link back to the app, or sign-in the user directly
+      // if the page belongs to the same domain as the app:
+      // auth.signInWithEmailAndPassword(accountEmail, newPassword);
+
+      // TODO: If a continue URL is available, display a button which on
+      // click redirects the user back to the app via continueUrl with
+      // additional state determined from that URL's parameters.
+    }).catch((error) => {
+      // Error occurred during confirmation. The code might have expired or the
+      // password is too weak.
+    });
+  }).catch((error) => {
+    // Invalid or expired action code. Ask user to try to reset the password
+    // again.
+  });
 }
 
 window.addEventListener("DOMContentLoaded", (e) => {

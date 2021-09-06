@@ -162,6 +162,17 @@ body {
   color: #994cc5;
 }
 
+.reset-password{
+  color: red;
+  text-align: center;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.reset-password:hover{
+  color: #fbae3c;
+}
+
 .login {
   position: absolute;
   top: 50%;

@@ -1,3 +1,8 @@
+// --------------------------------  loader.html  --------------------------------------------------
+export const loader = `<div class="loader-index">
+<div class="lds-dual-ring"></div>
+</div>`;
+
 // --------------------------------  index.html  ----------------------------------------------------
 const showPassIC = `<svg
 aria-hidden="true"
@@ -45,6 +50,7 @@ export const loginTemplate = `<div class="input__field">
   ${hidePassIC}
   <p class="password-error error none">Minimum 8 character length.</p>
 </div>
+<a href="./reset_password.html?enable=false" class="reset-password">Forgot Password?</a>
 <button type="submit" class="form__button">Login</button>`;
 
 export const signupTemplate = `<div class="input__field">
