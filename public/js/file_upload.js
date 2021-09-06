@@ -8,16 +8,16 @@ import {
   storageUpload,
 } from "./modules/firebase.js";
 
-const toggleUploadBtn = document.querySelector(".main__img--file");
+const toggleUploadBtn = document.querySelector(".chat__img--file");
 const uploadCnt = document.querySelector(".upload");
-const chat = document.querySelector(".main__chat-container");
+const chat = document.querySelector(".chat__chat-container");
 const fileUpload = document.querySelectorAll(".upload__input");
 const filePreview = document.querySelector(".upload__preview");
 const fileDragnDrop = document.querySelector(".upload__dragndrop");
 const fileUploadClick = document.querySelectorAll(".upload__click--each");
-const sendBtn = document.querySelector(".main__img--send");
-const inputChat = document.querySelector(".main__input--chat");
-const chatContainer = document.querySelector(".main__chat-container");
+const sendBtn = document.querySelector(".chat__img--send");
+const inputChat = document.querySelector(".chat__input--chat");
+const chatContainer = document.querySelector(".chat__chat-container");
 
 let fileToUpload = [];
 
@@ -126,27 +126,27 @@ function autoScroll() {
 
 function createImagePreview(key, src, size, upTask) {
   chatContainer.innerHTML += `
-                <div class="main__message-container main__message-container--right" data-type="image" data-id="${key}">
-                  <div class="main__message--image-cnt">
-                    <div class="main__message--data">
-                      <img src="./assets/icons/home/play.svg" class="main__message--controls"  alt="">  
-                      <div class="main__message--progress">
+                <div class="chat__message-container chat__message-container--right" data-type="image" data-id="${key}">
+                  <div class="chat__message--image-cnt">
+                    <div class="chat__message--data">
+                      <img src="./assets/icons/home/play.svg" class="chat__message--controls"  alt="">  
+                      <div class="chat__message--progress">
                         <svg>
                           <circle cx="60" cy="60" r="60"></circle>
                         </svg>
                       </div>
-                      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="main__message--cancel">
+                      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="chat__message--cancel">
                     </div>
-                    <a class="main__message--link" href="" download target="_blank"><img src="${src}" alt="" class="main__message--image"></a>
-                    <span class="main__message--downloaded">0/${size} MB</span>
+                    <a class="chat__message--link" href="" download target="_blank"><img src="${src}" alt="" class="chat__message--image"></a>
+                    <span class="chat__message--downloaded">0/${size} MB</span>
                   </div>
-                  <span class="main__time-stamp main__time-stamp--left"></span>
+                  <span class="chat__time-stamp chat__time-stamp--left"></span>
                 </div>`;
   autoScroll();
   const pausePlay = document.querySelector(
-    `.main__message-container[data-id="${key}"] .main__message--controls`
+    `.chat__message-container[data-id="${key}"] .chat__message--controls`
   );
-  const cancel = document.querySelector(`.main__message-container[data-id="${key}"] .main__message--cancel`);
+  const cancel = document.querySelector(`.chat__message-container[data-id="${key}"] .chat__message--cancel`);
   pausePlay.addEventListener("click", (e) => {
     console.log(e.target);
     e.target.src.includes("play")
@@ -160,28 +160,28 @@ function createImagePreview(key, src, size, upTask) {
 
 function createFilePrevieew(key, name, size, upTask) {
   chatContainer.innerHTML += `
-                <div class="main__message-container main__message-container--right" data-type="file" data-id="${key}">
-                  <div class="main__message--file-cnt">
-                    <div class="main__message--file-download">
-                      <img class="main__message--file-controls" src="./assets/icons/home/play.svg" alt="">  
-                      <div class="main__message--progress">
+                <div class="chat__message-container chat__message-container--right" data-type="file" data-id="${key}">
+                  <div class="chat__message--file-cnt">
+                    <div class="chat__message--file-download">
+                      <img class="chat__message--file-controls" src="./assets/icons/home/play.svg" alt="">  
+                      <div class="chat__message--progress">
                         <svg>
                           <circle cx="40" cy="40" r="40"></circle>
                         </svg>
                       </div>
-                      <a class="main__message--link" href="" download="name.txt" none><img class="main__message--download-ic none" src="./assets/icons/home/download.svg" alt=""></a>
+                      <a class="chat__message--link" href="" download="name.txt" none><img class="chat__message--download-ic none" src="./assets/icons/home/download.svg" alt=""></a>
                     </div>
-                    <div class="main__message--file-detail">
-                      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="main__message--cancel">
-                      <h3 class="main__message--file-name">${name}</h3>
-                      <span class="main__message--downloaded">0/${size} MB</span>
+                    <div class="chat__message--file-detail">
+                      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="chat__message--cancel">
+                      <h3 class="chat__message--file-name">${name}</h3>
+                      <span class="chat__message--downloaded">0/${size} MB</span>
                     </div>
                   </div>
-                  <span class="main__time-stamp main__time-stamp--left"></span>
+                  <span class="chat__time-stamp chat__time-stamp--left"></span>
               </div>`;
   autoScroll();
-  const pausePlay = document.querySelector(`.main__message-container[data-id="${key}"] .main__message--file-controls`);
-  const cancel = document.querySelector(`.main__message-container[data-id="${key}"] .main__message--cancel`);
+  const pausePlay = document.querySelector(`.chat__message-container[data-id="${key}"] .chat__message--file-controls`);
+  const cancel = document.querySelector(`.chat__message-container[data-id="${key}"] .chat__message--cancel`);
   pausePlay.addEventListener("click", (e) => {
     console.log(e.target);
     e.target.src.includes("play")
@@ -194,10 +194,10 @@ function createFilePrevieew(key, name, size, upTask) {
 }
 
 function updateImagePreview(cnt, link, ts) {
-  const imgLink = cnt.querySelector(".main__message--image");
-  const aLink = cnt.querySelector(".main__message--link");
-  const size = cnt.querySelector(".main__message--downloaded");
-  const timeHTML = cnt.querySelector(".main__time-stamp");
+  const imgLink = cnt.querySelector(".chat__message--image");
+  const aLink = cnt.querySelector(".chat__message--link");
+  const size = cnt.querySelector(".chat__message--downloaded");
+  const timeHTML = cnt.querySelector(".chat__time-stamp");
   let datePart = new Date(ts).toDateString();
   let timePart = new Date(ts).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
@@ -208,17 +208,17 @@ function updateImagePreview(cnt, link, ts) {
   imgLink.src = link;
   aLink.href = link;
 
-  const fromRemove = cnt.querySelector(".main__message--image-cnt");
-  const toRemove = fromRemove.querySelector(".main__message--data");
+  const fromRemove = cnt.querySelector(".chat__message--image-cnt");
+  const toRemove = fromRemove.querySelector(".chat__message--data");
   fromRemove.removeChild(toRemove);
 }
 
 function updateFilePreview(cnt, link, ts) {
-  const imgLink = cnt.querySelector(".main__message--download-ic");
-  const aLink = cnt.querySelector(".main__message--link");
-  const name = cnt.querySelector(".main__message--file-name");
-  const size = cnt.querySelector(".main__message--downloaded");
-  const timeHTML = cnt.querySelector(".main__time-stamp");
+  const imgLink = cnt.querySelector(".chat__message--download-ic");
+  const aLink = cnt.querySelector(".chat__message--link");
+  const name = cnt.querySelector(".chat__message--file-name");
+  const size = cnt.querySelector(".chat__message--downloaded");
+  const timeHTML = cnt.querySelector(".chat__time-stamp");
   let datePart = new Date(ts).toDateString();
   let timePart = new Date(ts).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
@@ -229,13 +229,13 @@ function updateFilePreview(cnt, link, ts) {
   aLink.href = link;
   aLink.download = name.innerText;
 
-  let fromRemove = cnt.querySelector(".main__message--file-download");
-  let toRemove = cnt.querySelector(".main__message--file-controls");
+  let fromRemove = cnt.querySelector(".chat__message--file-download");
+  let toRemove = cnt.querySelector(".chat__message--file-controls");
   fromRemove.removeChild(toRemove);
-  toRemove = cnt.querySelector(".main__message--progress");
+  toRemove = cnt.querySelector(".chat__message--progress");
   fromRemove.removeChild(toRemove);
-  fromRemove = cnt.querySelector(".main__message--file-detail");
-  toRemove = cnt.querySelector(".main__message--cancel");
+  fromRemove = cnt.querySelector(".chat__message--file-detail");
+  toRemove = cnt.querySelector(".chat__message--cancel");
   fromRemove.removeChild(toRemove);
 }
 
@@ -279,12 +279,12 @@ function task(uploadTask, key, chatHash) {
 
       //update meta-data
       const cnt = document.querySelector(
-        `.main__message-container[data-id="${key}"]`
+        `.chat__message-container[data-id="${key}"]`
       );
       const progressBar = cnt.querySelector(
-        `.main__message--progress svg circle`
+        `.chat__message--progress svg circle`
       );
-      const size = cnt.querySelector(".main__message--downloaded");
+      const size = cnt.querySelector(".chat__message--downloaded");
       if (cnt.dataset.type === "file") {
         progressBar.style.animation =
           progress === 0 || progress === 100
@@ -315,14 +315,14 @@ function task(uploadTask, key, chatHash) {
       // Handle unsuccessful uploads
       console.log(error);
       const toRemove = document.querySelector(
-        `.main__message-container[data-id="${key}"]`
+        `.chat__message-container[data-id="${key}"]`
       );
       chatContainer.removeChild(toRemove);
     },
     async () => {
       const downloadURL = await storageDownloadURL(uploadTask.snapshot.ref);
       const cnt = document.querySelector(
-        `.main__message-container[data-id="${key}"]`
+        `.chat__message-container[data-id="${key}"]`
       );
         let message = {};
 

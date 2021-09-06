@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./css/custom_reset.css" />
     <link rel="stylesheet" href="./css/common.css" />
     <link rel="stylesheet" href="./css/home.css" />
+    <link rel="stylesheet" href="./css/chat.css" />
     <link rel="stylesheet" href="./css/loader.css">
   </head>
   <body>
@@ -51,42 +52,43 @@
       <div class="lds-dual-ring"></div>
     </div>
     <main class="main none">
-      <div class="main__container main__friends">
-        <div class="main__search-trigger">
+     <section class="chat">
+      <div class="chat__container chat__friends">
+        <div class="chat__search-trigger">
           <input
             type="text"
             placeholder="Search New Friends..."
-            class="main__input"
+            class="chat__input"
             disabled
           />
         </div>
-        <div class="main__friend-cnt"></div>
+        <div class="chat__friend-cnt"></div>
       </div>
-      <div class="main__container no-padding">
-        <div class="main__search-cnt none">
-          <div class="main__search-heading">
-            <h1>Search results</h1>
+      <div class="chat__container no-padding">
+        <div class="chat__search-cnt none">
+          <div class="chat__search-header">
+            <h1 class="chat__search-result-heading">Search Results</h1>
             <img
-              class="main__search-close-ic"
+              class="chat__search-close-icon"
               src="./assets/icons/home/msg-clear.svg"
               alt="close"
             />
           </div>
-          <div class="main__search-resultcnt"></div>
+          <div class="chat__search-result-cnt"></div>
         </div>
 
-        <div class="main__chat">
-          <div class="main__chat-window">
-            <div class="main__chat-header none">
+        <div class="chat__chat">
+          <div class="chat__chat-window">
+            <div class="chat__chat-header none">
               <img
                 src="./assets/icons/home/user.svg"
                 alt="User Profile Picture"
-                class="main__img--chat"
+                class="chat__img--chat"
               />
-              <p class="main__chat-username">Lorem Ipsum</p>
+              <p class="chat__chat-username">Lorem Ipsum</p>
             </div>
-            <div class="main__chat-body">
-              <p class="main__chat-info">Please select the friend to chat with them</p>
+            <div class="chat__chat-body">
+              <p class="chat__chat-info">Please select the friend to chat with them</p>
               
               <div class="upload none">
                 <div class="upload__info">
@@ -124,39 +126,40 @@
                   </div>
                 </div>
               </div>
-              <div class="main__chat-container none"></div>
+              <div class="chat__chat-container none"></div>
             </div>
-            <div class="main__chat-message-sender none">
+            <div class="chat__chat-message-sender none">
               <img
                 src="./assets/icons/home/add_file.svg"
                 alt="Send Message"
-                class="main__img--file"
+                class="chat__img--file"
               />
               <input
                 type="text"
                 placeholder="Enter Message..."
-                class="main__input main__input--chat"
+                class="chat__input chat__input--chat"
                 data-chat-hash='null'
               />
               <img
                 src="./assets/icons/home/send.svg"
                 alt="Send Message"
-                class="main__img--send"
+                class="chat__img--send"
               />
             </div>
           </div>
         </div>
       </div>
-      <div class="main__container main__requests">
-        <div class="main__req-rec">
-          <h2 class="main__req-header">Requests Received</h2>
-          <div class="main__req-cards"></div>
+      <div class="chat__container chat__requests">
+        <div class="chat__req-rec">
+          <h2 class="chat__req-header">Requests Received</h2>
+          <div class="chat__req-cards"></div>
         </div>
-        <div class="main__req-sent">
-          <h2 class="main__req-header">Requests Sent</h2>
-          <div class="main__req-cards"></div>
+        <div class="chat__req-sent">
+          <h2 class="chat__req-header">Requests Sent</h2>
+          <div class="chat__req-cards"></div>
         </div>
       </div>
+     </section>
     </main>
     <footer class="footer">
       <p class="footer__time">01:21:19</p>
@@ -186,38 +189,38 @@
         <img src="./assets/icons/home/msg-clear.svg" class="header__notification-clrmsg" alt="clear message">
 </div> -->
 
-<!-- <div class="main__friend-card">
+<!-- <div class="chat__friend-card">
         <img
           src="./assets/icons/home/user.svg"
           alt="Friend"
-          class="main__img"
+          class="chat__img"
         />
-        <p class="main__friend-name">Lorem Ipsum</p>
-        <button class="main__remove-friend">Remove</button>
+        <p class="chat__friend-name">Lorem Ipsum</p>
+        <button class="chat__remove-friend">Remove</button>
 </div>
-<div class="main__friend-card">
+<div class="chat__friend-card">
       <img
         src="./assets/icons/home/user.svg"
         alt="Friend"
-        class="main__img"
+        class="chat__img"
       />
-      <p class="main__friend-name">Lorem Ipsum</p>
-      <button class="main__remove-friend">Remove</button>
+      <p class="chat__friend-name">Lorem Ipsum</p>
+      <button class="chat__remove-friend">Remove</button>
   </div> -->
 
- <!-- <div class="main__friend-card default">
+ <!-- <div class="chat__friend-card default">
         <img
           src="./assets/icons/home/user.svg"
           alt="Friend"
-          class="main__img"
+          class="chat__img"
         />
-        <p class="main__friend-name">Lorem Ipsum</p>
-        <img class="main__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
-        <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
+        <p class="chat__friend-name">Lorem Ipsum</p>
+        <img class="chat__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
+        <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
 </div> -->
 
-<!-- <div class="main__friend-card default">
-        <img  src="./assets/icons/home/user.svg"  alt="Friend"  class="main__img"/>
-        <p class="main__friend-name">Lorem Ipsum</p>
-        <img class="main__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
+<!-- <div class="chat__friend-card default">
+        <img  src="./assets/icons/home/user.svg"  alt="Friend"  class="chat__img"/>
+        <p class="chat__friend-name">Lorem Ipsum</p>
+        <img class="chat__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
 </div> -->

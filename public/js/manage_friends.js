@@ -36,21 +36,21 @@ auth.onAuthStateChanged(async (currentUser) => {
 });
 
 // ----------------------- SEARCH -------------------------------------
-const searchInput = document.querySelector(".main__input");
-const searchWrap = document.querySelector(".main__search-cnt");
-const searchResultContainer = document.querySelector(".main__search-resultcnt");
-const searchCloseIcon = document.querySelector(".main__search-close-ic");
-const chatArea = document.querySelector(".main__chat");
+const searchInput = document.querySelector(".chat__input");
+const searchWrap = document.querySelector(".chat__search-cnt");
+const searchResultContainer = document.querySelector(".chat__search-result-cnt");
+const searchCloseIcon = document.querySelector(".chat__search-close-icon");
+const chatArea = document.querySelector(".chat__chat");
 let addBtn;
 
 function removeFriendFromSearchResult(e) {
   let id = e.target.parentElement.dataset.id;
   let elementToRemove = document.querySelector(
-    `.main__result-card[data-id="${id}"]`
+    `.chat__result-card[data-id="${id}"]`
   );
   searchResultContainer.removeChild(elementToRemove);
   if (searchResultContainer.childElementCount === 0) {
-    searchResultContainer.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
+    searchResultContainer.innerHTML = `<p class="chat__serach-msg">Type to show the results</p>`;
   }
 }
 
@@ -59,15 +59,15 @@ function getUserSearchData(uid) {
     return "";
   let searchedUser =
     userDataList[uidList.findIndex((tot_uid) => tot_uid === uid)];
-  return `<div class="main__result-card" data-id=${uid}>
-            <img  src=${searchedUser.photo}  alt="Friend"  class="main__img"/>
-            <p class="main__friend-name">${searchedUser.name}</p>
-            <img class="main__send-friend-ic" src="./assets/icons/home/accept.svg" alt="Add friend">
+  return `<div class="chat__result-card" data-id=${uid}>
+            <img  src=${searchedUser.photo}  alt="Friend"  class="chat__img"/>
+            <p class="chat__friend-name">${searchedUser.name}</p>
+            <img class="chat__send-friend-ic" src="./assets/icons/home/accept.svg" alt="Add friend">
           </div>`;
 }
 
 function addFriendRequestIconListeners() {
-  addBtn = document.querySelectorAll(".main__send-friend-ic");
+  addBtn = document.querySelectorAll(".chat__send-friend-ic");
   addBtn.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       sendFriendRequest(e.target.parentElement.dataset.id);
@@ -80,7 +80,7 @@ searchInput.addEventListener("input", (e) => {
   let value = e.target.value;
   let html = "";
   if (value === "") {
-    searchResultContainer.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
+    searchResultContainer.innerHTML = `<p class="chat__serach-msg">Type to show the results</p>`;
     return;
   }
   let regex = new RegExp(value, "gi");
@@ -91,7 +91,7 @@ searchInput.addEventListener("input", (e) => {
   });
   searchResultContainer.innerHTML =
     html === ""
-      ? `<p class="main__serach-msg">Sorry! no results found</p>`
+      ? `<p class="chat__serach-msg">Sorry! no results found</p>`
       : html;
   addFriendRequestIconListeners();
 });
@@ -100,7 +100,7 @@ searchInput.addEventListener("click", (e) => {
   searchWrap.classList.remove("none");
   chatArea.classList.add("none");
   if (e.target.value === "") {
-    searchResultContainer.innerHTML = `<p class="main__serach-msg">Type to show the results</p>`;
+    searchResultContainer.innerHTML = `<p class="chat__serach-msg">Type to show the results</p>`;
   }
 });
 
@@ -111,7 +111,7 @@ searchCloseIcon.addEventListener("click", function (e) {
 
 // ----------------------- FRIENDS -------------------------------------
 // friendRequests[0] => friend requests received, friendRequests[1] => friend requests sent
-const friendRequests = document.querySelectorAll(".main__req-cards");
+const friendRequests = document.querySelectorAll(".chat__req-cards");
 
 async function sendFriendRequest(uid) {
   await updateFriendsList();
@@ -163,18 +163,18 @@ async function addFriendToFriendsList(data) {
 
   let fid = data.key;
   let hash = data.val();
-  let friendsContainer = document.querySelector(".main__friend-cnt");
+  let friendsContainer = document.querySelector(".chat__friend-cnt");
   let chatUid = (await readDB(database, `users/${fid}`)).val();
 
   friendsUID.push(fid);
-  friendsContainer.innerHTML += `<div class="main__friend-card" data-id=${fid} data-hash=${hash}>
-      <img  src="${chatUid.photo}"  alt="Friend"  class="main__img"/>
-      <p class="main__friend-name">${chatUid.name}</p>
-      <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
+  friendsContainer.innerHTML += `<div class="chat__friend-card" data-id=${fid} data-hash=${hash}>
+      <img  src="${chatUid.photo}"  alt="Friend"  class="chat__img"/>
+      <p class="chat__friend-name">${chatUid.name}</p>
+      <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
      </div>\n`;
 
   document
-    .querySelectorAll(`.main__friend-card>.main__remove-friend-ic`)
+    .querySelectorAll(`.chat__friend-card>.chat__remove-friend-ic`)
     .forEach((rejectIcon) => {
       rejectIcon.addEventListener("click", removeFriend);
     });
@@ -189,7 +189,7 @@ async function addFriendToFriendsList(data) {
 
 async function removeFriendFromFriendsList(data) {
   await updateFriendsList();
-  let friendsContainer = document.querySelector(".main__friend-cnt");
+  let friendsContainer = document.querySelector(".chat__friend-cnt");
   if (!data.val()) {
     friendsContainer.innerHTML = "";
     friendsUID = [];
@@ -197,7 +197,7 @@ async function removeFriendFromFriendsList(data) {
   }
 
   let removedFriend = document.querySelector(
-    `.main__friend-card[data-hash="${data.val()}"]`
+    `.chat__friend-card[data-hash="${data.val()}"]`
   );
   friendsUID.splice(removedFriend.dataset.id, 1);
   friendsContainer.removeChild(removedFriend);
@@ -212,17 +212,17 @@ async function addFriendRequestReceived(data) {
 
   let receivedKey = data.key;
   let receivedFrom = (await readDB(database, `users/${receivedKey}`)).val();
-  friendRequests[0].innerHTML += `<div class="main__received-card default" data-id=${receivedKey}>
-      <img  src="${receivedFrom.photo}"  alt="Friend"  class="main__img"/>
-      <p class="main__friend-name">${receivedFrom.name}</p>
-      <img class="main__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
-      <img class="main__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
+  friendRequests[0].innerHTML += `<div class="chat__received-card default" data-id=${receivedKey}>
+      <img  src="${receivedFrom.photo}"  alt="Friend"  class="chat__img"/>
+      <p class="chat__friend-name">${receivedFrom.name}</p>
+      <img class="chat__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
+      <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
      </div>`;
 
-  document.querySelectorAll(`.main__add-friend-ic`).forEach((acceptIcon) => {
+  document.querySelectorAll(`.chat__add-friend-ic`).forEach((acceptIcon) => {
     acceptIcon.addEventListener("click", addFriend);
   });
-  document.querySelectorAll(`.main__remove-friend-ic`).forEach((rejectIcon) => {
+  document.querySelectorAll(`.chat__remove-friend-ic`).forEach((rejectIcon) => {
     rejectIcon.addEventListener("click", rejectFriendRequest);
   });
 }
@@ -233,7 +233,7 @@ async function removeFriendRequestReceived(data) {
   }
 
   let removedRequest = document.querySelector(
-    `.main__received-card[data-id="${data.key}"]`
+    `.chat__received-card[data-id="${data.key}"]`
   );
   friendRequests[0].removeChild(removedRequest);
   await updateFriendsList();
@@ -250,10 +250,10 @@ async function addFriendRequestSent(data) {
   let sent = data.key;
   let sentTo = (await readDB(database, `users/${sent}`)).val();
 
-  friendRequests[1].innerHTML += `<div class="main__sent-card default" data-id=${sent}>
-      <img  src="${sentTo.photo}"  alt="Friend"  class="main__img"/>
-      <p class="main__friend-name">${sentTo.name}</p>
-      <img class="main__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
+  friendRequests[1].innerHTML += `<div class="chat__sent-card default" data-id=${sent}>
+      <img  src="${sentTo.photo}"  alt="Friend"  class="chat__img"/>
+      <p class="chat__friend-name">${sentTo.name}</p>
+      <img class="chat__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
      </div>`;
 }
 
@@ -263,7 +263,7 @@ async function removeFriendRequestSent(data) {
   }
 
   let removedRequest = document.querySelector(
-    `.main__sent-card[data-id="${data.key}"]`
+    `.chat__sent-card[data-id="${data.key}"]`
   );
   friendRequests[1].removeChild(removedRequest);
   await updateFriendsList();
@@ -314,15 +314,15 @@ function addDBListeners() {
 }
 
 // ----------------------- CHAT -------------------------------------
-const chatWindowMessageInput = document.querySelector(".main__input--chat");
-let chatWindowUsername = document.querySelector(".main__chat-username");
-let chatWindowProfilePic = document.querySelector(".main__img--chat");
-let noChatSelectedInfo = document.querySelector(".main__chat-info");
-let chatWindowHeader = document.querySelector(".main__chat-header");
+const chatWindowMessageInput = document.querySelector(".chat__input--chat");
+let chatWindowUsername = document.querySelector(".chat__chat-username");
+let chatWindowProfilePic = document.querySelector(".chat__img--chat");
+let noChatSelectedInfo = document.querySelector(".chat__chat-info");
+let chatWindowHeader = document.querySelector(".chat__chat-header");
 let chatWindowMessageSender = document.querySelector(
-  ".main__chat-message-sender"
+  ".chat__chat-message-sender"
 );
-let chatContainer = document.querySelector(".main__chat-container");
+let chatContainer = document.querySelector(".chat__chat-container");
 
 function cleanUpChatWindow() {
   chatContainer.innerHTML = "";
@@ -339,8 +339,8 @@ function updateChatDataSet(friendCard) {
 
 function updateFriendDataAtChatWindow(friendCard) {
   chatWindowUsername.textContent =
-    friendCard.querySelector(".main__friend-name").textContent;
-  chatWindowProfilePic.src = friendCard.querySelector(".main__img").src;
+    friendCard.querySelector(".chat__friend-name").textContent;
+  chatWindowProfilePic.src = friendCard.querySelector(".chat__img").src;
 }
 
 function setUpChatWindow(friendCard) {
@@ -363,9 +363,9 @@ function addMessageToContainer(message, time, position) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
-  chatContainer.innerHTML += `<div class="main__message-container main__message-container--${position}">
-    <p class="main__message">${message}</p>  
-    <span class="main__time-stamp main__time-stamp--right">${timeStamp}</span>
+  chatContainer.innerHTML += `<div class="chat__message-container chat__message-container--${position}">
+    <p class="chat__message">${message}</p>  
+    <span class="chat__time-stamp chat__time-stamp--right">${timeStamp}</span>
    </div>`;
 }
 
@@ -379,24 +379,24 @@ async function addFileToContainer(src, time, position, type) {
   let name = metaData.name;
   chatContainer.innerHTML +=
     type === "image"
-      ? `<div class="main__message-container main__message-container--${position}">
-        <div class="main__message--image-cnt">
-          <a class="main__message--link" href="${src}" download target="_blank"><img src="${src}" alt="image" class="main__message--image"></a>
-          <span class="main__message--downloaded">${size} MB</span>
+      ? `<div class="chat__message-container chat__message-container--${position}">
+        <div class="chat__message--image-cnt">
+          <a class="chat__message--link" href="${src}" download target="_blank"><img src="${src}" alt="image" class="chat__message--image"></a>
+          <span class="chat__message--downloaded">${size} MB</span>
         </div>
-        <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
+        <span class="chat__time-stamp chat__time-stamp--left">${timeStamp}</span>
       </div>`
-      : `<div class="main__message-container main__message-container--${position}">
-        <div class="main__message--file-cnt">
-          <div class="main__message--file-download"> 
-            <a class="main__message--link" href="${src}" download="${name}"><img class="main__message--download-ic" src="./assets/icons/home/download.svg" alt=""></a>
+      : `<div class="chat__message-container chat__message-container--${position}">
+        <div class="chat__message--file-cnt">
+          <div class="chat__message--file-download"> 
+            <a class="chat__message--link" href="${src}" download="${name}"><img class="chat__message--download-ic" src="./assets/icons/home/download.svg" alt=""></a>
           </div>
-          <div class="main__message--file-detail">
-            <h3 class="main__message--file-name">${name}</h3>
-            <span class="main__message--downloaded">${size} MB</span>
+          <div class="chat__message--file-detail">
+            <h3 class="chat__message--file-name">${name}</h3>
+            <span class="chat__message--downloaded">${size} MB</span>
           </div>
         </div>
-        <span class="main__time-stamp main__time-stamp--left">${timeStamp}</span>
+        <span class="chat__time-stamp chat__time-stamp--left">${timeStamp}</span>
       </div>`;
   autoScroll();
 }
@@ -435,7 +435,7 @@ async function addMessageToChatBody(chat) {
 
   if ("image" in chatData) {
     if (
-      document.querySelector(`.main__message-container[data-id="${chat.key}"]`)
+      document.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
     )
       return;
     addFileToContainer(chatData.image, chatData.time, "left", "image");
@@ -443,7 +443,7 @@ async function addMessageToChatBody(chat) {
   }
   if ("file" in chatData) {
     if (
-      document.querySelector(`.main__message-container[data-id="${chat.key}"]`)
+      document.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
     )
       return;
     addFileToContainer(chatData.file, chatData.time, "left", "file");
@@ -478,7 +478,7 @@ function sendMessage() {
 }
 
 function addEventListenerToFriendCards() {
-  let friends = document.querySelectorAll(".main__friend-card");
+  let friends = document.querySelectorAll(".chat__friend-card");
   friends.forEach((friend) =>
     friend.addEventListener("click", function (e) {
       updateChatWindow(this);
@@ -495,12 +495,12 @@ window.addEventListener("keyup", (e) => {
     sendMessage();
   }
   if (e.key === "Escape") {
-    document.querySelector(".main__search-close-ic").click();
+    document.querySelector(".chat__search-close-icon").click();
   }
 });
 
 document
-  .querySelector(".main__img--send")
+  .querySelector(".chat__img--send")
   .addEventListener("click", sendMessage);
 
 // function setDBListener(reference, type, callBack) {
