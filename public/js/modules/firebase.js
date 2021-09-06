@@ -15,7 +15,7 @@ export const actionCodeVerify = {
 }
 
 export const actionCodePasswordReset = {
-  url: 'http://localhost:5000/reset_password.html'
+  url: 'https://learn-with-joy.web.app/reset_password.html'
 }
 
 // ----------------------------------------Authentication-------------------------------------
