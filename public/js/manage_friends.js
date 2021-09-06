@@ -105,8 +105,8 @@ searchInput.addEventListener("click", (e) => {
 });
 
 searchCloseIcon.addEventListener("click", function (e) {
-  searchWrap.classList.toggle("none");
-  chatArea.classList.toggle("none");
+  searchWrap.classList.add("none");
+  chatArea.classList.remove("none");
 });
 
 // ----------------------- FRIENDS -------------------------------------
