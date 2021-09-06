@@ -232,6 +232,7 @@
   position: relative;
   height: max-content;
   display: flex;
+  font-size: 2rem;
 }
 
 .chat__message-container--right {
