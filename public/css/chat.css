@@ -32,6 +32,8 @@
   overflow: auto;
   overflow-x: hidden;
   padding: 1.5rem;
+  border: 3px solid;
+
 }
 
 /* main - friends & search */
