@@ -11,7 +11,11 @@ export const firebaseConfig = {
 };
 
 export const actionCodeVerify = {
-  url: 'http://localhost:5000/home.html'
+  url: 'https://learn-with-joy.web.app/home.html'
+}
+
+export const actionCodePasswordReset = {
+  url: 'http://localhost:5000/reset_password.html'
 }
 
 // ----------------------------------------Authentication-------------------------------------
@@ -31,9 +35,14 @@ export async function userEmailLogIn(auth, email, password){
   return await auth.signInWithEmailAndPassword(email, password);
 }
 
-//E mail verification
+// E-Mail verification
 export async function userEmailVerification(user, actionCode){
   return await user.sendEmailVerification(actionCode);
+}
+
+// Password reset main
+export async function userPasswordReset(auth, email, actionCode){
+  return await auth.sendPasswordResetEmail(email, actionCode);
 }
 
 // Sign Out
