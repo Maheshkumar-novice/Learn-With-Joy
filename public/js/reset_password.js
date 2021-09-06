@@ -2,17 +2,27 @@ import {
   actionCodePasswordReset,
   firebaseConfig,
   userPasswordReset,
+  userSignOut,
 } from "./modules/firebase.js";
 
 const forms = document.querySelectorAll("form");
 const notification = document.querySelector(".notification");
 
-const emailErr = document.querySelector(".email-error")
+const emailErr = document.querySelector(".email-error");
 const emailInp = document.getElementById("email");
 const sendBtn = document.querySelector(".form__send");
 
 const passwordInp = document.getElementById("password");
+const passErr = document.querySelector(".password-error");
+const rePassInp = document.getElementById("re-password");
+const rePassErr = document.querySelector(".re-password-error");
+const passwordIC = document.querySelectorAll(".toggle-pass");
 const resetBtn = document.querySelector(".form__reset");
+
+let passMatch = {
+  password: false,
+  "re-pass": false,
+};
 
 // firebase initialization
 firebase.initializeApp(firebaseConfig);
@@ -21,12 +31,55 @@ firebase.analytics();
 const auth = firebase.auth();
 
 emailInp.addEventListener("change", (e) => {
-    sendBtn.innerText = "send"
+  sendBtn.innerText = "send";
 });
+
+passwordInp.addEventListener("input", function (e) {
+  if (this.value.length === 0) {
+    passMatch.password = false;
+    passErr.classList.add("none");
+    return;
+  }
+  if (this.value.length < 8) {
+    passErr.classList.remove("none");
+    passMatch.password = false;
+  } else {
+    passErr.classList.add("none");
+    passMatch.password = true;
+  }
+});
+
+rePassInp.addEventListener("input", checkReEnterPassword);
+
+passwordIC.forEach((IC) => {
+  IC.addEventListener("click", function (e) {
+    let change = passwordIC[this.dataset.id === "1" ? 0 : 1];
+    this.classList.toggle("none");
+    change.classList.toggle("none");
+    passwordInp.type = rePassInp.type =
+      passwordInp.type === "password" ? "text" : "password";
+  });
+});
+
+function checkReEnterPassword() {
+  if (rePassInp.value.length === 0) {
+    rePassErr.classList.add("none");
+    passMatch["re-pass"] = false;
+    return;
+  }
+  if (passwordInp.value !== rePassInp.value) {
+    rePassErr.classList.remove("none");
+    passMatch["re-pass"] = false;
+    return;
+  }
+
+  rePassErr.classList.add("none");
+  passMatch["re-pass"] = true;
+}
 
 sendBtn.addEventListener("click", async (e) => {
   e.preventDefault();
-  
+
   const email = emailInp.value;
   sendBtn.innerText = "resend";
 
@@ -34,10 +87,11 @@ sendBtn.addEventListener("click", async (e) => {
     console.log(email);
     emailErr.classList.add("none");
     await userPasswordReset(auth, email, actionCodePasswordReset);
-    notification.classList.remove("none");   
+    notification.innerText = "Link has been sent to the mail";
+    notification.classList.remove("none");
     setTimeout(() => {
-        notification.classList.add("none");
-    }, 2000); 
+      notification.classList.add("none");
+    }, 2000);
   } catch (error) {
     sendBtn.innerText = "Send";
     const code = error.code.split("auth/")[1];
@@ -47,28 +101,28 @@ sendBtn.addEventListener("click", async (e) => {
 });
 
 resetBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    const pass = passwordInp.value;
-    resetPasswordUtil(pass);
+  e.preventDefault();
+  if (!(passMatch["password"] && passMatch["re-pass"])) return;
+  const pass = passwordInp.value;
+  resetPasswordUtil(pass);
 });
 
-function resetPassword(actionCode, newPassword){
-    auth.confirmPasswordReset(actionCode, newPassword).then((resp) => {
-        // Password reset has been confirmed and new password updated.
-        console.log("success");
-        // window
-        // TODO: Display a link back to the app, or sign-in the user directly
-        // if the page belongs to the same domain as the app:
-        // auth.signInWithEmailAndPassword(accountEmail, newPassword);
-  
-        // TODO: If a continue URL is available, display a button which on
-        // click redirects the user back to the app via continueUrl with
-        // additional state determined from that URL's parameters.
-      }).catch((error) => {
-          console.log('error');
-        // Error occurred during confirmation. The code might have expired or the
-        // password is too weak.
-      });
+function resetPassword(actionCode, newPassword) {
+  auth
+    .confirmPasswordReset(actionCode, newPassword)
+    .then((resp) => {
+      if(auth.currentUser) userSignOut(auth);
+      window.location.href = "http://localhost:5000";
+    })
+    .catch((error) => {
+      console.log("error");
+      notification.innerText = error.message;
+      notification.classList.remove("none");
+
+      setTimeout(() => {
+        notification.classList.add("none");
+      }, 2000);
+    });
 }
 
 function resetPasswordUtil(password) {
@@ -84,15 +138,14 @@ function resetPasswordUtil(password) {
 }
 
 function getParameterByName(urlParams, name) {
-    return urlParams.get(name);
+  return urlParams.get(name);
 }
 
 window.onload = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  if(getParameterByName(urlParams, "enable") === "false"){
-      forms[0].classList.remove("none");
-  }
-  else if(getParameterByName(urlParams, "enable") === "true"){
-      forms[1].classList.remove("none");
+  if (getParameterByName(urlParams, "enable") === "false") {
+    forms[0].classList.remove("none");
+  } else if (getParameterByName(urlParams, "enable") === "true") {
+    forms[1].classList.remove("none");
   }
 };
