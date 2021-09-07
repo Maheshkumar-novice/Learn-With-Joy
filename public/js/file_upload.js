@@ -101,13 +101,15 @@ fileUploadClick.forEach((upload) => {
   });
 });
 
-toggleUploadBtn.addEventListener("click", ()=>{
-  chatContainer = document.querySelector(`.chat__chat-container[data-hash="${inputChat.dataset.chatHash}"]`)
+toggleUploadBtn.addEventListener("click", () => {
+  chatContainer = document.querySelector(
+    `.chat__chat-container[data-hash="${inputChat.dataset.chatHash}"]`
+  );
   clearUploadWindow();
   toggleUploadWindow();
 });
 
-function clearUploadWindow(){
+function clearUploadWindow() {
   filePreview.innerHTML = "";
   fileToUpload = [];
 }
@@ -124,7 +126,6 @@ function toggleUploadWindow() {
 function autoScroll() {
   chatWrapper.scrollTop = chatWrapper.scrollHeight;
 }
-
 
 function createImagePreview(key, src, size, upTask) {
   chatContainer.innerHTML += `
@@ -145,19 +146,20 @@ function createImagePreview(key, src, size, upTask) {
                   <span class="chat__time-stamp chat__time-stamp--left"></span>
                 </div>`;
   autoScroll();
-  const pausePlay = document.querySelector(
-    `.chat__message-container[data-id="${key}"] .chat__message--controls`
-  );
-  const cancel = document.querySelector(`.chat__message-container[data-id="${key}"] .chat__message--cancel`);
-  pausePlay.addEventListener("click", (e) => {
-    console.log(e.target);
-    e.target.src.includes("play")
-      ? ((e.target.src = "./assets/icons/home/pause.svg"), upTask.pause())
-      : ((e.target.src = "./assets/icons/home/play.svg"), upTask.resume());
-  });
-  cancel.addEventListener("click", (e) => {
-    upTask.cancel();
-  });
+  // const pausePlay = document.querySelector(
+  //   `.chat__message-container[data-id="${key}"] .chat__message--controls`
+  // );
+  // const cancel = document.querySelector(`.chat__message-container[data-id="${key}"] .chat__message--cancel`);
+  // console.log(pausePlay);
+  // pausePlay.addEventListener("click", (e) => {
+  //   console.log(e.target);
+  //   e.target.src.includes("play")
+  //     ? ((e.target.src = "./assets/icons/home/pause.svg"), upTask.pause())
+  //     : ((e.target.src = "./assets/icons/home/play.svg"), upTask.resume());
+  // });
+  // cancel.addEventListener("click", (e) => {
+  //   upTask.cancel();
+  // });
 }
 
 function createFilePrevieew(key, name, size, upTask) {
@@ -174,7 +176,7 @@ function createFilePrevieew(key, name, size, upTask) {
                       <a class="chat__message--link" href="" download="name.txt" none><img class="chat__message--download-ic none" src="./assets/icons/home/download.svg" alt=""></a>
                     </div>
                     <div class="chat__message--file-detail">
-                      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="chat__message--cancel">
+                      <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="chat__message--file-cancel">
                       <h3 class="chat__message--file-name">${name}</h3>
                       <span class="chat__message--downloaded">0/${size} MB</span>
                     </div>
@@ -182,17 +184,22 @@ function createFilePrevieew(key, name, size, upTask) {
                   <span class="chat__time-stamp chat__time-stamp--left"></span>
               </div>`;
   autoScroll();
-  const pausePlay = document.querySelector(`.chat__message-container[data-id="${key}"] .chat__message--file-controls`);
-  const cancel = document.querySelector(`.chat__message-container[data-id="${key}"] .chat__message--cancel`);
-  pausePlay.addEventListener("click", (e) => {
-    console.log(e.target);
-    e.target.src.includes("play")
-      ? ((e.target.src = "./assets/icons/home/pause.svg"), upTask.pause())
-      : ((e.target.src = "./assets/icons/home/play.svg"), upTask.resume());
-  });
-  cancel.addEventListener("click", (e) => {
-    upTask.cancel();
-  });
+  // const pausePlay = document.querySelector(
+  //   `.chat__message-container[data-id="${key}"] .chat__message--file-controls`
+  // );
+  // const cancel = document.querySelector(
+  //   `.chat__message-container[data-id="${key}"] .chat__message--file-cancel`
+  // );
+  // console.log(pausePlay);
+  // pausePlay.addEventListener("click", (e) => {
+  //   console.log(e.target);
+  //   e.target.src.includes("play")
+  //     ? ((e.target.src = "./assets/icons/home/pause.svg"), upTask.pause())
+  //     : ((e.target.src = "./assets/icons/home/play.svg"), upTask.resume());
+  // });
+  // cancel.addEventListener("click", (e) => {
+  //   upTask.cancel();
+  // });
 }
 
 function updateImagePreview(cnt, link, ts) {
@@ -241,15 +248,23 @@ function updateFilePreview(cnt, link, ts) {
   fromRemove.removeChild(toRemove);
 }
 
+let imageTaskArray, fileTaskArray, fileCount;
 const storage = firebase.storage();
 const database = firebase.database();
 const auth = firebase.auth();
 sendBtn.addEventListener("click", async (e) => {
+  fileCount = fileToUpload.length;
+  imageTaskArray = [];
+  fileTaskArray = [];
   if (uploadCnt.classList.contains("none")) return;
   toggleUploadWindow();
   fileToUpload.forEach((file) => {
     const size = (file.size / (1024 * 1024)).toFixed(2);
-    const ref = storageRef(storage, `chat/${inputChat.dataset.chatHash}`, `${file.name}`);
+    const ref = storageRef(
+      storage,
+      `chat/${inputChat.dataset.chatHash}`,
+      `${file.name}`
+    );
     const key = pushKey(
       database,
       `chat/${inputChat.dataset.chatHash}`,
@@ -263,13 +278,79 @@ sendBtn.addEventListener("click", async (e) => {
     };
     let val = storageUpload(ref, file, metadata);
     file.type.match(/image\//i)
-      ? createImagePreview(key, URL.createObjectURL(file), size, val)
-      : createFilePrevieew(key, file.name, size, val);
+      ? (createImagePreview(key, URL.createObjectURL(file), size, val),
+        imageTaskArray.push(val))
+      : (createFilePrevieew(key, file.name, size, val),
+        fileTaskArray.push(val));
     console.log(ref);
     task(val, key, inputChat.dataset.chatHash, metadata);
   });
+  provideImageFuntionality(imageTaskArray);
+  // provideFileFunctionality(fileTaskArray);
   clearUploadWindow();
 });
+
+function provideImageFuntionality(taskArray) {
+  const pausePlayElem = document.querySelectorAll(
+    `.chat__message-container .chat__message--controls`
+  );
+
+  pausePlayElem.forEach((pausePlay, idx) => {
+    pausePlay.addEventListener("click", (e) => {
+      console.log(e.target);
+      e.target.src.includes("play")
+        ? ((e.target.src = "./assets/icons/home/pause.svg"),
+          taskArray[idx].pause())
+        : ((e.target.src = "./assets/icons/home/play.svg"),
+          taskArray[idx].resume());
+    });
+  });
+
+  const cancelElem = document.querySelectorAll(
+    `.chat__message-container .chat__message--cancel`
+  );
+  cancelElem.forEach((cancelIc, idx) => {
+    cancelIc.addEventListener("click", (e) => {
+      taskArray[idx].cancel();
+    });
+  });
+}
+
+function provideFileFunctionality(taskArray) {
+  const pausePlayElem = document.querySelectorAll(
+    `.chat__message-container .chat__message--file-controls`
+  );
+  let reverseSelectedPausePlay = [];
+  pausePlayElem.forEach((pl) => {
+    reverseSelectedPausePlay.unshift(pl);
+  });
+
+  reverseSelectedPausePlay.forEach((pausePlay, idx) => {
+    if (idx < taskArray.length) return;
+    pausePlay.addEventListener("click", (e) => {
+      console.log(e.target);
+      e.target.src.includes("play")
+        ? ((e.target.src = "./assets/icons/home/pause.svg"),
+          taskArray[idx].pause())
+        : ((e.target.src = "./assets/icons/home/play.svg"),
+          taskArray[idx].resume());
+    });
+  });
+
+  const cancelElem = document.querySelectorAll(
+    `.chat__message-container .chat__message--file-cancel`
+  );
+  let reverseSelectedCancel = [];
+  cancelElem.forEach((cancel) => {
+    reverseSelectedCancel.unshift(cancel);
+  });
+  reverseSelectedCancel.forEach((cancelIc, idx) => {
+    if (idx < taskArray.length) return;
+    cancelIc.addEventListener("click", (e) => {
+      taskArray[idx].cancel();
+    });
+  });
+}
 
 function task(uploadTask, key, chatHash, metadata) {
   uploadTask.on(
@@ -303,7 +384,7 @@ function task(uploadTask, key, chatHash, metadata) {
           ? 380 - (380 * progress) / 100
           : 260 - (260 * progress) / 100;
       size.innerText = `${byteTransfer} / ${byteTotal}MB`;
-      console.log("Upload is " + progress + "% done");
+      // console.log("Upload is " + progress + "% done");
       switch (snapshot.state) {
         case firebase.storage.TaskState.PAUSED: // or 'paused'
           console.log("Upload is paused");
@@ -320,26 +401,30 @@ function task(uploadTask, key, chatHash, metadata) {
         `.chat__message-container[data-id="${key}"]`
       );
       chatContainer.removeChild(toRemove);
+      fileCount--;
+      console.log(fileCount);
     },
     async () => {
+      fileCount--;
+      console.log(fileCount);
       const downloadURL = await storageDownloadURL(uploadTask.snapshot.ref);
       const cnt = document.querySelector(
         `.chat__message-container[data-id="${key}"]`
       );
-        let message = {};
+      let message = {};
 
-        let user = auth.currentUser;
-        let messageKey = key;
-        console.log("key", chatHash)
-        message["sender"] = user.uid;
-        message[cnt.dataset.type] = downloadURL;
-        message["metadata"] = metadata;
-        message["time"] = new Date().toISOString();
-        cnt.dataset.type === "image"
+      let user = auth.currentUser;
+      let messageKey = key;
+      console.log("key", chatHash);
+      message["sender"] = user.uid;
+      message[cnt.dataset.type] = downloadURL;
+      message["metadata"] = metadata;
+      message["time"] = new Date().toISOString();
+      cnt.dataset.type === "image"
         ? updateImagePreview(cnt, downloadURL, message.time)
         : updateFilePreview(cnt, downloadURL, message.time);
-        addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
-        console.log(message);
+      addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
+      console.log(message);
     }
   );
 }
