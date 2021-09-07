@@ -67,6 +67,7 @@ function docsPreview(files) {
 
 fileUpload.forEach((fileUpload) => {
   fileUpload.addEventListener("change", function (e) {
+    console.log(e.target.files);
     filePreview.innerHTML = "";
     fileToUpload = [];
     console.log(e.target.dataset.type);
