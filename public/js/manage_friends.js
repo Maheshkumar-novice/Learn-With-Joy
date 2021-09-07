@@ -473,23 +473,19 @@ async function addMessageToChatBody(chat) {
   if (!chatData) return;
 
   if ("image" in chatData) {
-    // if (
-    //   chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
-    // )
-    //   return;
-    chatData.sender === user.uid 
-    ? addFileToContainer(chatContainer, chatData.image, chatData.metadata, chatData.time, "right", "image") 
-    : addFileToContainer(chatContainer, chatData.image, chatData.metadata, chatData.time, "left", "image");
+    if (
+      chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
+    )
+      return;
+    addFileToContainer(chatContainer, chatData.image, chatData.time, "left", "image");
     return;
   }
   if ("file" in chatData) {
-    // if (
-    //   chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
-    // )
-      // return;
-    chatData.sender === user.uid 
-    ? addFileToContainer(chatContainer, chatData.file, chatData.metadata, chatData.time, "right", "file") 
-    : addFileToContainer(chatContainer, chatData.file, chatData.metadata, chatData.time, "left", "file");
+    if (
+      chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
+    )
+      return;
+    addFileToContainer(chatContainer, chatData.file, chatData.time, "left", "file");
     return;
   }
 

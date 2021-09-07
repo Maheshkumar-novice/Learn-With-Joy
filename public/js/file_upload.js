@@ -412,13 +412,9 @@ function task(uploadTask, key, chatHash, metadata) {
       message[cnt.dataset.type] = downloadURL;
       message["metadata"] = metadata;
       message["time"] = new Date().toISOString();
-      // cnt.dataset.type === "image"
-      //   ? updateImagePreview(cnt, downloadURL, message.time)
-      //   : updateFilePreview(cnt, downloadURL, message.time);
-      const toRemove = document.querySelector(
-        `.chat__message-container[data-id="${key}"]`
-      );
-      chatContainer.removeChild(toRemove);
+      cnt.dataset.type === "image"
+        ? updateImagePreview(cnt, downloadURL, message.time)
+        : updateFilePreview(cnt, downloadURL, message.time);
       addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
       console.log(message);
       
