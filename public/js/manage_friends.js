@@ -366,7 +366,8 @@ async function updateChatWindow(friendCard) {
   // console.log("start");
   // console.log("prev",prevCard);
   let friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
-  console.log("fr", friendContainer);
+  if(prevCard && (prevCard === friendContainer)) return;
+  if(prevCard) prevCard.classList.add("none");
   if(!friendContainer){
     friendContainer = document.createElement("div");
     friendContainer.classList.add("chat__chat-container");
@@ -375,8 +376,7 @@ async function updateChatWindow(friendCard) {
     // console.log("mad", friendContainer);
   }
   else{
-    if(prevCard && (prevCard === friendContainer)) return;
-    prevCard.classList.add("none")
+    
     prevCard = friendContainer;
     // console.log("up", prevCard);
     friendContainer.classList.remove("none");

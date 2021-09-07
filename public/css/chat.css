@@ -339,7 +339,7 @@
   260
 } */
 
-.chat__message--cancel {
+.chat__message--cancel, .chat__message--file-cancel {
   width: 20px;
   height: 20px;
   position: absolute;

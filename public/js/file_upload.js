@@ -101,7 +101,9 @@ fileUploadClick.forEach((upload) => {
   });
 });
 
-toggleUploadBtn.addEventListener("click", () => {
+toggleUploadBtn.addEventListener("click", function(e) {
+  console.log(this.dataset.mode);
+  if(this.dataset.mode === "disabled") return;
   chatContainer = document.querySelector(
     `.chat__chat-container[data-hash="${inputChat.dataset.chatHash}"]`
   );
@@ -127,7 +129,7 @@ function autoScroll() {
   chatWrapper.scrollTop = chatWrapper.scrollHeight;
 }
 
-function createImagePreview(key, src, size, upTask) {
+function createImagePreview(key, src, size) {
   chatContainer.innerHTML += `
                 <div class="chat__message-container chat__message-container--right" data-type="image" data-id="${key}">
                   <div class="chat__message--image-cnt">
@@ -162,7 +164,7 @@ function createImagePreview(key, src, size, upTask) {
   // });
 }
 
-function createFilePrevieew(key, name, size, upTask) {
+function createFilePreview(key, name, size) {
   chatContainer.innerHTML += `
                 <div class="chat__message-container chat__message-container--right" data-type="file" data-id="${key}">
                   <div class="chat__message--file-cnt">
@@ -244,7 +246,7 @@ function updateFilePreview(cnt, link, ts) {
   toRemove = cnt.querySelector(".chat__message--progress");
   fromRemove.removeChild(toRemove);
   fromRemove = cnt.querySelector(".chat__message--file-detail");
-  toRemove = cnt.querySelector(".chat__message--cancel");
+  toRemove = cnt.querySelector(".chat__message--file-cancel");
   fromRemove.removeChild(toRemove);
 }
 
@@ -253,6 +255,8 @@ const storage = firebase.storage();
 const database = firebase.database();
 const auth = firebase.auth();
 sendBtn.addEventListener("click", async (e) => {
+  if(fileToUpload.length === 0) return;
+  toggleUploadBtn.dataset.mode = "disabled";
   fileCount = fileToUpload.length;
   imageTaskArray = [];
   fileTaskArray = [];
@@ -278,19 +282,20 @@ sendBtn.addEventListener("click", async (e) => {
     };
     let val = storageUpload(ref, file, metadata);
     file.type.match(/image\//i)
-      ? (createImagePreview(key, URL.createObjectURL(file), size, val),
+      ? (createImagePreview(key, URL.createObjectURL(file), size),
         imageTaskArray.push(val))
-      : (createFilePrevieew(key, file.name, size, val),
+      : (createFilePreview(key, file.name, size),
         fileTaskArray.push(val));
     console.log(ref);
     task(val, key, inputChat.dataset.chatHash, metadata);
   });
   provideImageFuntionality(imageTaskArray);
-  // provideFileFunctionality(fileTaskArray);
+  provideFileFunctionality(fileTaskArray);
   clearUploadWindow();
 });
 
 function provideImageFuntionality(taskArray) {
+  if(taskArray.length === 0) return;
   const pausePlayElem = document.querySelectorAll(
     `.chat__message-container .chat__message--controls`
   );
@@ -317,18 +322,13 @@ function provideImageFuntionality(taskArray) {
 }
 
 function provideFileFunctionality(taskArray) {
+  if(taskArray.length === 0) return;
   const pausePlayElem = document.querySelectorAll(
     `.chat__message-container .chat__message--file-controls`
   );
-  let reverseSelectedPausePlay = [];
-  pausePlayElem.forEach((pl) => {
-    reverseSelectedPausePlay.unshift(pl);
-  });
-
-  reverseSelectedPausePlay.forEach((pausePlay, idx) => {
-    if (idx < taskArray.length) return;
+    console.log(pausePlayElem);
+  pausePlayElem.forEach((pausePlay, idx) => {
     pausePlay.addEventListener("click", (e) => {
-      console.log(e.target);
       e.target.src.includes("play")
         ? ((e.target.src = "./assets/icons/home/pause.svg"),
           taskArray[idx].pause())
@@ -340,12 +340,7 @@ function provideFileFunctionality(taskArray) {
   const cancelElem = document.querySelectorAll(
     `.chat__message-container .chat__message--file-cancel`
   );
-  let reverseSelectedCancel = [];
-  cancelElem.forEach((cancel) => {
-    reverseSelectedCancel.unshift(cancel);
-  });
-  reverseSelectedCancel.forEach((cancelIc, idx) => {
-    if (idx < taskArray.length) return;
+  cancelElem.forEach((cancelIc, idx) => {
     cancelIc.addEventListener("click", (e) => {
       taskArray[idx].cancel();
     });
@@ -401,12 +396,9 @@ function task(uploadTask, key, chatHash, metadata) {
         `.chat__message-container[data-id="${key}"]`
       );
       chatContainer.removeChild(toRemove);
-      fileCount--;
-      console.log(fileCount);
+      fileCount === 1 ? toggleUploadBtn.dataset.mode = "enabled" : fileCount--;
     },
     async () => {
-      fileCount--;
-      console.log(fileCount);
       const downloadURL = await storageDownloadURL(uploadTask.snapshot.ref);
       const cnt = document.querySelector(
         `.chat__message-container[data-id="${key}"]`
@@ -425,6 +417,8 @@ function task(uploadTask, key, chatHash, metadata) {
         : updateFilePreview(cnt, downloadURL, message.time);
       addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
       console.log(message);
+      
+      fileCount === 1 ? toggleUploadBtn.dataset.mode = "enabled" : fileCount--;
     }
   );
 }
