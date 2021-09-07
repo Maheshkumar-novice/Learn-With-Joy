@@ -477,7 +477,7 @@ async function addMessageToChatBody(chat) {
       chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
     )
       return;
-    addFileToContainer(chatContainer, chatData.image, chatData.time, "left", "image");
+    addFileToContainer(chatContainer, chatData.image, chatData.metadata, chatData.time, "left", "image");
     return;
   }
   if ("file" in chatData) {
@@ -485,7 +485,7 @@ async function addMessageToChatBody(chat) {
       chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
     )
       return;
-    addFileToContainer(chatContainer, chatData.file, chatData.time, "left", "file");
+    addFileToContainer(chatContainer, chatData.file, chatData.metadata, chatData.time, "left", "file");
     return;
   }
 
