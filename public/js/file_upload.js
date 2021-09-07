@@ -10,14 +10,15 @@ import {
 
 const toggleUploadBtn = document.querySelector(".chat__img--file");
 const uploadCnt = document.querySelector(".upload");
-const chat = document.querySelector(".chat__chat-container");
+const chatWrapper = document.querySelector(".chat__chat-wrapper");
 const fileUpload = document.querySelectorAll(".upload__input");
 const filePreview = document.querySelector(".upload__preview");
 const fileDragnDrop = document.querySelector(".upload__dragndrop");
 const fileUploadClick = document.querySelectorAll(".upload__click--each");
 const sendBtn = document.querySelector(".chat__img--send");
 const inputChat = document.querySelector(".chat__input--chat");
-const chatContainer = document.querySelector(".chat__chat-container");
+// const chatContainer = document.querySelector(".chat__chat-container");
+let chatContainer;
 
 let fileToUpload = [];
 
@@ -101,6 +102,7 @@ fileUploadClick.forEach((upload) => {
 });
 
 toggleUploadBtn.addEventListener("click", ()=>{
+  chatContainer = document.querySelector(`.chat__chat-container[data-hash="${inputChat.dataset.chatHash}"]`)
   clearUploadWindow();
   toggleUploadWindow();
 });
@@ -111,7 +113,7 @@ function clearUploadWindow(){
 }
 
 function toggleUploadWindow() {
-  chat.classList.toggle("none");
+  chatWrapper.classList.toggle("none");
   uploadCnt.classList.toggle("none");
   inputChat.value = "";
   inputChat.disabled = !inputChat.disabled;
@@ -120,7 +122,7 @@ function toggleUploadWindow() {
 }
 
 function autoScroll() {
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  chatWrapper.scrollTop = chatWrapper.scrollHeight;
 }
 
 
@@ -264,12 +266,12 @@ sendBtn.addEventListener("click", async (e) => {
       ? createImagePreview(key, URL.createObjectURL(file), size, val)
       : createFilePrevieew(key, file.name, size, val);
     console.log(ref);
-    task(val, key, inputChat.dataset.chatHash);
+    task(val, key, inputChat.dataset.chatHash, metadata);
   });
   clearUploadWindow();
 });
 
-function task(uploadTask, key, chatHash) {
+function task(uploadTask, key, chatHash, metadata) {
   uploadTask.on(
     "state_changed",
     (snapshot) => {
@@ -329,8 +331,9 @@ function task(uploadTask, key, chatHash) {
         let user = auth.currentUser;
         let messageKey = key;
         console.log("key", chatHash)
-        message[cnt.dataset.type] = downloadURL;
         message["sender"] = user.uid;
+        message[cnt.dataset.type] = downloadURL;
+        message["metadata"] = metadata;
         message["time"] = new Date().toISOString();
         cnt.dataset.type === "image"
         ? updateImagePreview(cnt, downloadURL, message.time)

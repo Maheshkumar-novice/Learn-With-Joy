@@ -322,19 +322,21 @@ let chatWindowHeader = document.querySelector(".chat__chat-header");
 let chatWindowMessageSender = document.querySelector(
   ".chat__chat-message-sender"
 );
-let chatContainer = document.querySelector(".chat__chat-container");
+let chatWrapper = document.querySelector(".chat__chat-wrapper");
+let chatContainer; 
+// = document.querySelector(".chat__chat-container");
 
 function cleanUpChatWindow() {
-  chatContainer.innerHTML = "";
+  // chatContainer.innerHTML = "";
   chatWindowHeader.classList.remove("none");
-  chatContainer.classList.remove("none");
+  // chatContainer.classList.remove("none");
   chatWindowMessageSender.classList.remove("none");
   noChatSelectedInfo.classList.add("none");
 }
 
 function updateChatDataSet(friendCard) {
   chatWindowMessageInput.dataset.chatHash = friendCard.dataset.hash;
-  chatWindowHeader.dataset.chatId = friendCard.dataset.id; //friend ID needs to be changed
+  chatWindowHeader.dataset.chatId = friendCard.dataset.id; 
 }
 
 function updateFriendDataAtChatWindow(friendCard) {
@@ -349,17 +351,46 @@ function setUpChatWindow(friendCard) {
   updateChatDataSet(friendCard);
 }
 
+let prevCard = null;
 async function updateChatWindow(friendCard) {
-  setUpChatWindow(friendCard);
+  // debugger 
   let upload = document.querySelector(".upload");
   if (!upload.classList.contains("none")) {
     upload.classList.add("none");
+    chatWrapper.classList.remove("none");
   }
-  let data = await readDB(database, `chat/${friendCard.dataset.hash}/messages`);
-  fillMessagesToChatBody(data.val());
+
+  let hash = friendCard.dataset.hash;
+  setUpChatWindow(friendCard);
+
+  // console.log("start");
+  // console.log("prev",prevCard);
+  let friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
+  console.log("fr", friendContainer);
+  if(!friendContainer){
+    friendContainer = document.createElement("div");
+    friendContainer.classList.add("chat__chat-container");
+    friendContainer.dataset.hash = hash;
+    chatWrapper.appendChild(friendContainer);
+    // console.log("mad", friendContainer);
+  }
+  else{
+    if(prevCard && (prevCard === friendContainer)) return;
+    prevCard.classList.add("none")
+    prevCard = friendContainer;
+    // console.log("up", prevCard);
+    friendContainer.classList.remove("none");
+    autoScroll();
+    return;
+  }
+  prevCard = friendContainer;
+  // console.log("upout", prevCard);
+  
+  let data = await readDB(database, `chat/${hash}/messages`);
+  fillMessagesToChatBody(data.val(), hash);
 }
 
-function addMessageToContainer(message, time, position) {
+function addMessageToContainer(chatContainer, message, time, position) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
@@ -369,13 +400,13 @@ function addMessageToContainer(message, time, position) {
    </div>`;
 }
 
- function addFileToContainer(src, time, position, type) {
+ function addFileToContainer(chatContainer, src, metaData, time, position, type) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
-  var reference = firebase.storage().refFromURL(src);
-  let metaData = fileMetaData(reference);
-  let size = (metaData.size / (1024 * 1024)).toFixed(2);
+  // var reference = firebase.storage().refFromURL(src);
+  // let metaData = fileMetaData(reference);
+  let size = metaData.size;
   let name = metaData.name;
   chatContainer.innerHTML +=
     type === "image"
@@ -401,62 +432,70 @@ function addMessageToContainer(message, time, position) {
   autoScroll();
 }
 
-function fillMessagesToChatBody(data) {
+function fillMessagesToChatBody(data, hash) {
   if (!data) return;
-
+  console.log(data, hash);
+  let chatContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
+  console.log(chatContainer);
   Object.values(data).forEach((message) => {
     if (message.sender === user.uid) {
       "text" in message
-        ? addMessageToContainer(message.text, message.time, "right")
+        ? addMessageToContainer(chatContainer, message.text, message.time, "right")
         : "image" in message
-        ? addFileToContainer(message.image, message.time, "right", "image")
-        : addFileToContainer(message.file, message.time, "right", "file");
+        ? addFileToContainer(chatContainer, message.image, message.metadata, message.time, "right", "image")
+        : addFileToContainer(chatContainer, message.file, message.metadata, message.time, "right", "file");
     } else {
       "text" in message
-        ? addMessageToContainer(message.text, message.time, "left")
+        ? addMessageToContainer(chatContainer, message.text, message.time, "left")
         : "image" in message
-        ? addFileToContainer(message.image, message.time, "left", "image")
-        : addFileToContainer(message.file, message.time, "left", "file");
+        ? addFileToContainer(chatContainer, message.image, message.metadata, message.time, "left", "image")
+        : addFileToContainer(chatContainer, message.file, message.metadata, message.time, "left", "file");
     }
   });
   autoScroll();
 }
 
 async function addMessageToChatBody(chat) {
-  let usersRawData = await readDB(
-    database,
-    `chat/${chatWindowMessageInput.dataset.chatHash}/user`
-  );
-  let userData = usersRawData.val();
-  if (!userData) return;
+  let hash = chat.ref.parent.parent.key;
+  let chatContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
+  console.log('done')
+  if(!chatContainer) return;
+  console.log('fun')
+
+  // let usersRawData = await readDB(
+  //   database,
+  //   `chat/${chatWindowMessageInput.dataset.chatHash}/user`
+  // );
+  // let userData = usersRawData.val();
+  // if (!userData) return;
 
   let chatData = chat.val();
   if (!chatData) return;
 
   if ("image" in chatData) {
     if (
-      document.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
+      chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
     )
       return;
-    addFileToContainer(chatData.image, chatData.time, "left", "image");
+    addFileToContainer(chatContainer, chatData.image, chatData.time, "left", "image");
     return;
   }
   if ("file" in chatData) {
     if (
-      document.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
+      chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
     )
       return;
-    addFileToContainer(chatData.file, chatData.time, "left", "file");
+    addFileToContainer(chatContainer, chatData.file, chatData.time, "left", "file");
     return;
   }
 
-  let userIds = Object.values(userData);
-  if (!userIds.includes(chatData.sender)) return;
+  // let userIds = Object.values(userData);
+  // if (!userIds.includes(chatData.sender)) return;
 
   if (chatData.sender === user.uid) {
-    addMessageToContainer(chatData.text, chatData.time, "right");
+    addMessageToContainer(chatContainer, chatData.text, chatData.time, "right");
   } else {
-    addMessageToContainer(chatData.text, chatData.time, "left");
+    addMessageToContainer(chatContainer, chatData.text, chatData.time, "left");
   }
   autoScroll();
 }
@@ -487,7 +526,7 @@ function addEventListenerToFriendCards() {
 }
 
 function autoScroll() {
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  chatWrapper.scrollTop = chatWrapper.scrollHeight;
 }
 
 window.addEventListener("keyup", (e) => {
