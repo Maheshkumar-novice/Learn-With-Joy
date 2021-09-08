@@ -50,13 +50,11 @@ function showInput() {
 async function updateNewUser(user_data) {
   namesList = [];
   let data = user_data.val();
-  console.log(data);
   if (data) {
     for (let id in data) {
       namesList.push(data[id].name);
     }
   }
-  console.log(namesList);
 }
 
 setDBListener(database, "users", "value", updateNewUser);
@@ -66,15 +64,12 @@ function disableresendVerificationButton() {
   if (prev !== null) {
     clearTimeout(prev);
   }
-  console.log("hello");
   prev = setTimeout((e) => {
     resendVerificationButton.disabled = false;
   }, 5000);
 }
 
 function enableVerification() {
-  console.log("hello");
-
   login.classList.add("none");
   title.classList.add("none");
   features.classList.add("none");
@@ -86,9 +81,7 @@ function enableVerification() {
 // sign In status change
 auth.onAuthStateChanged(async (user) => {
   if (user) {
-    console.log(user);
     if (!user.emailVerified) {
-      console.log("hello");
       enableVerification();
       updateUserName(0);
       return;
@@ -97,7 +90,6 @@ auth.onAuthStateChanged(async (user) => {
     if (!check_user.val()) {
       showInput();
     } else {
-      console.log("helo");
       window.location = "../home.html";
     }
   }
@@ -105,7 +97,6 @@ auth.onAuthStateChanged(async (user) => {
 
 //event listener
 resendVerificationButton.addEventListener("click", async function (e) {
-  console.log("hello", this.disabled);
   let user = auth.currentUser;
   if (user.emailVerified) {
     this.classList.add("none");
@@ -117,7 +108,6 @@ resendVerificationButton.addEventListener("click", async function (e) {
 });
 
 googleSignIn.addEventListener("click", (e) => {
-  console.log("hi");
   const provider = new firebase.auth.GoogleAuthProvider();
   userSignIn(auth, provider);
 });
@@ -150,7 +140,6 @@ function changeLocation() {
 }
 
 function updateUserName(val) {
-  console.log(userName);
   if (userName === undefined) return;
   loginForm.innerHTML = loader;
   let user = auth.currentUser;
@@ -182,45 +171,17 @@ const loginHeader = document.querySelector(".login__header");
 const loginTab = document.querySelector(".login__tab");
 const signupTab = document.querySelector(".signup__tab");
 const loginForm = document.querySelector(".login__form");
-
-loginTab.addEventListener("click", function () {
-  loginForm.innerHTML = loginTemplate;
-  loginTab.classList.add("active");
-  signupTab.classList.remove("active");
-  togglePassword();
-  addSignListener();
-});
-
-signupTab.addEventListener("click", async function () {
-  loginForm.innerHTML = signupTemplate;
-  loginTab.classList.remove("active");
-  signupTab.classList.add("active");
-  addSignListener();
-  togglePassword();
-  document
-    .querySelector(".form__input-username")
-    .addEventListener("input", checkUniqueUser);
-});
-
 const login = document.querySelector(".login");
 const title = document.querySelector(".title");
 const subTitle = document.querySelector(".sub-title");
 const features = document.querySelector(".features");
 const signinToggle = document.querySelector(".sign-in");
-signinToggle.addEventListener("click", function () {
-  console.log("hi");
-  verificationMessageContainer.classList.add("none");
-  login.classList.toggle("none");
-  title.classList.toggle("none");
-  features.classList.toggle("none");
-  subTitle.classList.toggle("none");
-});
+let context = "login";
 
 function checkUniqueUser() {
-  console.log(this.value);
   userName = this.value;
   userLower = this.value.toLowerCase();
-  if (this.value === "") return;
+  if (userName === "") return;
   check_name = namesList.find((name) => name.toLowerCase() === userLower);
   this.style.borderBottom = "1px solid #fbae3c";
   checkInputCondition["username"] = true;
@@ -232,12 +193,29 @@ function checkUniqueUser() {
   }
 }
 
+function isFormEmpty() {
+  return getFormInputs().every((input) => input.value === "");
+}
+
+function isSignUpConditionsValid() {
+  return (
+    checkInputCondition["username"] &&
+    checkInputCondition["password"] &&
+    checkInputCondition["re-password"]
+  );
+}
+
+function isLogInConditionsValid() {
+  return checkInputCondition["password"];
+}
+
 function getFormInputs() {
   return Array.from(loginForm.querySelectorAll("input"));
 }
 
-function isAllInputsEmpty() {
-  return getFormInputs().every((input) => input.value === "");
+function getFormData() {
+  const data = document.querySelectorAll(".form__input-main");
+  return [data[0].value, data[1].value];
 }
 
 function showEmptySignal() {
@@ -254,103 +232,172 @@ function hideEmptySignal() {
   });
 }
 
-let errorElem;
-function addSignListener() {
-  const signBtn = document.querySelector(".form__button");
-  signBtn.addEventListener("click", async function (e) {
-    e.preventDefault();
-    if (isAllInputsEmpty()) {
-      showEmptySignal();
-      setTimeout(() => {
-        hideEmptySignal();
-      }, 500);
-      return;
-    }
-    errorElem ? errorElem.classList.add("none") : "";
-    const email = document.querySelectorAll(".form__input-main");
-    try {
-      if (
-        this.textContent === "Signup" &&
-        checkInputCondition["username"] &&
-        checkInputCondition["password"] &&
-        checkInputCondition["re-password"]
-      ) {
-        await userEmailSignUp(auth, email[0].value, email[1].value);
-      } else if (
-        this.textContent === "Login" &&
-        checkInputCondition["password"]
-      ) {
-        await userEmailLogIn(auth, email[0].value, email[1].value);
-      }
-    } catch (error) {
-      let errorMessage = error.code.split("auth/")[1];
-      let errorShowElem = (errorElem = error.code.includes("wrong-password")
-        ? document.querySelector(".password-error")
-        : document.querySelector(".email-error"));
-      errorShowElem.classList.remove("none");
-      errorShowElem.textContent = errorMessage;
-      console.log(error);
-    }
-  });
+function handleEmptyInputs() {
+  showEmptySignal();
+  setTimeout(() => {
+    hideEmptySignal();
+  }, 500);
 }
 
-addSignListener();
-
-function togglePassword() {
-  const passwordIC = document.querySelectorAll(".toggle-pass");
-  const passwordInp = document.querySelectorAll("input[type='password']");
-  passwordIC.forEach((IC) => {
-    IC.addEventListener("click", function (e) {
-      let change = passwordIC[this.dataset.id === "1" ? 0 : 1];
-      this.classList.toggle("none");
-      change.classList.toggle("none");
-      passwordInp.forEach((inp) => {
-        inp.type = inp.type === "password" ? "text" : "password";
-      });
-    });
-  });
-  passwordInp[0].addEventListener("input", function (e) {
-    if (this.value.length === 0) {
-      document.querySelector(".password-error").classList.add("none");
-      checkInputCondition["password"] = false;
-      passwordInp.length === 2
-        ? checkReEnterPassword(passwordInp[0], passwordInp[1])
-        : "";
-      return;
-    }
-    if (this.value.length < 8) {
-      document.querySelector(".password-error").classList.remove("none");
-      checkInputCondition["password"] = false;
-      return;
-    }
-    document.querySelector(".password-error").classList.add("none");
-    checkInputCondition["password"] = true;
-    passwordInp.length === 2
-      ? checkReEnterPassword(passwordInp[0], passwordInp[1])
-      : "";
-  });
-  if (passwordInp.length === 2) {
-    passwordInp[1].addEventListener("input", function (e) {
-      checkReEnterPassword(passwordInp[0], passwordInp[1]);
-    });
+async function signUp(email, password) {
+  try {
+    await userEmailSignUp(auth, email, password);
+  } catch (error) {
+    console.log(error);
   }
 }
-togglePassword();
 
-function checkReEnterPassword(orignial, reEnter) {
+async function logIn(email, password) {
+  try {
+    await userEmailLogIn(auth, email, password);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function validateForm(e) {
+  e.preventDefault();
+  if (isFormEmpty()) return handleEmptyInputs();
+
+  let [email, password] = getFormData();
+  if (context === "signup" && isSignUpConditionsValid()) {
+    signUp(email, password);
+  } else if (context === "login" && isLogInConditionsValid()) {
+    logIn(email, password);
+  }
+}
+
+function hidePassword(showPasswordIcon, hidePasswordIcon) {
+  showPasswordIcon.classList.add("none");
+  hidePasswordIcon.classList.remove("none");
+  updatePasswordInputType("text");
+}
+
+function showPassword(showPasswordIcon, hidePasswordIcon) {
+  showPasswordIcon.classList.remove("none");
+  hidePasswordIcon.classList.add("none");
+  updatePasswordInputType("password");
+}
+
+function updatePasswordInputType(type) {
+  const passwordInputs = document.querySelectorAll(
+    "#password, #re-enter-password"
+  );
+  passwordInputs.forEach((input) => {
+    input.type = type;
+  });
+}
+
+function updateReEnterPasswordValidation(orignial, reEnter) {
+  if (!reEnter) return;
+  const reEnterPasswordError = document.querySelector(".re-password-error");
+
   if (reEnter.value.length === 0) {
-    document.querySelector(".re-password-error").classList.add("none");
+    reEnterPasswordError.classList.add("none");
     checkInputCondition["re-password"] = false;
     return;
-  }
-  if (orignial.value !== reEnter.value) {
-    document.querySelector(".re-password-error").classList.remove("none");
+  } else if (orignial.value !== reEnter.value) {
+    reEnterPasswordError.classList.remove("none");
     checkInputCondition["re-password"] = false;
     return;
+  } else {
+    reEnterPasswordError.classList.add("none");
+    checkInputCondition["re-password"] = true;
   }
-  document.querySelector(".re-password-error").classList.add("none");
-  checkInputCondition["re-password"] = true;
 }
+
+function addSignInButtonListener() {
+  document
+    .querySelector(".form__button")
+    .addEventListener("click", validateForm);
+}
+
+function addPasswordVisibilityListeners() {
+  const passwordVisibilityIcons = document.querySelectorAll(".toggle-pass");
+  const showPasswordIcon = document.querySelector(".show-pass");
+  const hidePasswordIcon = document.querySelector(".hide-pass");
+
+  passwordVisibilityIcons.forEach((icon) => {
+    icon.addEventListener("click", function (e) {
+      if (this.classList.contains("show-pass")) {
+        hidePassword(showPasswordIcon, hidePasswordIcon);
+      } else {
+        showPassword(showPasswordIcon, hidePasswordIcon);
+      }
+    });
+  });
+}
+
+function addOriginalPasswordListener(passwordInput, reEnterPasswordInput) {
+  passwordInput.addEventListener("input", function (e) {
+    const passwordError = document.querySelector(".password-error");
+
+    if (this.value.length === 0) {
+      passwordError.classList.add("none");
+      checkInputCondition["password"] = false;
+      updateReEnterPasswordValidation(passwordInput, reEnterPasswordInput);
+      return;
+    } else if (this.value.length < 8) {
+      passwordError.classList.remove("none");
+      checkInputCondition["password"] = false;
+      updateReEnterPasswordValidation(passwordInput, reEnterPasswordInput);
+      return;
+    } else {
+      passwordError.classList.add("none");
+      checkInputCondition["password"] = true;
+      updateReEnterPasswordValidation(passwordInput, reEnterPasswordInput);
+    }
+  });
+}
+
+function addReEnterPasswordListener(passwordInput, reEnterPasswordInput) {
+  if (!reEnterPasswordInput) return;
+  reEnterPasswordInput.addEventListener("input", function (e) {
+    updateReEnterPasswordValidation(passwordInput, reEnterPasswordInput);
+  });
+}
+
+function addPasswordInputListeners() {
+  const passwordInput = document.querySelector("#password");
+  const reEnterPasswordInput = document.querySelector("#re-enter-password");
+  addOriginalPasswordListener(passwordInput, reEnterPasswordInput);
+  addReEnterPasswordListener(passwordInput, reEnterPasswordInput);
+}
+
+addSignInButtonListener();
+addPasswordVisibilityListeners();
+addPasswordInputListeners();
+
+loginTab.addEventListener("click", function () {
+  loginForm.innerHTML = loginTemplate;
+  loginTab.classList.add("active");
+  signupTab.classList.remove("active");
+  context = "login";
+  addPasswordVisibilityListeners();
+  addPasswordInputListeners();
+  addSignInButtonListener();
+});
+
+signupTab.addEventListener("click", async function () {
+  loginForm.innerHTML = signupTemplate;
+  loginTab.classList.remove("active");
+  signupTab.classList.add("active");
+  context = "signup";
+  addPasswordVisibilityListeners();
+  addPasswordInputListeners();
+  addSignInButtonListener();
+  document
+    .querySelector(".form__input-username")
+    .addEventListener("input", checkUniqueUser);
+});
+
+signinToggle.addEventListener("click", function () {
+  verificationMessageContainer.classList.add("none");
+  login.classList.toggle("none");
+  title.classList.toggle("none");
+  features.classList.toggle("none");
+  subTitle.classList.toggle("none");
+});
 
 function getParameterByName(urlParams, name) {
   return urlParams.get(name);
