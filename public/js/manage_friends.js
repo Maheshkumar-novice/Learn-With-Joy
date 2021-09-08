@@ -10,6 +10,7 @@ import {
   fileMetaData,
   storageDelete,
   storageList,
+  updateDB,
 } from "./modules/firebase.js";
 import { checkUserPresent } from "./modules/util.js";
 
@@ -57,7 +58,6 @@ function removeFriendFromSearchResult(e) {
 }
 
 function getUserSearchData(uid) {
-  console.log(friendsUID, uid)
   if (user.uid === uid || checkUserPresent(friendsList, friendsUID, uid))
     return "";
   let searchedUser =
@@ -215,9 +215,7 @@ async function removeFriendFromFriendsList(data) {
   let removedFriend = document.querySelector(
     `.chat__friend-card[data-hash="${hash}"]`
   );
-  console.log(removedFriend, removedFriend.dataset.id, friendsUID);
   friendsUID.splice(friendsUID.findIndex(uid => uid === removedFriend.dataset.id), 1);
-  console.log(friendsUID);
   friendsContainer.removeChild(removedFriend);
   resetChatContainer(hash);
 }
@@ -357,8 +355,8 @@ chatMenuItem.addEventListener("click", clearChat);
 
 async function clearChat(e){
   let hash = chatWindowMessageInput.dataset.chatHash;
-  console.log("helo", chatWindowMessageInput.dataset.chatHash)
-  removeDB(database, `chat/${hash}/messages`);
+  console.log("helo", chatWindowMessageInput.dataset.chatHash);
+  addChlidDB(database, `chat/${hash}/"LastClearedMessage"`, user.uid, lastMessageId);
   let friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
   friendContainer.innerHTML = '';
 }
@@ -405,6 +403,7 @@ async function updateChatWindow(friendCard) {
     friendContainer = document.createElement("div");
     friendContainer.classList.add("chat__chat-container");
     friendContainer.dataset.hash = hash;
+    friendContainer.dataset.lastMessage = "null";
     chatWrapper.appendChild(friendContainer);
   }
   else{
@@ -441,7 +440,7 @@ function addMessageToContainer(chatContainer, message, time, position) {
     type === "image"
       ? `<div class="chat__message-container chat__message-container--${position}">
         <div class="chat__message--image-cnt">
-          <a class="chat__message--link" href="${src}" download target="_blank"><img src="${src}" alt="image" class="chat__message--image"></a>
+          <a class="chat__message--link" href="${src}" download target="_blank"><img src="${src}" alt="image" class="chat__message--image" loading="lazy"></a>
           <span class="chat__message--downloaded">${size} MB</span>
         </div>
         <span class="chat__time-stamp chat__time-stamp--left">${timeStamp}</span>
