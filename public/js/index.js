@@ -171,49 +171,17 @@ const loginHeader = document.querySelector(".login__header");
 const loginTab = document.querySelector(".login__tab");
 const signupTab = document.querySelector(".signup__tab");
 const loginForm = document.querySelector(".login__form");
-let context = "login";
-
-loginTab.addEventListener("click", function () {
-  loginForm.innerHTML = loginTemplate;
-  loginTab.classList.add("active");
-  signupTab.classList.remove("active");
-  context = "login";
-  addPasswordVisibilityListeners();
-  addPasswordInputListeners();
-  addSignInButtonListener();
-});
-
-signupTab.addEventListener("click", async function () {
-  loginForm.innerHTML = signupTemplate;
-  loginTab.classList.remove("active");
-  signupTab.classList.add("active");
-  context = "signup";
-  addPasswordVisibilityListeners();
-  addPasswordInputListeners();
-  addSignInButtonListener();
-  document
-    .querySelector(".form__input-username")
-    .addEventListener("input", checkUniqueUser);
-});
-
 const login = document.querySelector(".login");
 const title = document.querySelector(".title");
 const subTitle = document.querySelector(".sub-title");
 const features = document.querySelector(".features");
 const signinToggle = document.querySelector(".sign-in");
-
-signinToggle.addEventListener("click", function () {
-  verificationMessageContainer.classList.add("none");
-  login.classList.toggle("none");
-  title.classList.toggle("none");
-  features.classList.toggle("none");
-  subTitle.classList.toggle("none");
-});
+let context = "login";
 
 function checkUniqueUser() {
   userName = this.value;
   userLower = this.value.toLowerCase();
-  if (this.value === "") return;
+  if (userName === "") return;
   check_name = namesList.find((name) => name.toLowerCase() === userLower);
   this.style.borderBottom = "1px solid #fbae3c";
   checkInputCondition["username"] = true;
@@ -225,12 +193,29 @@ function checkUniqueUser() {
   }
 }
 
+function isFormEmpty() {
+  return getFormInputs().every((input) => input.value === "");
+}
+
+function isSignUpConditionsValid() {
+  return (
+    checkInputCondition["username"] &&
+    checkInputCondition["password"] &&
+    checkInputCondition["re-password"]
+  );
+}
+
+function isLogInConditionsValid() {
+  return checkInputCondition["password"];
+}
+
 function getFormInputs() {
   return Array.from(loginForm.querySelectorAll("input"));
 }
 
-function isFormEmpty() {
-  return getFormInputs().every((input) => input.value === "");
+function getFormData() {
+  const data = document.querySelectorAll(".form__input-main");
+  return [data[0].value, data[1].value];
 }
 
 function showEmptySignal() {
@@ -252,23 +237,6 @@ function handleEmptyInputs() {
   setTimeout(() => {
     hideEmptySignal();
   }, 500);
-}
-
-function isSignUpConditionsValid() {
-  return (
-    checkInputCondition["username"] &&
-    checkInputCondition["password"] &&
-    checkInputCondition["re-password"]
-  );
-}
-
-function isLogInConditionsValid() {
-  return checkInputCondition["password"];
-}
-
-function getFormData() {
-  const data = document.querySelectorAll(".form__input-main");
-  return [data[0].value, data[1].value];
 }
 
 async function signUp(email, password) {
@@ -299,12 +267,6 @@ async function validateForm(e) {
   }
 }
 
-function addSignInButtonListener() {
-  document
-    .querySelector(".form__button")
-    .addEventListener("click", validateForm);
-}
-
 function hidePassword(showPasswordIcon, hidePasswordIcon) {
   showPasswordIcon.classList.add("none");
   hidePasswordIcon.classList.remove("none");
@@ -326,22 +288,6 @@ function updatePasswordInputType(type) {
   });
 }
 
-function addPasswordVisibilityListeners() {
-  const passwordVisibilityIcons = document.querySelectorAll(".toggle-pass");
-  const showPasswordIcon = document.querySelector(".show-pass");
-  const hidePasswordIcon = document.querySelector(".hide-pass");
-
-  passwordVisibilityIcons.forEach((icon) => {
-    icon.addEventListener("click", function (e) {
-      if (this.classList.contains("show-pass")) {
-        hidePassword(showPasswordIcon, hidePasswordIcon);
-      } else {
-        showPassword(showPasswordIcon, hidePasswordIcon);
-      }
-    });
-  });
-}
-
 function updateReEnterPasswordValidation(orignial, reEnter) {
   if (!reEnter) return;
   const reEnterPasswordError = document.querySelector(".re-password-error");
@@ -358,6 +304,28 @@ function updateReEnterPasswordValidation(orignial, reEnter) {
     reEnterPasswordError.classList.add("none");
     checkInputCondition["re-password"] = true;
   }
+}
+
+function addSignInButtonListener() {
+  document
+    .querySelector(".form__button")
+    .addEventListener("click", validateForm);
+}
+
+function addPasswordVisibilityListeners() {
+  const passwordVisibilityIcons = document.querySelectorAll(".toggle-pass");
+  const showPasswordIcon = document.querySelector(".show-pass");
+  const hidePasswordIcon = document.querySelector(".hide-pass");
+
+  passwordVisibilityIcons.forEach((icon) => {
+    icon.addEventListener("click", function (e) {
+      if (this.classList.contains("show-pass")) {
+        hidePassword(showPasswordIcon, hidePasswordIcon);
+      } else {
+        showPassword(showPasswordIcon, hidePasswordIcon);
+      }
+    });
+  });
 }
 
 function addOriginalPasswordListener(passwordInput, reEnterPasswordInput) {
@@ -399,6 +367,37 @@ function addPasswordInputListeners() {
 addSignInButtonListener();
 addPasswordVisibilityListeners();
 addPasswordInputListeners();
+
+loginTab.addEventListener("click", function () {
+  loginForm.innerHTML = loginTemplate;
+  loginTab.classList.add("active");
+  signupTab.classList.remove("active");
+  context = "login";
+  addPasswordVisibilityListeners();
+  addPasswordInputListeners();
+  addSignInButtonListener();
+});
+
+signupTab.addEventListener("click", async function () {
+  loginForm.innerHTML = signupTemplate;
+  loginTab.classList.remove("active");
+  signupTab.classList.add("active");
+  context = "signup";
+  addPasswordVisibilityListeners();
+  addPasswordInputListeners();
+  addSignInButtonListener();
+  document
+    .querySelector(".form__input-username")
+    .addEventListener("input", checkUniqueUser);
+});
+
+signinToggle.addEventListener("click", function () {
+  verificationMessageContainer.classList.add("none");
+  login.classList.toggle("none");
+  title.classList.toggle("none");
+  features.classList.toggle("none");
+  subTitle.classList.toggle("none");
+});
 
 function getParameterByName(urlParams, name) {
   return urlParams.get(name);
