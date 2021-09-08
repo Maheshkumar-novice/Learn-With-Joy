@@ -327,9 +327,7 @@ let chatContainer;
 // = document.querySelector(".chat__chat-container");
 
 function cleanUpChatWindow() {
-  // chatContainer.innerHTML = "";
   chatWindowHeader.classList.remove("none");
-  // chatContainer.classList.remove("none");
   chatWindowMessageSender.classList.remove("none");
   noChatSelectedInfo.classList.add("none");
 }
@@ -353,7 +351,6 @@ function setUpChatWindow(friendCard) {
 
 let prevCard = null;
 async function updateChatWindow(friendCard) {
-  // debugger 
   let upload = document.querySelector(".upload");
   if (!upload.classList.contains("none")) {
     upload.classList.add("none");
@@ -363,8 +360,6 @@ async function updateChatWindow(friendCard) {
   let hash = friendCard.dataset.hash;
   setUpChatWindow(friendCard);
 
-  // console.log("start");
-  // console.log("prev",prevCard);
   let friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
   if(prevCard && (prevCard === friendContainer)) return;
   if(prevCard) prevCard.classList.add("none");
@@ -373,12 +368,10 @@ async function updateChatWindow(friendCard) {
     friendContainer.classList.add("chat__chat-container");
     friendContainer.dataset.hash = hash;
     chatWrapper.appendChild(friendContainer);
-    // console.log("mad", friendContainer);
   }
   else{
     
     prevCard = friendContainer;
-    // console.log("up", prevCard);
     friendContainer.classList.remove("none");
     autoScroll();
     return;
@@ -404,8 +397,6 @@ function addMessageToContainer(chatContainer, message, time, position) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
-  // var reference = firebase.storage().refFromURL(src);
-  // let metaData = fileMetaData(reference);
   let size = metaData.size;
   let name = metaData.name;
   chatContainer.innerHTML +=
@@ -420,7 +411,7 @@ function addMessageToContainer(chatContainer, message, time, position) {
       : `<div class="chat__message-container chat__message-container--${position}">
         <div class="chat__message--file-cnt">
           <div class="chat__message--file-download"> 
-            <a class="chat__message--link" href="${src}" download="${name}"><img class="chat__message--download-ic" src="./assets/icons/home/download.svg" alt=""></a>
+            <a class="chat__message--link" href="${src}" download="${name}" target="_blank"><img class="chat__message--download-ic" src="./assets/icons/home/download.svg" alt=""></a>
           </div>
           <div class="chat__message--file-detail">
             <h3 class="chat__message--file-name">${name}</h3>
@@ -462,13 +453,6 @@ async function addMessageToChatBody(chat) {
   if(!chatContainer) return;
   console.log('fun')
 
-  // let usersRawData = await readDB(
-  //   database,
-  //   `chat/${chatWindowMessageInput.dataset.chatHash}/user`
-  // );
-  // let userData = usersRawData.val();
-  // if (!userData) return;
-
   let chatData = chat.val();
   if (!chatData) return;
 
@@ -488,9 +472,6 @@ async function addMessageToChatBody(chat) {
     addFileToContainer(chatContainer, chatData.file, chatData.metadata, chatData.time, "left", "file");
     return;
   }
-
-  // let userIds = Object.values(userData);
-  // if (!userIds.includes(chatData.sender)) return;
 
   if (chatData.sender === user.uid) {
     addMessageToContainer(chatContainer, chatData.text, chatData.time, "right");
@@ -518,8 +499,12 @@ function sendMessage() {
 
 function addEventListenerToFriendCards() {
   let friends = document.querySelectorAll(".chat__friend-card");
+  let prevSelected = null;
   friends.forEach((friend) =>
     friend.addEventListener("click", function (e) {
+      prevSelected ? prevSelected.classList.remove("chat__friend-card-active") : "";
+      this.classList.add("chat__friend-card-active");
+      prevSelected = this;
       updateChatWindow(this);
     })
   );
@@ -542,6 +527,3 @@ document
   .querySelector(".chat__img--send")
   .addEventListener("click", sendMessage);
 
-// function setDBListener(reference, type, callBack) {
-//   database.ref(reference).on(type, callBack);
-// }

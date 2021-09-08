@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./css/common.css" />
     <link rel="stylesheet" href="./css/home.css" />
     <link rel="stylesheet" href="./css/chat.css" />
-    <link rel="stylesheet" href="./css/loader.css">
+    <link rel="stylesheet" href="./css/loader.css" />
   </head>
   <body>
     <header class="header">
@@ -24,9 +24,10 @@
             src="./assets/icons/home/notification.svg"
             alt="notification"
           />
-          <div class="header__notification-display none" data-status="off">
-           
-          </div>
+          <div
+            class="header__notification-display none"
+            data-status="off"
+          ></div>
         </div>
         <img
           src="./assets/icons/home/user.svg"
@@ -52,113 +53,177 @@
       <div class="lds-dual-ring"></div>
     </div>
     <main class="main none">
-     <section class="chat">
-      <div class="chat__container chat__friends">
-        <div class="chat__search-trigger">
-          <input
-            type="text"
-            placeholder="Search New Friends...(Esc)"
-            class="chat__input"
-            disabled
-          />
-        </div>
-        <div class="chat__friend-cnt"></div>
-      </div>
-      <div class="chat__container no-padding">
-        <div class="chat__search-cnt none">
-          <div class="chat__search-header">
-            <h1 class="chat__search-result-heading">Search Results</h1>
-            <img
-              class="chat__search-close-icon"
-              src="./assets/icons/home/msg-clear.svg"
-              alt="close"
+      <section class="chat">
+        <div class="chat__container chat__friends">
+          <div class="chat__search-trigger">
+            <input
+              type="text"
+              placeholder="Search New Friends...(Esc)"
+              class="chat__input"
+              disabled
             />
           </div>
-          <div class="chat__search-result-cnt"></div>
+          <div class="chat__friend-cnt"></div>
         </div>
-
-        <div class="chat__chat">
-          <div class="chat__chat-window">
-            <div class="chat__chat-header none">
+        <div class="chat__container no-padding">
+          <div class="chat__search-cnt none">
+            <div class="chat__search-header">
+              <h1 class="chat__search-result-heading">Search Results</h1>
               <img
-                src="./assets/icons/home/user.svg"
-                alt="User Profile Picture"
-                class="chat__img--chat"
+                class="chat__search-close-icon"
+                src="./assets/icons/home/msg-clear.svg"
+                alt="close"
               />
-              <p class="chat__chat-username">Lorem Ipsum</p>
             </div>
-            <div class="chat__chat-body">
-              <p class="chat__chat-info">Please select the friend to chat with them</p>
-              
-              <div class="upload none">
-                <div class="upload__info">
-                  <h4 class="upload__info--no">Max file Limit: 5</h4>
-                  <h4 class="upload__info--size">Max file Size: 10MB</h4>
-                </div>
-                <div class="upload__preview none">
-                </div>
+            <div class="chat__search-result-cnt"></div>
+          </div>
 
-                <div class="upload__dragndrop">
-                  <div class="upload__dragndrop--info">
-                    <img class="upload__dragndrop-ic" src="./assets/icons/home/upload.svg" alt="">
-                    <h3>Drag and Drop to Upload Files</h3>
-                  </div>
-                </div>
-
-                <div class="upload__click">
-                  <div class="upload__click--each upload__file" data-value="0">
-                    <input class="upload__input upload__input-file" type="file" accept=".xlsx, .xl, .doc,.docx, .ppt, .pptx, .txt, .pdf" hidden="hidden" multiple data-type="docs"/>
-                    <img
-                      class="upload__click-ic"
-                      src="./assets/icons/home/file-upload.svg"
-                      alt="docs-upload"
-                    />
-                    <span>Files</span>
-                  </div>
-                  <div class="upload__click--each upload__image" data-value="1">
-                    <input class="upload__input upload__input-image" type="file" accept="image/*" hidden="hidden" multiple data-type="image"/>
-                    <img
-                      class="upload__click-ic"
-                      src="./assets/icons/home/image-upload.svg"
-                      alt="img-upload"
-                    />
-                    <span>Images</span>
-                  </div>
+          <div class="chat__chat">
+            <div class="chat__chat-window">
+              <div class="chat__chat-header">
+                <img
+                  src="./assets/icons/home/user.svg"
+                  alt="User Profile Picture"
+                  class="chat__img--chat"
+                />
+                <p class="chat__chat-username">Lorem Ipsum</p>
+                <svg
+                  class="chat__chat-menu-ic"
+                  aria-hidden="true"
+                  focusable="false"
+                  data-prefix="fas"
+                  data-icon="ellipsis-v"
+                  class="svg-inline--fa fa-ellipsis-v fa-w-6"
+                  role="img"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 192 512"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                  ></path>
+                </svg>
+                <div class="chat__chat-menu-cnt none">
+                  <p class="menu__item">Clear Chat</p>
                 </div>
               </div>
+              <div class="chat__chat-body">
+                <p class="chat__chat-info">
+                  Please select the friend to chat with them
+                </p>
 
-              <div class="chat__chat-wrapper"></div>
-            </div>
-            <div class="chat__chat-message-sender none">
-              <svg class="chat__img--file" data-mode="enabled" width="834" height="834" viewBox="0 0 834 834" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M416.667 0C186.667 0 0 186.667 0 416.667C0 646.667 186.667 833.333 416.667 833.333C646.667 833.333 833.333 646.667 833.333 416.667C833.333 186.667 646.667 0 416.667 0ZM625 458.333H458.333V625H375V458.333H208.333V375H375V208.333H458.333V375H625V458.333Z" fill="#2BA9C5"/>
-              </svg>
-                
-              <input
-                type="text"
-                placeholder="Enter Message..."
-                class="chat__input chat__input--chat"
-                data-chat-hash='null'
-              />
-              <svg class="chat__img--send" width="438" height="375" viewBox="0 0 438 375" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0.208333 375L437.5 187.5L0.208333 0L0 145.833L312.5 187.5L0 229.167L0.208333 375Z" fill="#2BA9C5"/>
-              </svg>
-              
+                <div class="upload none">
+                  <div class="upload__info">
+                    <h4 class="upload__info--no">Max file Limit: 5</h4>
+                    <h4 class="upload__info--size">Max file Size: 10MB</h4>
+                  </div>
+                  <div class="upload__preview none"></div>
+
+                  <div class="upload__dragndrop">
+                    <div class="upload__dragndrop--info">
+                      <img
+                        class="upload__dragndrop-ic"
+                        src="./assets/icons/home/upload.svg"
+                        alt=""
+                      />
+                      <h3>Drag and Drop to Upload Files</h3>
+                    </div>
+                  </div>
+
+                  <div class="upload__click">
+                    <div
+                      class="upload__click--each upload__file"
+                      data-value="0"
+                    >
+                      <input
+                        class="upload__input upload__input-file"
+                        type="file"
+                        accept=".xlsx, .xl, .doc,.docx, .ppt, .pptx, .txt, .pdf"
+                        hidden="hidden"
+                        multiple
+                        data-type="docs"
+                      />
+                      <img
+                        class="upload__click-ic"
+                        src="./assets/icons/home/file-upload.svg"
+                        alt="docs-upload"
+                      />
+                      <span>Files</span>
+                    </div>
+                    <div
+                      class="upload__click--each upload__image"
+                      data-value="1"
+                    >
+                      <input
+                        class="upload__input upload__input-image"
+                        type="file"
+                        accept="image/*"
+                        hidden="hidden"
+                        multiple
+                        data-type="image"
+                      />
+                      <img
+                        class="upload__click-ic"
+                        src="./assets/icons/home/image-upload.svg"
+                        alt="img-upload"
+                      />
+                      <span>Images</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="chat__chat-wrapper"></div>
+              </div>
+              <div class="chat__chat-message-sender none">
+                <svg
+                  class="chat__img--file"
+                  data-mode="enabled"
+                  width="834"
+                  height="834"
+                  viewBox="0 0 834 834"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M416.667 0C186.667 0 0 186.667 0 416.667C0 646.667 186.667 833.333 416.667 833.333C646.667 833.333 833.333 646.667 833.333 416.667C833.333 186.667 646.667 0 416.667 0ZM625 458.333H458.333V625H375V458.333H208.333V375H375V208.333H458.333V375H625V458.333Z"
+                    fill="#2BA9C5"
+                  />
+                </svg>
+
+                <input
+                  type="text"
+                  placeholder="Enter Message..."
+                  class="chat__input chat__input--chat"
+                  data-chat-hash="null"
+                />
+                <svg
+                  class="chat__img--send"
+                  width="438"
+                  height="375"
+                  viewBox="0 0 438 375"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0.208333 375L437.5 187.5L0.208333 0L0 145.833L312.5 187.5L0 229.167L0.208333 375Z"
+                    fill="#2BA9C5"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="chat__container chat__requests">
-        <div class="chat__req-rec">
-          <h2 class="chat__req-header">Requests Received</h2>
-          <div class="chat__req-cards"></div>
+        <div class="chat__container chat__requests">
+          <div class="chat__req-rec">
+            <h2 class="chat__req-header">Requests Received</h2>
+            <div class="chat__req-cards"></div>
+          </div>
+          <div class="chat__req-sent">
+            <h2 class="chat__req-header">Requests Sent</h2>
+            <div class="chat__req-cards"></div>
+          </div>
         </div>
-        <div class="chat__req-sent">
-          <h2 class="chat__req-header">Requests Sent</h2>
-          <div class="chat__req-cards"></div>
-        </div>
-      </div>
-     </section>
+      </section>
     </main>
     <footer class="footer">
       <p class="footer__time">01:21:19</p>
@@ -177,7 +242,6 @@
     <script type="module" src="./js/file_upload.js"></script>
   </body>
 </html>
-
 
 <!-- <p>No New notification</p> -->
 <!-- <div class="header__notification-eachmsg">
@@ -207,7 +271,7 @@
       <button class="chat__remove-friend">Remove</button>
   </div> -->
 
- <!-- <div class="chat__friend-card default">
+<!-- <div class="chat__friend-card default">
         <img
           src="./assets/icons/home/user.svg"
           alt="Friend"

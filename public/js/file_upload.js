@@ -1,9 +1,7 @@
 import {
   pushKey,
   addChlidDB,
-  storageDelete,
   storageDownloadURL,
-  storageList,
   storageRef,
   storageUpload,
 } from "./modules/firebase.js";
@@ -17,11 +15,11 @@ const fileDragnDrop = document.querySelector(".upload__dragndrop");
 const fileUploadClick = document.querySelectorAll(".upload__click--each");
 const sendBtn = document.querySelector(".chat__img--send");
 const inputChat = document.querySelector(".chat__input--chat");
-// const chatContainer = document.querySelector(".chat__chat-container");
 let chatContainer;
 
 let fileToUpload = [];
 
+// provide initial preview
 function returnFormat(txt) {
   return txt.match(/\.(.*)/i);
 }
@@ -65,35 +63,37 @@ function docsPreview(files) {
   filePreview.innerHTML = html;
 }
 
-fileUpload.forEach((fileUpload) => {
-  fileUpload.addEventListener("change", function (e) {
-    console.log(e.target.files);
-    filePreview.innerHTML = "";
-    fileToUpload = [];
-    console.log(e.target.dataset.type);
-    let files = e.target.files;
+function triggerPreviewOnUpload(e){
+  console.log(e.target.files);
+  filePreview.innerHTML = "";
+  fileToUpload = [];
+  console.log(e.target.dataset.type);
+  let files = e.target.files;
 
-    if (files.length > 5) {
-      document.querySelector(".upload__info--no").style.color = "red";
+  if (files.length > 5) {
+    document.querySelector(".upload__info--no").style.color = "red";
+    setTimeout(() => {
+      document.querySelector(".upload__info--no").style.color = "unset";
+    }, 1000);
+    return;
+  }
+  for (const file of files) {
+    let size = file.size / (1024 * 1024).toFixed(2);
+    if (size > 10) {
+      document.querySelector(".upload__info--size").style.color = "red";
       setTimeout(() => {
-        document.querySelector(".upload__info--no").style.color = "unset";
+        document.querySelector(".upload__info--size").style.color = "unset";
       }, 1000);
       return;
     }
-    for (const file of files) {
-      let size = file.size / (1024 * 1024).toFixed(2);
-      if (size > 10) {
-        document.querySelector(".upload__info--size").style.color = "red";
-        setTimeout(() => {
-          document.querySelector(".upload__info--size").style.color = "unset";
-        }, 1000);
-        return;
-      }
-    }
-    fileDragnDrop.classList.add("none");
-    filePreview.classList.remove("none");
-    this.dataset.type === "image" ? imagePreview(files) : docsPreview(files);
-  });
+  }
+  fileDragnDrop.classList.add("none");
+  filePreview.classList.remove("none");
+  this.dataset.type === "image" ? imagePreview(files) : docsPreview(files);
+}
+
+fileUpload.forEach((fileUpload) => {
+  fileUpload.addEventListener("change", triggerPreviewOnUpload);
 });
 
 fileUploadClick.forEach((upload) => {
@@ -133,6 +133,7 @@ function autoScroll() {
   chatWrapper.scrollTop = chatWrapper.scrollHeight;
 }
 
+// create sending preview
 function createImagePreview(key, src, size) {
   chatContainer.innerHTML += `
                 <div class="chat__message-container chat__message-container--right" data-type="image" data-id="${key}">
@@ -152,20 +153,6 @@ function createImagePreview(key, src, size) {
                   <span class="chat__time-stamp chat__time-stamp--left"></span>
                 </div>`;
   autoScroll();
-  // const pausePlay = document.querySelector(
-  //   `.chat__message-container[data-id="${key}"] .chat__message--controls`
-  // );
-  // const cancel = document.querySelector(`.chat__message-container[data-id="${key}"] .chat__message--cancel`);
-  // console.log(pausePlay);
-  // pausePlay.addEventListener("click", (e) => {
-  //   console.log(e.target);
-  //   e.target.src.includes("play")
-  //     ? ((e.target.src = "./assets/icons/home/pause.svg"), upTask.pause())
-  //     : ((e.target.src = "./assets/icons/home/play.svg"), upTask.resume());
-  // });
-  // cancel.addEventListener("click", (e) => {
-  //   upTask.cancel();
-  // });
 }
 
 function createFilePreview(key, name, size) {
@@ -179,7 +166,7 @@ function createFilePreview(key, name, size) {
                           <circle cx="40" cy="40" r="40"></circle>
                         </svg>
                       </div>
-                      <a class="chat__message--link" href="" download="name.txt" none><img class="chat__message--download-ic none" src="./assets/icons/home/download.svg" alt=""></a>
+                      <a class="chat__message--link none" href="" target="_blank" download=""><img class="chat__message--download-ic none" src="./assets/icons/home/download.svg" alt=""></a>
                     </div>
                     <div class="chat__message--file-detail">
                       <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="chat__message--file-cancel">
@@ -190,24 +177,9 @@ function createFilePreview(key, name, size) {
                   <span class="chat__time-stamp chat__time-stamp--left"></span>
               </div>`;
   autoScroll();
-  // const pausePlay = document.querySelector(
-  //   `.chat__message-container[data-id="${key}"] .chat__message--file-controls`
-  // );
-  // const cancel = document.querySelector(
-  //   `.chat__message-container[data-id="${key}"] .chat__message--file-cancel`
-  // );
-  // console.log(pausePlay);
-  // pausePlay.addEventListener("click", (e) => {
-  //   console.log(e.target);
-  //   e.target.src.includes("play")
-  //     ? ((e.target.src = "./assets/icons/home/pause.svg"), upTask.pause())
-  //     : ((e.target.src = "./assets/icons/home/play.svg"), upTask.resume());
-  // });
-  // cancel.addEventListener("click", (e) => {
-  //   upTask.cancel();
-  // });
 }
 
+// update upon the successful upload.
 function updateImagePreview(cnt, link, ts) {
   const imgLink = cnt.querySelector(".chat__message--image");
   const aLink = cnt.querySelector(".chat__message--link");
@@ -254,18 +226,20 @@ function updateFilePreview(cnt, link, ts) {
   fromRemove.removeChild(toRemove);
 }
 
+// Start uploading send button functionality
 let imageTaskArray, fileTaskArray, fileCount;
 const storage = firebase.storage();
 const database = firebase.database();
 const auth = firebase.auth();
 sendBtn.addEventListener("click", async (e) => {
-  if(fileToUpload.length === 0) return;
+  if(fileToUpload.length === 0 || uploadCnt.classList.contains("none")) return;
   toggleUploadBtn.dataset.mode = "disabled";
   fileCount = fileToUpload.length;
   imageTaskArray = [];
   fileTaskArray = [];
-  if (uploadCnt.classList.contains("none")) return;
   toggleUploadWindow();
+
+  // itereate over files
   fileToUpload.forEach((file) => {
     const size = (file.size / (1024 * 1024)).toFixed(2);
     const ref = storageRef(
@@ -279,7 +253,6 @@ sendBtn.addEventListener("click", async (e) => {
       `${auth.currentUser.uid}`
     );
     console.log(key);
-
     const metadata = {
       name: file.name,
       size,
@@ -298,6 +271,7 @@ sendBtn.addEventListener("click", async (e) => {
   clearUploadWindow();
 });
 
+// fucntion for pause play cancel upload
 function provideImageFuntionality(taskArray) {
   if(taskArray.length === 0) return;
   const pausePlayElem = document.querySelectorAll(
@@ -351,11 +325,12 @@ function provideFileFunctionality(taskArray) {
   });
 }
 
+// function to handle upload tasks
 function task(uploadTask, key, chatHash, metadata) {
   uploadTask.on(
     "state_changed",
     (snapshot) => {
-      var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
       let byteTransfer = (snapshot.bytesTransferred / (1024 * 1024)).toFixed(2);
       let byteTotal = (snapshot.totalBytes / (1024 * 1024)).toFixed(2);
 
@@ -383,7 +358,7 @@ function task(uploadTask, key, chatHash, metadata) {
           ? 380 - (380 * progress) / 100
           : 260 - (260 * progress) / 100;
       size.innerText = `${byteTransfer} / ${byteTotal}MB`;
-      // console.log("Upload is " + progress + "% done");
+
       switch (snapshot.state) {
         case firebase.storage.TaskState.PAUSED: // or 'paused'
           console.log("Upload is paused");
@@ -407,9 +382,9 @@ function task(uploadTask, key, chatHash, metadata) {
       const cnt = document.querySelector(
         `.chat__message-container[data-id="${key}"]`
       );
-      let message = {};
-
       let user = auth.currentUser;
+
+      let message = {};
       let messageKey = key;
       console.log("key", chatHash);
       message["sender"] = user.uid;

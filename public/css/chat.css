@@ -52,9 +52,19 @@
   cursor: pointer;
 }
 
+.chat__friend-card{
+  border: 1px solid transparent;
+}
+
 .chat__friend-card:hover {
   background-color: var(--gray);
   color: var(--white);
+}
+
+.chat__friend-card-active{
+  background-color: var(--gray);
+  color: var(--white);
+  border: 1px solid white;
 }
 
 .chat__remove-friend-ic,
@@ -161,6 +171,41 @@
   font-size: 2.5rem;
   font-weight: 600;
   background-color: var(--primary-color);
+  position: relative;
+}
+
+.chat__chat-menu-ic{
+  color: var(--container-bg);
+  height: 30px;
+  padding: 0 1rem;
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.chat__chat-menu-ic:hover{
+  color: #FFF;
+}
+
+.chat__chat-menu-cnt{
+  position: absolute;
+  right: 10px;
+  top: 110%;
+  width: 200px;
+  padding: 1rem 3rem;
+  color: var(--white);
+  z-index: 2;
+}
+
+.menu__item{
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.menu__item:hover{
+  border-color: var(--white);
 }
 
 /* main --chat-sender */
