@@ -115,6 +115,9 @@ toggleUploadBtn.addEventListener("click", function(e) {
 function clearUploadWindow() {
   filePreview.innerHTML = "";
   fileToUpload = [];
+  fileUpload.forEach(toUpload => {
+    toUpload.value = ''
+  });
 }
 
 function toggleUploadWindow() {
