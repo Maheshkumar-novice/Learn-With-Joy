@@ -195,6 +195,7 @@
   top: 110%;
   width: 200px;
   padding: 1rem 3rem;
+  background-color: var(--container-bg);
   color: var(--white);
   z-index: 2;
 }

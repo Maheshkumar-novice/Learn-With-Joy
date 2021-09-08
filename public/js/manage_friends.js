@@ -8,6 +8,8 @@ import {
   firebaseConfig,
   userSignIn,
   fileMetaData,
+  storageDelete,
+  storageList,
 } from "./modules/firebase.js";
 import { checkUserPresent } from "./modules/util.js";
 
@@ -323,9 +325,31 @@ let chatWindowMessageSender = document.querySelector(
   ".chat__chat-message-sender"
 );
 let chatWrapper = document.querySelector(".chat__chat-wrapper");
+const chatMenuIc = document.querySelector(".chat__chat-menu-ic");
+const chatMenuCnt = document.querySelector(".chat__chat-menu-cnt");
+const chatMenuItem = document.querySelector(".menu__item");
 let chatContainer; 
 // = document.querySelector(".chat__chat-container");
 
+// function to clear Up chat window
+chatMenuIc.addEventListener("click", (e) => {
+  chatMenuCnt.classList.toggle("none");
+});
+
+chatMenuItem.addEventListener("click", clearChat);
+
+async function clearChat(e){
+  let hash = chatWindowMessageInput.dataset.chatHash;
+  console.log("helo", chatWindowMessageInput.dataset.chatHash)
+  removeDB(database, `chat/${hash}/messages`);
+  let friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
+  friendContainer.innerHTML = '';
+  const allFiles = await storageList(firebase.storage(), `chat/${hash}`);
+  console.log(allFiles.items);
+  allFiles.items.map(file => storageDelete(file));
+}
+
+// --------setup and update chat window-----------
 function cleanUpChatWindow() {
   chatWindowHeader.classList.remove("none");
   chatWindowMessageSender.classList.remove("none");
