@@ -178,6 +178,7 @@ function updateUserName(val) {
 }
 
 // login-signup-form
+const loginHeader = document.querySelector(".login__header");
 const loginTab = document.querySelector(".login__tab");
 const signupTab = document.querySelector(".signup__tab");
 const loginForm = document.querySelector(".login__form");
@@ -231,15 +232,42 @@ function checkUniqueUser() {
   }
 }
 
+function getFormInputs() {
+  return Array.from(loginForm.querySelectorAll("input"));
+}
+
+function isAllInputsEmpty() {
+  return getFormInputs().every((input) => input.value === "");
+}
+
+function showEmptySignal() {
+  getFormInputs().forEach((input) => {
+    input.style.borderColor = "var(--error-color)";
+    loginHeader.style.pointerEvents = "none";
+  });
+}
+
+function hideEmptySignal() {
+  getFormInputs().forEach((input) => {
+    input.style.borderColor = "var(--primary-color)";
+    loginHeader.style.pointerEvents = "unset";
+  });
+}
+
 let errorElem;
 function addSignListener() {
   const signBtn = document.querySelector(".form__button");
-  console.log(signBtn);
   signBtn.addEventListener("click", async function (e) {
     e.preventDefault();
+    if (isAllInputsEmpty()) {
+      showEmptySignal();
+      setTimeout(() => {
+        hideEmptySignal();
+      }, 500);
+      return;
+    }
     errorElem ? errorElem.classList.add("none") : "";
     const email = document.querySelectorAll(".form__input-main");
-
     try {
       if (
         this.textContent === "Signup" &&
@@ -256,7 +284,9 @@ function addSignListener() {
       }
     } catch (error) {
       let errorMessage = error.code.split("auth/")[1];
-      let errorShowElem = errorElem = error.code.includes("wrong-password") ? document.querySelector(".password-error") : document.querySelector(".email-error");
+      let errorShowElem = (errorElem = error.code.includes("wrong-password")
+        ? document.querySelector(".password-error")
+        : document.querySelector(".email-error"));
       errorShowElem.classList.remove("none");
       errorShowElem.textContent = errorMessage;
       console.log(error);
@@ -368,33 +398,37 @@ function handleResetPassword(auth, actionCode, continueUrl) {
   // parameter.
 
   // Verify the password reset code is valid.
-  auth.verifyPasswordResetCode(actionCode).then((email) => {
-    window.location.href = `${continueUrl}?enable=true&oobCode=${actionCode}&email=${email}`;
-    var accountEmail = email;
+  auth
+    .verifyPasswordResetCode(actionCode)
+    .then((email) => {
+      window.location.href = `${continueUrl}?enable=true&oobCode=${actionCode}&email=${email}`;
+      var accountEmail = email;
 
-    // TODO: Show the reset screen with the user's email and ask the user for
-    // the new password.
-    var newPassword = "...";
+      // TODO: Show the reset screen with the user's email and ask the user for
+      // the new password.
+      var newPassword = "...";
 
-    // Save the new password.
-    auth.confirmPasswordReset(actionCode, newPassword).then((resp) => {
-      // Password reset has been confirmed and new password updated.
-
-      // TODO: Display a link back to the app, or sign-in the user directly
-      // if the page belongs to the same domain as the app:
-      // auth.signInWithEmailAndPassword(accountEmail, newPassword);
-
-      // TODO: If a continue URL is available, display a button which on
-      // click redirects the user back to the app via continueUrl with
-      // additional state determined from that URL's parameters.
-    }).catch((error) => {
-      // Error occurred during confirmation. The code might have expired or the
-      // password is too weak.
+      // Save the new password.
+      auth
+        .confirmPasswordReset(actionCode, newPassword)
+        .then((resp) => {
+          // Password reset has been confirmed and new password updated.
+          // TODO: Display a link back to the app, or sign-in the user directly
+          // if the page belongs to the same domain as the app:
+          // auth.signInWithEmailAndPassword(accountEmail, newPassword);
+          // TODO: If a continue URL is available, display a button which on
+          // click redirects the user back to the app via continueUrl with
+          // additional state determined from that URL's parameters.
+        })
+        .catch((error) => {
+          // Error occurred during confirmation. The code might have expired or the
+          // password is too weak.
+        });
+    })
+    .catch((error) => {
+      // Invalid or expired action code. Ask user to try to reset the password
+      // again.
     });
-  }).catch((error) => {
-    // Invalid or expired action code. Ask user to try to reset the password
-    // again.
-  });
 }
 
 window.addEventListener("DOMContentLoaded", (e) => {
