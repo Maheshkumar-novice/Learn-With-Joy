@@ -166,7 +166,7 @@ function createFilePreview(key, name, size) {
                           <circle cx="40" cy="40" r="40"></circle>
                         </svg>
                       </div>
-                      <a class="chat__message--link none" href="" target="_blank" download=""><img class="chat__message--download-ic none" src="./assets/icons/home/download.svg" alt=""></a>
+                      <a class="chat__message--link" href="" target="_blank" download=""><img class="chat__message--download-ic none" src="./assets/icons/home/download.svg" alt=""></a>
                     </div>
                     <div class="chat__message--file-detail">
                       <img src="./assets/icons/home/msg-clear.svg" alt="cancel" class="chat__message--file-cancel">

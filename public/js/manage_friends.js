@@ -57,6 +57,7 @@ function removeFriendFromSearchResult(e) {
 }
 
 function getUserSearchData(uid) {
+  console.log(friendsUID, uid)
   if (user.uid === uid || checkUserPresent(friendsList, friendsUID, uid))
     return "";
   let searchedUser =
@@ -153,6 +154,18 @@ async function removeFriend(e) {
   removeDB(database, `friends/${user.uid}/friends/${fid}`);
   removeDB(database, `friends/${fid}/friends/${user.uid}`);
   removeDB(database, `chat/${hash}`);
+  
+  // delete media from firebase storage
+  const allFiles = await storageList(firebase.storage(), `chat/${hash}`);
+  allFiles.items.map(file => storageDelete(file));
+}
+
+function resetChatContainer(hash){
+  const friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
+  friendContainer ? chatWrapper.removeChild(friendContainer) : "";
+  chatWindowHeader.classList.add("none");
+  chatWindowMessageSender.classList.add("none");
+  noChatSelectedInfo.classList.remove("none");
 }
 
 async function updateFriendsList() {
@@ -198,11 +211,15 @@ async function removeFriendFromFriendsList(data) {
     return;
   }
 
+  const hash = data.val();
   let removedFriend = document.querySelector(
-    `.chat__friend-card[data-hash="${data.val()}"]`
+    `.chat__friend-card[data-hash="${hash}"]`
   );
-  friendsUID.splice(removedFriend.dataset.id, 1);
+  console.log(removedFriend, removedFriend.dataset.id, friendsUID);
+  friendsUID.splice(friendsUID.findIndex(uid => uid === removedFriend.dataset.id), 1);
+  console.log(friendsUID);
   friendsContainer.removeChild(removedFriend);
+  resetChatContainer(hash);
 }
 
 async function addFriendRequestReceived(data) {
@@ -344,9 +361,6 @@ async function clearChat(e){
   removeDB(database, `chat/${hash}/messages`);
   let friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
   friendContainer.innerHTML = '';
-  const allFiles = await storageList(firebase.storage(), `chat/${hash}`);
-  console.log(allFiles.items);
-  allFiles.items.map(file => storageDelete(file));
 }
 
 // --------setup and update chat window-----------
