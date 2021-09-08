@@ -171,7 +171,7 @@ const loginHeader = document.querySelector(".login__header");
 const loginTab = document.querySelector(".login__tab");
 const signupTab = document.querySelector(".signup__tab");
 const loginForm = document.querySelector(".login__form");
-let context;
+let context = "login";
 
 loginTab.addEventListener("click", function () {
   loginForm.innerHTML = loginTemplate;
@@ -263,7 +263,7 @@ function isSignUpConditionsValid() {
 }
 
 function isLogInConditionsValid() {
-  checkInputCondition["password"];
+  return checkInputCondition["password"];
 }
 
 function getFormData() {
@@ -292,7 +292,6 @@ async function validateForm(e) {
   if (isFormEmpty()) return handleEmptyInputs();
 
   let [email, password] = getFormData();
-
   if (context === "signup" && isSignUpConditionsValid()) {
     signUp(email, password);
   } else if (context === "login" && isLogInConditionsValid()) {
