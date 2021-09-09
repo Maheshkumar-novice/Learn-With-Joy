@@ -417,7 +417,7 @@ async function updateChatWindow(friendCard) {
     return;
   }
   prevCard = friendContainer;
-  
+
   let data = (await readDB(database, `chat/${hash}`)).val();
   let lastClearedMessageIndex = data.lastClearedMessage 
   ? Object.keys(data.messages).findIndex(key => key === data.lastClearedMessage[user.uid]) 
@@ -425,15 +425,39 @@ async function updateChatWindow(friendCard) {
   fillMessagesToChatBody(data.messages, hash, lastClearedMessageIndex);
 }
 
+function createMessage(message, timeStamp, position) {
+  let messageWrapper = document.createElement("div");
+  let chatMessage = document.createElement("p");
+  let chatTimeStamp = document.createElement("span");
+
+  messageWrapper.className =`chat__message-container chat__message-container--${position}`;
+  chatMessage.className = "chat__message";
+  chatTimeStamp.className = "chat__time-stamp";
+
+  chatMessage.textContent = message;
+  chatTimeStamp.textContent = timeStamp;
+
+  messageWrapper.appendChild(chatMessage);
+  messageWrapper.appendChild(chatTimeStamp);
+  return messageWrapper;
+}
+
 function addMessageToContainer(chatContainer, message, time, position) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
-  chatContainer.innerHTML += `<div class="chat__message-container chat__message-container--${position}">
-    <p class="chat__message">${message}</p>  
-    <span class="chat__time-stamp chat__time-stamp--right">${timeStamp}</span>
-   </div>`;
+  chatContainer.appendChild(createMessage(message, timeStamp, position));
 }
+
+// function addMessageToContainer(chatContainer, message, time, position) {
+//   let datePart = new Date(time).toDateString();
+//   let timePart = new Date(time).toTimeString().split(" ")[0];
+//   let timeStamp = datePart + " " + timePart;
+//   chatContainer.innerHTML += `<div class="chat__message-container chat__message-container--${position}">
+//     <p class="chat__message">${message}</p>  
+//     <span class="chat__time-stamp chat__time-stamp--right">${timeStamp}</span>
+//    </div>`;
+// }
 
  function addFileToContainer(chatContainer, src, metaData, time, position, type) {
   let datePart = new Date(time).toDateString();
