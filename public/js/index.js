@@ -16,7 +16,6 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 displayTime(document.querySelector(".time"));
-setDBListener(database, "users", "value", updateNewUser);
 
 const auth = firebase.auth();
 const database = firebase.database();
@@ -45,6 +44,8 @@ let checkInputCondition = {
   password: false,
   "re-password": false,
 };
+
+setDBListener(database, "users", "value", updateNewUser);
 
 async function updateNewUser(userData) {
   namesList = [];
@@ -268,6 +269,21 @@ function updateReEnterPasswordValidation(orignial, reEnteredPassword) {
   }
 }
 
+function handleEmailError(testResult, email) {
+  const emailError = document.querySelector(".email-error");
+  if (testResult || email === "") {
+    emailError.classList.add("none");
+  } else {
+    emailError.classList.remove("none");
+  }
+}
+
+function validateEmail(email) {
+  const emailRegex =
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  handleEmailError(emailRegex.test(email), email);
+}
+
 function addSignInButtonListener() {
   document
     .querySelector(".form__button")
@@ -326,9 +342,17 @@ function addPasswordInputListeners() {
   addReEnterPasswordListener(passwordInput, reEnterPasswordInput);
 }
 
+function addEmailInputListener() {
+  const emailInput = document.querySelector("#email");
+  emailInput.addEventListener("input", function () {
+    validateEmail(this.value);
+  });
+}
+
 addSignInButtonListener();
 addPasswordVisibilityListeners();
 addPasswordInputListeners();
+addEmailInputListener();
 
 loginTab.addEventListener("click", function () {
   loginForm.innerHTML = loginTemplate;
@@ -338,6 +362,7 @@ loginTab.addEventListener("click", function () {
   addPasswordVisibilityListeners();
   addPasswordInputListeners();
   addSignInButtonListener();
+  addEmailInputListener();
 });
 
 signupTab.addEventListener("click", async function () {
@@ -348,6 +373,7 @@ signupTab.addEventListener("click", async function () {
   addPasswordVisibilityListeners();
   addPasswordInputListeners();
   addSignInButtonListener();
+  addEmailInputListener();
   document
     .querySelector(".form__input-username")
     .addEventListener("input", validateUserName);
