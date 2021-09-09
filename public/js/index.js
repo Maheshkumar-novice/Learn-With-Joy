@@ -11,22 +11,11 @@ import {
 } from "./modules/firebase.js";
 import { loader, loginTemplate, signupTemplate } from "./modules/template.js";
 
-// firebase initialization
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 const auth = firebase.auth();
 const database = firebase.database();
-let namesList = [];
-
-// Check regex - input condition
-let checkInputCondition = {
-  username: false,
-  password: false,
-  "re-password": false,
-};
-
-// selectors
 const googleSignIn = document.querySelector(".google__signin");
 const newNameContainer = document.querySelector(".google-signin-user-name");
 const newNameInput = document.querySelector(".google-signin-user-name__input");
@@ -36,8 +25,26 @@ const verificationMessageContainer = document.querySelector(".verification");
 const resendVerificationButton = document.querySelector(
   ".verification__resend"
 );
+let namesList = [];
+let checkInputCondition = {
+  username: false,
+  password: false,
+  "re-password": false,
+};
 
-function showInput() {
+setDBListener(database, "users", "value", updateNewUser);
+
+async function updateNewUser(userData) {
+  namesList = [];
+  let data = userData.val();
+  if (data) {
+    for (let id in data) {
+      namesList.push(data[id].name);
+    }
+  }
+}
+
+function showNewNameGoogleInput() {
   document
     .querySelectorAll(".main>*:not(.google-signin-user-name)")
     .forEach((elem) => {
@@ -46,18 +53,6 @@ function showInput() {
   newNameContainer.classList.remove("none");
   newNameInput.focus();
 }
-
-async function updateNewUser(user_data) {
-  namesList = [];
-  let data = user_data.val();
-  if (data) {
-    for (let id in data) {
-      namesList.push(data[id].name);
-    }
-  }
-}
-
-setDBListener(database, "users", "value", updateNewUser);
 
 let prev = null;
 function disableresendVerificationButton() {
@@ -78,24 +73,66 @@ function enableVerification() {
   disableresendVerificationButton();
 }
 
-// sign In status change
+function goToHomePage() {
+  setTimeout(() => {
+    window.location = "../home.html";
+  }, 200);
+}
+
+function updateUserState(val) {
+  if (userName === undefined) return;
+  loginForm.innerHTML = loader;
+  let user = auth.currentUser;
+  user
+    .updateProfile({
+      displayName: `${userName}`,
+      photoURL: user.photoURL || "./assets/icons/home/user.svg",
+    })
+    .then(async () => {
+      let value = {
+        name: userName,
+        photo: user.photoURL,
+      };
+      writeDB(database, `users/${user.uid}`, value);
+      if (val) {
+        goToHomePage();
+      } else {
+        userEmailVerification(user, actionCodeVerify);
+        resendVerificationButton.disabled = true;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+function setValidGoogleUserNameState() {
+  newNameInput.style.borderBottom = "1px solid black";
+  newNameError.innerText = "";
+  nextButton.classList.remove("none");
+}
+function setGoogleUserNameAlreadyExistsState() {
+  newNameError.innerText = "User Name Already Taken";
+  newNameInput.style.borderBottom = "1px solid red";
+  nextButton.classList.add("none");
+}
+
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     if (!user.emailVerified) {
       enableVerification();
-      updateUserName(0);
+      updateUserState(0);
       return;
     }
-    let check_user = await readDB(database, `users/${user.uid}`);
-    if (!check_user.val()) {
-      showInput();
+    let currentUser = await readDB(database, `users/${user.uid}`);
+    if (!currentUser.val()) {
+      showNewNameGoogleInput();
     } else {
       window.location = "../home.html";
     }
   }
 });
 
-//event listener
 resendVerificationButton.addEventListener("click", async function (e) {
   let user = auth.currentUser;
   if (user.emailVerified) {
@@ -112,59 +149,23 @@ googleSignIn.addEventListener("click", (e) => {
   userSignIn(auth, provider);
 });
 
-let check_name, userName, userLower;
+let checkIfExists, userName, userLower;
 newNameInput.addEventListener("input", function (e) {
   userName = this.value;
-  userLower = this.value.toLowerCase();
-  if (newNameInput.value === "") return;
-  check_name = namesList.find((name) => name.toLowerCase() === userLower);
-  newNameInput.style.borderBottom = "1px solid black";
-  newNameError.innerText = "";
-  nextButton.classList.remove("none");
-  if (check_name) {
-    newNameError.innerText = "User Name Already Taken";
-    newNameInput.style.borderBottom = "1px solid red";
-    nextButton.classList.add("none");
+  if (userName === "") return;
+  userLower = userName.toLowerCase();
+
+  setValidGoogleUserNameState();
+  checkIfExists = namesList.find((name) => name.toLowerCase() === userLower);
+  if (checkIfExists) {
+    setGoogleUserNameAlreadyExistsState();
   }
 });
 
 nextButton.addEventListener("click", function (e) {
   if (newNameInput.value === "") return;
-  updateUserName(1);
+  updateUserState(1);
 });
-
-function changeLocation() {
-  setTimeout(() => {
-    window.location = "../home.html";
-  }, 200);
-}
-
-function updateUserName(val) {
-  if (userName === undefined) return;
-  loginForm.innerHTML = loader;
-  let user = auth.currentUser;
-  user
-    .updateProfile({
-      displayName: `${userName}`,
-      photoURL: user.photoURL || "./assets/icons/home/user.svg",
-    })
-    .then(async () => {
-      let value = {
-        name: userName,
-        photo: user.photoURL,
-      };
-      writeDB(database, `users/${user.uid}`, value);
-      if (val) {
-        changeLocation();
-      } else {
-        userEmailVerification(user, actionCodeVerify);
-        resendVerificationButton.disabled = true;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
 
 // login-signup-form
 const loginHeader = document.querySelector(".login__header");
@@ -178,18 +179,29 @@ const features = document.querySelector(".features");
 const signinToggle = document.querySelector(".sign-in");
 let context = "login";
 
-function checkUniqueUser() {
-  userName = this.value;
-  userLower = this.value.toLowerCase();
-  if (userName === "") return;
-  check_name = namesList.find((name) => name.toLowerCase() === userLower);
-  this.style.borderBottom = "1px solid #fbae3c";
+function setValidUserNameState(userNameInput) {
+  let nameError = document.querySelector(".name-error");
+  userNameInput.style.borderBottom = "1px solid #fbae3c";
   checkInputCondition["username"] = true;
-  document.querySelector(".name-error").classList.add("none");
-  if (check_name) {
-    this.style.borderBottom = "1px solid red";
-    document.querySelector(".name-error").classList.remove("none");
-    checkInputCondition["username"] = false;
+  nameError.classList.add("none");
+}
+
+function setNameAlreadyExistsState(userNameInput) {
+  let nameError = document.querySelector(".name-error");
+  userNameInput.style.borderBottom = "1px solid red";
+  nameError.classList.remove("none");
+  checkInputCondition["username"] = false;
+}
+
+function validateUserName() {
+  userName = this.value;
+  if (userName === "") return;
+  userLower = userName.toLowerCase();
+
+  setValidUserNameState(this);
+  checkIfExists = namesList.find((name) => name.toLowerCase() === userLower);
+  if (checkIfExists) {
+    setNameAlreadyExistsState(this);
   }
 }
 
@@ -288,15 +300,15 @@ function updatePasswordInputType(type) {
   });
 }
 
-function updateReEnterPasswordValidation(orignial, reEnter) {
-  if (!reEnter) return;
+function updateReEnterPasswordValidation(orignial, reEnteredPassword) {
+  if (!reEnteredPassword) return;
   const reEnterPasswordError = document.querySelector(".re-password-error");
 
-  if (reEnter.value.length === 0) {
+  if (reEnteredPassword.value.length === 0) {
     reEnterPasswordError.classList.add("none");
     checkInputCondition["re-password"] = false;
     return;
-  } else if (orignial.value !== reEnter.value) {
+  } else if (orignial.value !== reEnteredPassword.value) {
     reEnterPasswordError.classList.remove("none");
     checkInputCondition["re-password"] = false;
     return;
@@ -388,7 +400,7 @@ signupTab.addEventListener("click", async function () {
   addSignInButtonListener();
   document
     .querySelector(".form__input-username")
-    .addEventListener("input", checkUniqueUser);
+    .addEventListener("input", validateUserName);
 });
 
 signinToggle.addEventListener("click", function () {
