@@ -94,7 +94,7 @@ body {
   align-items: center;
   gap: 3rem;
   background-color: transparent;
-  color: white;
+  color: var(--white);
   overflow: hidden;
   position: relative;
 }
@@ -127,7 +127,7 @@ body {
 }
 
 .google-signin-user-name__error {
-  color: red;
+  color: var(--error-color);
   font-size: 1.8rem;
 }
 
@@ -163,7 +163,7 @@ body {
 }
 
 .reset-password {
-  color: red;
+  color: var(--error-color);
   text-align: center;
   font-size: 2rem;
   cursor: pointer;
