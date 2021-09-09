@@ -567,12 +567,11 @@ function sendMessage() {
 
 function addEventListenerToFriendCards() {
   let friends = document.querySelectorAll(".chat__friend-card");
-  let prevSelected = null;
   friends.forEach((friend) =>
     friend.addEventListener("click", function (e) {
+      const prevSelected = document.querySelector(".chat__friend-card-active");
       prevSelected ? prevSelected.classList.remove("chat__friend-card-active") : "";
       this.classList.add("chat__friend-card-active");
-      prevSelected = this;
       updateChatWindow(this);
     })
   );
