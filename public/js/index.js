@@ -10,9 +10,13 @@ import {
   actionCodeVerify,
 } from "./modules/firebase.js";
 import { loader, loginTemplate, signupTemplate } from "./modules/template.js";
+import { displayTime } from "./modules/util.js";
 
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+
+displayTime(document.querySelector(".time"));
+setDBListener(database, "users", "value", updateNewUser);
 
 const auth = firebase.auth();
 const database = firebase.database();
@@ -25,14 +29,22 @@ const verificationMessageContainer = document.querySelector(".verification");
 const resendVerificationButton = document.querySelector(
   ".verification__resend"
 );
+const loginHeader = document.querySelector(".login__header");
+const loginTab = document.querySelector(".login__tab");
+const signupTab = document.querySelector(".signup__tab");
+const loginForm = document.querySelector(".login__form");
+const login = document.querySelector(".login");
+const title = document.querySelector(".title");
+const subTitle = document.querySelector(".sub-title");
+const features = document.querySelector(".features");
+const signinToggle = document.querySelector(".sign-in");
+let context = "login";
 let namesList = [];
 let checkInputCondition = {
   username: false,
   password: false,
   "re-password": false,
 };
-
-setDBListener(database, "users", "value", updateNewUser);
 
 async function updateNewUser(userData) {
   namesList = [];
@@ -116,68 +128,6 @@ function setGoogleUserNameAlreadyExistsState() {
   newNameInput.style.borderBottom = "1px solid red";
   nextButton.classList.add("none");
 }
-
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    if (!user.emailVerified) {
-      enableVerification();
-      updateUserState(0);
-      return;
-    }
-    let currentUser = await readDB(database, `users/${user.uid}`);
-    if (!currentUser.val()) {
-      showNewNameGoogleInput();
-    } else {
-      window.location = "../home.html";
-    }
-  }
-});
-
-resendVerificationButton.addEventListener("click", async function (e) {
-  let user = auth.currentUser;
-  if (user.emailVerified) {
-    this.classList.add("none");
-    return;
-  }
-  await userEmailVerification(user, actionCodeVerify);
-  resendVerificationButton.disabled = true;
-  disableresendVerificationButton();
-});
-
-googleSignIn.addEventListener("click", (e) => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  userSignIn(auth, provider);
-});
-
-let checkIfExists, userName, userLower;
-newNameInput.addEventListener("input", function (e) {
-  userName = this.value;
-  if (userName === "") return;
-  userLower = userName.toLowerCase();
-
-  setValidGoogleUserNameState();
-  checkIfExists = namesList.find((name) => name.toLowerCase() === userLower);
-  if (checkIfExists) {
-    setGoogleUserNameAlreadyExistsState();
-  }
-});
-
-nextButton.addEventListener("click", function (e) {
-  if (newNameInput.value === "") return;
-  updateUserState(1);
-});
-
-// login-signup-form
-const loginHeader = document.querySelector(".login__header");
-const loginTab = document.querySelector(".login__tab");
-const signupTab = document.querySelector(".signup__tab");
-const loginForm = document.querySelector(".login__form");
-const login = document.querySelector(".login");
-const title = document.querySelector(".title");
-const subTitle = document.querySelector(".sub-title");
-const features = document.querySelector(".features");
-const signinToggle = document.querySelector(".sign-in");
-let context = "login";
 
 function setValidUserNameState(userNameInput) {
   let nameError = document.querySelector(".name-error");
@@ -411,6 +361,56 @@ signinToggle.addEventListener("click", function () {
   subTitle.classList.toggle("none");
 });
 
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    if (!user.emailVerified) {
+      enableVerification();
+      updateUserState(0);
+      return;
+    }
+    let currentUser = await readDB(database, `users/${user.uid}`);
+    if (!currentUser.val()) {
+      showNewNameGoogleInput();
+    } else {
+      window.location = "../home.html";
+    }
+  }
+});
+
+resendVerificationButton.addEventListener("click", async function (e) {
+  let user = auth.currentUser;
+  if (user.emailVerified) {
+    this.classList.add("none");
+    return;
+  }
+  await userEmailVerification(user, actionCodeVerify);
+  resendVerificationButton.disabled = true;
+  disableresendVerificationButton();
+});
+
+googleSignIn.addEventListener("click", (e) => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  userSignIn(auth, provider);
+});
+
+let checkIfExists, userName, userLower;
+newNameInput.addEventListener("input", function (e) {
+  userName = this.value;
+  if (userName === "") return;
+  userLower = userName.toLowerCase();
+
+  setValidGoogleUserNameState();
+  checkIfExists = namesList.find((name) => name.toLowerCase() === userLower);
+  if (checkIfExists) {
+    setGoogleUserNameAlreadyExistsState();
+  }
+});
+
+nextButton.addEventListener("click", function (e) {
+  if (newNameInput.value === "") return;
+  updateUserState(1);
+});
+
 function getParameterByName(urlParams, name) {
   return urlParams.get(name);
 }
@@ -493,21 +493,3 @@ function handleResetPassword(auth, actionCode, continueUrl) {
 window.addEventListener("DOMContentLoaded", (e) => {
   handleURL();
 });
-
-// timer
-function displayTime() {
-  let date = new Date();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-  let currentTime =
-    (hours < 10 ? "0" + hours : hours) +
-    ":" +
-    (minutes < 10 ? "0" + minutes : minutes) +
-    ":" +
-    (seconds < 10 ? "0" + seconds : seconds);
-  document.querySelector(".time").innerHTML = currentTime;
-  setTimeout(displayTime, 1000);
-}
-
-displayTime();

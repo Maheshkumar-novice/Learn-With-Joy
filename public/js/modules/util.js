@@ -1,4 +1,4 @@
-export function checkUserPresent(friendlist, friendsUID, uid){
+export function checkUserPresent(friendlist, friendsUID, uid) {
   if (friendlist) {
     if ("received" in friendlist) {
       for (let id in friendlist.received) {
@@ -13,17 +13,34 @@ export function checkUserPresent(friendlist, friendsUID, uid){
   }
   let bool = false;
   friendsUID.forEach((list) => {
-    if (list === uid){
+    if (list === uid) {
       bool = true;
     }
   });
   return bool;
 }
 
-export function updateLocalStorage(key, value){
+export function updateLocalStorage(key, value) {
   window.localStorage.setItem(key, value);
 }
 
-export function getLocalStorage(key){
-  return window.localStorage.getItem(key)
+export function getLocalStorage(key) {
+  return window.localStorage.getItem(key);
+}
+
+export function displayTime(element) {
+  let date = new Date();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+  let currentTime =
+    (hours < 10 ? "0" + hours : hours) +
+    ":" +
+    (minutes < 10 ? "0" + minutes : minutes) +
+    ":" +
+    (seconds < 10 ? "0" + seconds : seconds);
+  element.innerHTML = currentTime;
+  setTimeout(() => {
+    displayTime(element);
+  }, 1000);
 }
