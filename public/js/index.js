@@ -41,6 +41,7 @@ let context = "login";
 let namesList = [];
 let checkInputCondition = {
   username: false,
+  email: false,
   password: false,
   "re-password": false,
 };
@@ -169,7 +170,7 @@ function isSignUpConditionsValid() {
 }
 
 function isLogInConditionsValid() {
-  return checkInputCondition["password"];
+  return checkInputCondition["password"] && checkInputCondition["email"];
 }
 
 function getFormInputs() {
@@ -202,11 +203,33 @@ function handleEmptyInputs() {
   }, 500);
 }
 
+function showLoginError(errorToBeShown, errorMessage) {
+  let oldErrorText = errorToBeShown.textContent;
+  errorToBeShown.textContent = errorMessage;
+  errorToBeShown.classList.remove("none");
+  setTimeout(() => {
+    errorToBeShown.textContent = oldErrorText;
+    errorToBeShown.classList.add("none");
+  }, 3000);
+}
+
+function handleLoginError(errorMessage) {
+  const emailError = document.querySelector(".email-error");
+  const passwordError = document.querySelector(".password-error");
+  let errorToBeShown;
+  if (errorMessage.includes("password")) {
+    errorToBeShown = passwordError;
+  } else {
+    errorToBeShown = emailError;
+  }
+  showLoginError(errorToBeShown, errorMessage);
+}
+
 async function signUp(email, password) {
   try {
     await userEmailSignUp(auth, email, password);
   } catch (error) {
-    console.log(error);
+    handleLoginError(error.code.split("/")[1]);
   }
 }
 
@@ -214,7 +237,7 @@ async function logIn(email, password) {
   try {
     await userEmailLogIn(auth, email, password);
   } catch (error) {
-    console.log(error);
+    handleLoginError(error.code.split("/")[1]);
   }
 }
 
@@ -273,8 +296,10 @@ function handleEmailError(testResult, email) {
   const emailError = document.querySelector(".email-error");
   if (testResult || email === "") {
     emailError.classList.add("none");
+    checkInputCondition["email"] = true;
   } else {
     emailError.classList.remove("none");
+    checkInputCondition["email"] = false;
   }
 }
 
