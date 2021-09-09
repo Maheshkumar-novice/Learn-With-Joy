@@ -356,7 +356,10 @@ chatMenuItem.addEventListener("click", clearChat);
 async function clearChat(e){
   let hash = chatWindowMessageInput.dataset.chatHash;
   console.log("helo", chatWindowMessageInput.dataset.chatHash);
-  addChlidDB(database, `chat/${hash}/"LastClearedMessage"`, user.uid, lastMessageId);
+  const lastMessageId = (await readDB(database, `chat/${hash}/lastMessageId`)).val();
+  const obj = {};
+  obj[user.uid] = lastMessageId
+  updateDB(database, `chat/${hash}/lastClearedMessage`, obj);
   let friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
   friendContainer.innerHTML = '';
 }
@@ -414,10 +417,12 @@ async function updateChatWindow(friendCard) {
     return;
   }
   prevCard = friendContainer;
-  // console.log("upout", prevCard);
   
-  let data = await readDB(database, `chat/${hash}/messages`);
-  fillMessagesToChatBody(data.val(), hash);
+  let data = (await readDB(database, `chat/${hash}`)).val();
+  let lastClearedMessageIndex = data.lastClearedMessage 
+  ? Object.keys(data.messages).findIndex(key => key === data.lastClearedMessage[user.uid]) 
+  : -1;
+  fillMessagesToChatBody(data.messages, hash, lastClearedMessageIndex);
 }
 
 function addMessageToContainer(chatContainer, message, time, position) {
@@ -460,12 +465,13 @@ function addMessageToContainer(chatContainer, message, time, position) {
   autoScroll();
 }
 
-function fillMessagesToChatBody(data, hash) {
+function fillMessagesToChatBody(data, hash, lastClearedMessageIndex) {
   if (!data) return;
   console.log(data, hash);
   let chatContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
-  console.log(chatContainer);
-  Object.values(data).forEach((message) => {
+  console.log(lastClearedMessageIndex);
+  Object.values(data).forEach((message, idx) => {
+    if(idx <= lastClearedMessageIndex) return;
     if (message.sender === user.uid) {
       "text" in message
         ? addMessageToContainer(chatContainer, message.text, message.time, "right")
@@ -531,6 +537,7 @@ function sendMessage() {
     time,
   };
   addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
+  updateDB(database, `chat/${chatHash}`, {lastMessageId: messageKey});
   chatWindowMessageInput.value = "";
 }
 

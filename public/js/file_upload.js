@@ -4,6 +4,7 @@ import {
   storageDownloadURL,
   storageRef,
   storageUpload,
+  updateDB,
 } from "./modules/firebase.js";
 
 const toggleUploadBtn = document.querySelector(".chat__img--file");
@@ -394,6 +395,7 @@ function task(uploadTask, key, chatHash, metadata) {
       cnt.dataset.type === "image"
         ? updateImagePreview(cnt, downloadURL, message.time)
         : updateFilePreview(cnt, downloadURL, message.time);
+      updateDB(database, `chat/${chatHash}`, {lastMessageId: messageKey});
       addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
       console.log(message);
       
