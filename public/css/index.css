@@ -15,8 +15,8 @@ body {
   outline: none;
   border: none;
   border-radius: 10px;
-  background-color: #442656;
-  color: #fbae3c;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
   cursor: pointer;
   z-index: 2;
   transition: all 0.3s ease-in-out;
@@ -32,8 +32,8 @@ body {
 
 .sign-in:hover,
 .google__signin:hover {
-  background-color: #fbae3c;
-  color: #442656;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .time {
@@ -43,7 +43,7 @@ body {
   font-family: "Klee One", cursive;
   font-size: 3rem;
   font-weight: bold;
-  color: #442656;
+  color: var(--secondary-color);
   z-index: 2;
   transition: all 0.3s ease-in-out;
 }
@@ -58,8 +58,8 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 4rem;
-  background-color: #442656;
-  color: #fbae3c;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
   padding: 2rem;
   z-index: 2;
   display: flex;
@@ -76,13 +76,13 @@ body {
   cursor: pointer;
   border-radius: 2rem;
   border: 2px solid transparent;
-  background-color: #fbae3c;
-  color: #442656;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .verification__resend:hover {
-  border-color: #fbae3c;
-  color: #fbae3c;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
   background-color: transparent;
 }
 
@@ -108,7 +108,7 @@ body {
   display: flex;
   flex-direction: column;
   border-radius: 1rem;
-  background-color: #442656;
+  background-color: var(--secondary-color);
   z-index: 1;
 }
 
@@ -117,9 +117,9 @@ body {
   font-size: 4rem;
   padding: 1rem;
   border: none;
-  border-bottom: 1px solid #fbae3c;
-  color: #fbae3c;
-  background-color: #442656;
+  border-bottom: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
 }
 
 .google-signin-user-name__input:focus {
@@ -138,39 +138,39 @@ body {
   font-size: 3rem;
   margin-right: 1rem;
   margin-top: 1rem;
-  background-color: #fbae3c;
-  color: #442656;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   cursor: pointer;
 }
 
 .google-signin-user-name__next:hover {
-  background-color: #442656;
-  color: #fbae3c;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
 }
 
-.toggle-pass{
+.toggle-pass {
   width: 40px;
   position: absolute;
   right: 5%;
   top: 70%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #fbae3c;
+  color: var(--primary-color);
 }
 
-.toggle-pass:hover{
+.toggle-pass:hover {
   color: #994cc5;
 }
 
-.reset-password{
+.reset-password {
   color: red;
   text-align: center;
   font-size: 2rem;
   cursor: pointer;
 }
 
-.reset-password:hover{
-  color: #fbae3c;
+.reset-password:hover {
+  color: var(--primary-color);
 }
 
 .login {
@@ -194,8 +194,8 @@ body {
   align-items: center;
   height: 10%;
   font-size: 2rem;
-  background-color: #442656;
-  color: #fbae3c;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
@@ -216,8 +216,8 @@ body {
 }
 
 .login__header h2:hover {
-  background-color: #fbae3c;
-  color: #442656;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .login__header h2:last-child {
@@ -241,7 +241,7 @@ body {
 }
 
 .input__field label {
-  color: #fbae3c;
+  color: var(--primary-color);
   font-weight: 500;
 }
 
@@ -250,10 +250,10 @@ body {
   border: none;
   outline: none;
   background-color: transparent;
-  border-bottom: 2px solid #fbae3c;
+  border-bottom: 2px solid var(--primary-color);
   font-family: inherit;
   font-size: inherit;
-  color: #fbae3c;
+  color: var(--primary-color);
 }
 
 .form__button {
@@ -261,17 +261,18 @@ body {
   margin: 0 auto;
   height: 6rem;
   font-size: 2rem;
-  background-color: #fbae3c;
-  color: #442656;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   outline: none;
   border: none;
   border-radius: 10px;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
 .form__button:hover {
-  background-color: #442656;
-  color: #fbae3c;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
 }
 
 .features {
@@ -292,12 +293,12 @@ body {
 .title,
 .sub-title {
   font-family: "Klee One", cursive;
-  color: #fbae3c;
+  color: var(--primary-color);
 }
 
 .title {
   font-size: 13rem;
-  text-shadow: 0.03em 0.025em #442656;
+  text-shadow: 0.03em 0.025em var(--secondary-color);
 }
 
 .sub-title {
@@ -306,8 +307,8 @@ body {
 }
 
 .active {
-  background-color: #fbae3c;
-  color: #442656;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .none {
@@ -315,7 +316,7 @@ body {
 }
 
 .error {
-  color: red;
+  color: var(--error-color);
   font-size: 1.7rem;
   position: absolute;
   top: 100%;
