@@ -47,14 +47,13 @@ notificationIC.addEventListener("click", (e) => {
 /* 
 <div class="header__notification-eachmsg">
                 <p class="header__notification-msg">
-                  <span class="header__notification-name">Lorem</span> has
-                  <span class="header__notifcation-status">accepted</span> your
-                  friend request
+                  <span class="header__notification-highlight">Lorem</span> has accepted your friend request
                 </p>
                 <img
                   src="./assets/icons/home/msg-clear.svg"
                   class="header__notification-clrmsg"
                   alt="clear message"
                 />
+                <div class="header__notification-time">19:20:25 - 20/12/2021</div>
               </div>
 */

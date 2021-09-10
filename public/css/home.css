@@ -70,10 +70,23 @@
 .header__notification-eachmsg {
   padding: 1rem;
   border-radius: 1rem;
-  margin: 1.5rem 1rem;
+  margin: 2.5rem 1rem;
   background-color: var(--entertainment-color);
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.header__notification-highlight{
+  color: var(--white);
+}
+
+.header__notification-time{
+  position: absolute;
+  top: 100%;
+  left: 1rem;
+  font-size: 1.2rem;
+  color: var(--white);
 }
 
 .no__message{
