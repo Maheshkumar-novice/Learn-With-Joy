@@ -48,28 +48,44 @@
   right: 10px;
   top: 110%;
   background-color: var(--container-bg);
-  color: var(--secondary-color);
+  color: var(--primary-color);
   padding: 1rem;
+  border: 3px solid var(--secondary-color);
   border-radius: 1rem;
-  max-height: 400px;
+  max-height: 600px;
   overflow: auto;
 }
 
-.header__notification-display p {
-  background-color: var(--container-bg);
-  padding: 1rem;
-  border-radius: 1rem;
-  margin: 1rem;
+.notification__common::before{
+  content: attr(data-name);
+  display: block;
+  width: 100%;
+  padding: 1rem 0.5rem;
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--accent-color);
+  border-bottom: 1px solid var(--accent-color);
 }
 
 .header__notification-eachmsg {
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 1.5rem 1rem;
+  background-color: var(--entertainment-color);
   display: flex;
   align-items: center;
+}
+
+.no__message{
+  color: var(--error-color);
+  padding: 1rem;
+  text-align: center;
 }
 
 .header__notification-clrmsg {
   width: 20px;
   height: 20px;
+  cursor: pointer;
 }
 .header {
   height: 70px;

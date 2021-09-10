@@ -39,5 +39,22 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 notificationIC.addEventListener("click", (e) => {
+  console.log("Hel")
   notificationDisplay.classList.toggle("none");
 });
+
+
+/* 
+<div class="header__notification-eachmsg">
+                <p class="header__notification-msg">
+                  <span class="header__notification-name">Lorem</span> has
+                  <span class="header__notifcation-status">accepted</span> your
+                  friend request
+                </p>
+                <img
+                  src="./assets/icons/home/msg-clear.svg"
+                  class="header__notification-clrmsg"
+                  alt="clear message"
+                />
+              </div>
+*/
