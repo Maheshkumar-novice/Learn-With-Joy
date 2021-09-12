@@ -9,7 +9,6 @@ const notificationDisplay = document.querySelector(
   ".header__notification-display"
 );
 const notificationIC = document.querySelector(".header__notification-ic");
-// const noNotification = [...document.querySelectorAll(".no__message")];
 const notificationSound = document.querySelector(".notification__sound");
 
 
@@ -29,10 +28,6 @@ function changeNotificationSrc() {
 
 function checkNoticationSrcChange(){
   const noNotification = [...document.querySelectorAll(".no__message")];
-  noNotification.forEach(elem => {
-    console.log(elem, elem.classList.contains("none"))
-  })
-  console.log(noNotification.every(elem => !elem.classList.contains("none")));
   if(noNotification.every(elem => !elem.classList.contains("none"))){
     notificationIC.src = "./assets/icons/home/notification.svg";
   }
@@ -42,7 +37,6 @@ function returnDateTime(timestamp) {
   const dateTime = new Date(timestamp);
   const date = dateTime.toDateString().split(" ");
   const time = dateTime.toTimeString().split(" ");
-  console.log(date);
   return `${time[0]} - ${date[0]} ${date[2]} ${date[3]}`;
 }
 
@@ -52,7 +46,6 @@ function removeNotificationFromDatabase(e){
 }
 
 function removeNotificationFromList(data){
-  console.log(data.val(), data.key);
   const toRemove = document.querySelector(`.header__notification-eachmsg[data-id="${data.key}"]`);
   const removeFrom = toRemove.parentElement;
   removeFrom.removeChild(toRemove);
@@ -65,6 +58,12 @@ function updateFriendsNotification(data) {
   console.log(data.val(), data.key, notificationAllCnt[0]);
   const name = data.val().name;
   const timeStamp = data.val().timeStamp;
+  timeStamp > pageLoadedTimeStamp ? playSound() : "";
+  const elemIsPresent = document.querySelector(`.header__notification-eachmsg[data-id="${data.key}"]`);
+  if(elemIsPresent){
+    elemIsPresent.querySelector(".header__notification-time").innerText = returnDateTime(timeStamp);
+    return;
+  }
   notificationAllCnt[0].innerHTML += `<div class="header__notification-eachmsg" data-id="${data.key}">
                                         <p class="header__notification-msg">
                                           <span class="header__notification-highlight">${name}</span> has accepted your friend request
@@ -77,7 +76,6 @@ function updateFriendsNotification(data) {
                                         />
                                         <div class="header__notification-time">${returnDateTime(timeStamp)}</div>
                                       </div>`;
-  timeStamp > pageLoadedTimeStamp ? playSound() : "";
   document.querySelectorAll(`.header__notification-clrmsg`).forEach(elem => {
     elem.addEventListener("click", removeNotificationFromDatabase);
   });
@@ -113,7 +111,6 @@ auth.onAuthStateChanged(async (current_user) => {
 });
 
 notificationIC.addEventListener("click", (e) => {
-  console.log("Hel");
   notificationDisplay.classList.toggle("none");
 });
 
