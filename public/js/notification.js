@@ -1,46 +1,87 @@
-import { setDBListener } from "./modules/firebase.js";
+import { removeDB, setDBListener } from "./modules/firebase.js";
 
 let database = firebase.database();
 let auth = firebase.auth();
+let user;
+let pageLoadedTimeStamp;
 
 const notificationDisplay = document.querySelector(
   ".header__notification-display"
 );
 const notificationIC = document.querySelector(".header__notification-ic");
-const notificationSound = document.querySelector(".notificaiton__sound");
+const noNotification = document.querySelectorAll(".no__message");
+const notificationSound = document.querySelector(".notification__sound");
 
 // each group
 const notificationAllCnt = document.querySelectorAll(".notification__common");
 
 function playSound() {
   notificationSound.currentTime = 0;
-  notificationSound.play();
+  notificationSound.play().catch((error) => {
+    console.log(error);
+  });
 }
 
-notificationIC.addEventListener("click", (e) => {
-  console.log("Hel");
-  notificationDisplay.classList.toggle("none");
-});
+function changeNotificationSrc() {
+  notificationIC.src = "./assets/icons/home/notification_dot.svg";
+}
+
+// function toggleNoNotification(index){
+//   console.log(index, noNotification[index])
+//   noNotification[index].classList.toggle("none");
+//   console.log(index, noNotification[index])
+// }
+
+function returnDateTime(timestamp) {
+  const dateTime = new Date(timestamp);
+  const date = dateTime.toDateString().split(" ");
+  const time = dateTime.toTimeString().split(" ");
+  console.log(date);
+  return `${time[0]} - ${date[0]} ${date[2]} ${date[3]}`;
+}
+
+function removeNotificationFromDatabase(e){
+  const id = e.target.dataset.id;
+  removeDB(database, `notifications/${user.uid}/friends/${id}`);
+}
+
+function removeNotificationFromList(data){
+  console.log(data.val(), data.key);
+  const toRemove = document.querySelector(`.header__notification-eachmsg[data-id="${data.key}"]`);
+  const removeFrom = toRemove.parentElement;
+  removeFrom.removeChild(toRemove);
+  console.log(removeFrom.childElementCount);
+  removeFrom.childElementCount  === 1 ? removeFrom.querySelector(".no__message").classList.remove("none") : "";
+}
 
 function updateFriendsNotification(data) {
+  changeNotificationSrc();
+  noNotification[0].classList.toggle("none");
   console.log(data.val(), data.key, notificationAllCnt[0]);
   const name = data.val().name;
-  notificationAllCnt[0].innerHTML += `<div class="header__notification-eachmsg" data-id=${data.key}>
-  <p class="header__notification-msg">
-    <span class="header__notification-highlight">${name}</span> has accepted your friend request
-  </p>
-  <img
-    src="./assets/icons/home/msg-clear.svg"
-    class="header__notification-clrmsg"
-    alt="clear message"
-  />
-  <div class="header__notification-time">19:20:25 - 20/12/2021</div>
-</div>`;
+  const timeStamp = data.val().timeStamp;
+  notificationAllCnt[0].innerHTML += `<div class="header__notification-eachmsg" data-id="${data.key}">
+                                        <p class="header__notification-msg">
+                                          <span class="header__notification-highlight">${name}</span> has accepted your friend request
+                                        </p>
+                                        <img
+                                          src="./assets/icons/home/msg-clear.svg"
+                                          class="header__notification-clrmsg"
+                                          data-id="${data.key}"
+                                          alt="clear message"
+                                        />
+                                        <div class="header__notification-time">${returnDateTime(timeStamp)}</div>
+                                      </div>`;
+  timeStamp > pageLoadedTimeStamp ? playSound() : "";
+  document.querySelector(`.header__notification-clrmsg[data-id="${data.key}"]`).addEventListener("click", removeNotificationFromDatabase);
 }
 
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
+auth.onAuthStateChanged(async (current_user) => {
+  if (current_user) {
+    user = current_user;
     console.log(user);
+
+    pageLoadedTimeStamp = Date.now();
     setDBListener(
       database,
       `notifications/${user.uid}/friends`,
@@ -53,9 +94,20 @@ auth.onAuthStateChanged(async (user) => {
       "child_changed",
       updateFriendsNotification
     );
+    setDBListener(
+      database,
+      `notifications/${user.uid}/friends`,
+      "child_removed",
+      removeNotificationFromList
+    );
 
     // database.ref(`friends/${user.uid}/notification`).on("child_removed", removeNotification);
   }
+});
+
+notificationIC.addEventListener("click", (e) => {
+  console.log("Hel");
+  notificationDisplay.classList.toggle("none");
 });
 
 /*

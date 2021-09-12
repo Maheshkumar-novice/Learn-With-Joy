@@ -149,13 +149,13 @@ async function addFriend(e) {
 }
 
 async function notificationFriendRequestAccept(fid, name){
-  let ref = `notifications/${user.uid}/friends`;
+  let ref = `notifications/${fid}/friends`;
   let timeStamp = Date.now();
   let data = {
     name,
     timeStamp
   }
-  addChlidDB(database, ref, fid, data);
+  addChlidDB(database, ref, user.uid, data);
 }
 
 async function removeFriend(e) {
