@@ -145,7 +145,7 @@ async function addFriend(e) {
     },
   };
   writeDB(database, `chat/${hashtext}`, value);
-  notificationFriendRequestAccept(fid, e.target.parentElement.querySelector(".chat__friend-name").innerText);
+  notificationFriendRequestAccept(fid, user.displayName);
 }
 
 async function notificationFriendRequestAccept(fid, name){

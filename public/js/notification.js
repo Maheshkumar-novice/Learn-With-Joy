@@ -9,8 +9,9 @@ const notificationDisplay = document.querySelector(
   ".header__notification-display"
 );
 const notificationIC = document.querySelector(".header__notification-ic");
-const noNotification = document.querySelectorAll(".no__message");
+// const noNotification = [...document.querySelectorAll(".no__message")];
 const notificationSound = document.querySelector(".notification__sound");
+
 
 // each group
 const notificationAllCnt = document.querySelectorAll(".notification__common");
@@ -26,11 +27,16 @@ function changeNotificationSrc() {
   notificationIC.src = "./assets/icons/home/notification_dot.svg";
 }
 
-// function toggleNoNotification(index){
-//   console.log(index, noNotification[index])
-//   noNotification[index].classList.toggle("none");
-//   console.log(index, noNotification[index])
-// }
+function checkNoticationSrcChange(){
+  const noNotification = [...document.querySelectorAll(".no__message")];
+  noNotification.forEach(elem => {
+    console.log(elem, elem.classList.contains("none"))
+  })
+  console.log(noNotification.every(elem => !elem.classList.contains("none")));
+  if(noNotification.every(elem => !elem.classList.contains("none"))){
+    notificationIC.src = "./assets/icons/home/notification.svg";
+  }
+}
 
 function returnDateTime(timestamp) {
   const dateTime = new Date(timestamp);
@@ -50,13 +56,12 @@ function removeNotificationFromList(data){
   const toRemove = document.querySelector(`.header__notification-eachmsg[data-id="${data.key}"]`);
   const removeFrom = toRemove.parentElement;
   removeFrom.removeChild(toRemove);
-  console.log(removeFrom.childElementCount);
-  removeFrom.childElementCount  === 1 ? removeFrom.querySelector(".no__message").classList.remove("none") : "";
+  removeFrom.childElementCount  === 1 ? (removeFrom.querySelector(".no__message").classList.remove("none"), checkNoticationSrcChange()) : "";
 }
 
 function updateFriendsNotification(data) {
   changeNotificationSrc();
-  noNotification[0].classList.toggle("none");
+  notificationAllCnt[0].querySelector(".no__message").classList.add("none");
   console.log(data.val(), data.key, notificationAllCnt[0]);
   const name = data.val().name;
   const timeStamp = data.val().timeStamp;
@@ -73,7 +78,9 @@ function updateFriendsNotification(data) {
                                         <div class="header__notification-time">${returnDateTime(timeStamp)}</div>
                                       </div>`;
   timeStamp > pageLoadedTimeStamp ? playSound() : "";
-  document.querySelector(`.header__notification-clrmsg[data-id="${data.key}"]`).addEventListener("click", removeNotificationFromDatabase);
+  document.querySelectorAll(`.header__notification-clrmsg`).forEach(elem => {
+    elem.addEventListener("click", removeNotificationFromDatabase);
+  });
 }
 
 auth.onAuthStateChanged(async (current_user) => {
