@@ -1,6 +1,4 @@
-const notification = {
-  0: "rejected",
-};
+import { setDBListener } from "./modules/firebase.js";
 
 let database = firebase.database();
 let auth = firebase.auth();
@@ -9,40 +7,62 @@ const notificationDisplay = document.querySelector(
   ".header__notification-display"
 );
 const notificationIC = document.querySelector(".header__notification-ic");
+const notificationSound = document.querySelector(".notificaiton__sound");
 
-function addNotification(data) {
-  if (!data.val()) {
-    notificationDisplay.innerHTML = `<p>No New notification</p>`;
-  }
-  notificationIC.src = "./assets/icons/home/notification_dot.svg";
-  let key = data.key;
-  let msg = data.val();
-  let temp = `<div class="header__notification-eachmsg" data-id=${key}>
-                  <p class="header__notification-msg">
-                  <span class="header__notification-name">${msg[0]}</span> has <span class="header__notifcation-status">Rejected</span> your friend request.
-                  </p>
-                  <img src="./assets/icons/home/msg-clear.svg" class="header__notification-clrmsg" alt="clear message">
-              </div> `;
-  notificationDisplay.innerHTML += temp;
-//   document.querySelectorAll(".notifcation")
+// each group
+const notificationAllCnt = document.querySelectorAll(".notification__common");
+
+function playSound() {
+  notificationSound.currentTime = 0;
+  notificationSound.play();
+}
+
+notificationIC.addEventListener("click", (e) => {
+  console.log("Hel");
+  notificationDisplay.classList.toggle("none");
+});
+
+function updateFriendsNotification(data) {
+  console.log(data.val(), data.key, notificationAllCnt[0]);
+  const name = data.val().name;
+  notificationAllCnt[0].innerHTML += `<div class="header__notification-eachmsg" data-id=${data.key}>
+  <p class="header__notification-msg">
+    <span class="header__notification-highlight">${name}</span> has accepted your friend request
+  </p>
+  <img
+    src="./assets/icons/home/msg-clear.svg"
+    class="header__notification-clrmsg"
+    alt="clear message"
+  />
+  <div class="header__notification-time">19:20:25 - 20/12/2021</div>
+</div>`;
 }
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
-      console.log(user);
-    database
-      .ref(`friends/${user.uid}/notifications`)
-      .on("child_added", addNotification);
-    
+    console.log(user);
+    setDBListener(
+      database,
+      `notifications/${user.uid}/friends`,
+      "child_added",
+      updateFriendsNotification
+    );
+    setDBListener(
+      database,
+      `notifications/${user.uid}/friends`,
+      "child_changed",
+      updateFriendsNotification
+    );
+
     // database.ref(`friends/${user.uid}/notification`).on("child_removed", removeNotification);
   }
 });
 
-notificationIC.addEventListener("click", (e) => {
-  console.log("Hel")
-  notificationDisplay.classList.toggle("none");
-});
-
+/*
+let time = timeStamp.toTimeString().split(" ")[0];
+  let date = `${timeStamp.getDate()}/${timeStamp.getMonth()+1}/${timeStamp.getFullYear()}}`
+  let dateTime = `${time} - ${date}`;
+  */
 
 /* 
 <div class="header__notification-eachmsg">

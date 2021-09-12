@@ -145,6 +145,17 @@ async function addFriend(e) {
     },
   };
   writeDB(database, `chat/${hashtext}`, value);
+  notificationFriendRequestAccept(fid, e.target.parentElement.querySelector(".chat__friend-name").innerText);
+}
+
+async function notificationFriendRequestAccept(fid, name){
+  let ref = `notifications/${user.uid}/friends`;
+  let timeStamp = Date.now();
+  let data = {
+    name,
+    timeStamp
+  }
+  addChlidDB(database, ref, fid, data);
 }
 
 async function removeFriend(e) {
