@@ -16,7 +16,8 @@ import { checkUserPresent } from "./modules/util.js";
 
 const auth = firebase.auth();
 const database = firebase.database();
-let user,
+let pageLoadedTimeStamp,
+  user,
   userDataList = [],
   uidList = [],
   friendsList = null,
@@ -30,6 +31,7 @@ function addDataToTotalUsers(data) {
 auth.onAuthStateChanged(async (currentUser) => {
   if (currentUser) {
     user = currentUser;
+    pageLoadedTimeStamp = Date.now();
     await updateFriendsList();
     addDBListeners();
     searchInput.disabled = false;
@@ -41,7 +43,9 @@ auth.onAuthStateChanged(async (currentUser) => {
 // ----------------------- SEARCH -------------------------------------
 const searchInput = document.querySelector(".chat__input");
 const searchWrap = document.querySelector(".chat__search-cnt");
-const searchResultContainer = document.querySelector(".chat__search-result-cnt");
+const searchResultContainer = document.querySelector(
+  ".chat__search-result-cnt"
+);
 const searchCloseIcon = document.querySelector(".chat__search-close-icon");
 const chatArea = document.querySelector(".chat__chat");
 let addBtn;
@@ -148,13 +152,13 @@ async function addFriend(e) {
   notificationFriendRequestAccept(fid, user.displayName);
 }
 
-async function notificationFriendRequestAccept(fid, name){
+async function notificationFriendRequestAccept(fid, name) {
   let ref = `notifications/${fid}/friends`;
   let timeStamp = Date.now();
   let data = {
     name,
-    timeStamp
-  }
+    timeStamp,
+  };
   addChlidDB(database, ref, user.uid, data);
 }
 
@@ -165,14 +169,16 @@ async function removeFriend(e) {
   removeDB(database, `friends/${user.uid}/friends/${fid}`);
   removeDB(database, `friends/${fid}/friends/${user.uid}`);
   removeDB(database, `chat/${hash}`);
-  
+
   // delete media from firebase storage
   const allFiles = await storageList(firebase.storage(), `chat/${hash}`);
-  allFiles.items.map(file => storageDelete(file));
+  allFiles.items.map((file) => storageDelete(file));
 }
 
-function resetChatContainer(hash){
-  const friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
+function resetChatContainer(hash) {
+  const friendContainer = document.querySelector(
+    `.chat__chat-container[data-hash="${hash}"]`
+  );
   friendContainer ? chatWrapper.removeChild(friendContainer) : "";
   chatWindowHeader.classList.add("none");
   chatWindowMessageSender.classList.add("none");
@@ -226,7 +232,10 @@ async function removeFriendFromFriendsList(data) {
   let removedFriend = document.querySelector(
     `.chat__friend-card[data-hash="${hash}"]`
   );
-  friendsUID.splice(friendsUID.findIndex(uid => uid === removedFriend.dataset.id), 1);
+  friendsUID.splice(
+    friendsUID.findIndex((uid) => uid === removedFriend.dataset.id),
+    1
+  );
   friendsContainer.removeChild(removedFriend);
   resetChatContainer(hash);
 }
@@ -354,7 +363,7 @@ let chatWrapper = document.querySelector(".chat__chat-wrapper");
 const chatMenuIc = document.querySelector(".chat__chat-menu-ic");
 const chatMenuCnt = document.querySelector(".chat__chat-menu-cnt");
 const chatMenuItem = document.querySelector(".menu__item");
-let chatContainer; 
+let chatContainer;
 // = document.querySelector(".chat__chat-container");
 
 // function to clear Up chat window
@@ -364,15 +373,19 @@ chatMenuIc.addEventListener("click", (e) => {
 
 chatMenuItem.addEventListener("click", clearChat);
 
-async function clearChat(e){
+async function clearChat(e) {
   let hash = chatWindowMessageInput.dataset.chatHash;
   console.log("helo", chatWindowMessageInput.dataset.chatHash);
-  const lastMessageId = (await readDB(database, `chat/${hash}/lastMessageId`)).val();
+  const lastMessageId = (
+    await readDB(database, `chat/${hash}/lastMessageId`)
+  ).val();
   const obj = {};
-  obj[user.uid] = lastMessageId
+  obj[user.uid] = lastMessageId;
   updateDB(database, `chat/${hash}/lastClearedMessage`, obj);
-  let friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
-  friendContainer.innerHTML = '';
+  let friendContainer = document.querySelector(
+    `.chat__chat-container[data-hash="${hash}"]`
+  );
+  friendContainer.innerHTML = "";
 }
 
 // --------setup and update chat window-----------
@@ -384,7 +397,7 @@ function cleanUpChatWindow() {
 
 function updateChatDataSet(friendCard) {
   chatWindowMessageInput.dataset.chatHash = friendCard.dataset.hash;
-  chatWindowHeader.dataset.chatId = friendCard.dataset.id; 
+  chatWindowHeader.dataset.chatId = friendCard.dataset.id;
 }
 
 function updateFriendDataAtChatWindow(friendCard) {
@@ -399,6 +412,15 @@ function setUpChatWindow(friendCard) {
   updateChatDataSet(friendCard);
 }
 
+function createFriendContainer(hash) {
+  const friendContainer = document.createElement("div");
+  friendContainer.classList.add("chat__chat-container");
+  friendContainer.dataset.hash = hash;
+  friendContainer.dataset.lastMessage = "null";
+  chatWrapper.appendChild(friendContainer);
+  return friendContainer;
+}
+
 let prevCard = null;
 async function updateChatWindow(friendCard) {
   let upload = document.querySelector(".upload");
@@ -410,18 +432,14 @@ async function updateChatWindow(friendCard) {
   let hash = friendCard.dataset.hash;
   setUpChatWindow(friendCard);
 
-  let friendContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
-  if(prevCard && (prevCard === friendContainer)) return;
-  if(prevCard) prevCard.classList.add("none");
-  if(!friendContainer){
-    friendContainer = document.createElement("div");
-    friendContainer.classList.add("chat__chat-container");
-    friendContainer.dataset.hash = hash;
-    friendContainer.dataset.lastMessage = "null";
-    chatWrapper.appendChild(friendContainer);
-  }
-  else{
-    
+  let friendContainer = document.querySelector(
+    `.chat__chat-container[data-hash="${hash}"]`
+  );
+  if (prevCard && prevCard === friendContainer) return;
+  if (prevCard) prevCard.classList.add("none");
+  if (!friendContainer) {
+    friendContainer = createFriendContainer(hash);
+  } else {
     prevCard = friendContainer;
     friendContainer.classList.remove("none");
     autoScroll();
@@ -430,9 +448,11 @@ async function updateChatWindow(friendCard) {
   prevCard = friendContainer;
 
   let data = (await readDB(database, `chat/${hash}`)).val();
-  let lastClearedMessageIndex = data.lastClearedMessage 
-  ? Object.keys(data.messages).findIndex(key => key === data.lastClearedMessage[user.uid]) 
-  : -1;
+  let lastClearedMessageIndex = data.lastClearedMessage
+    ? Object.keys(data.messages).findIndex(
+        (key) => key === data.lastClearedMessage[user.uid]
+      )
+    : -1;
   fillMessagesToChatBody(data.messages, hash, lastClearedMessageIndex);
 }
 
@@ -441,7 +461,7 @@ function createMessage(message, timeStamp, position) {
   let chatMessage = document.createElement("p");
   let chatTimeStamp = document.createElement("span");
 
-  messageWrapper.className =`chat__message-container chat__message-container--${position}`;
+  messageWrapper.className = `chat__message-container chat__message-container--${position}`;
   chatMessage.className = "chat__message";
   chatTimeStamp.className = "chat__time-stamp";
 
@@ -465,12 +485,19 @@ function addMessageToContainer(chatContainer, message, time, position) {
 //   let timePart = new Date(time).toTimeString().split(" ")[0];
 //   let timeStamp = datePart + " " + timePart;
 //   chatContainer.innerHTML += `<div class="chat__message-container chat__message-container--${position}">
-//     <p class="chat__message">${message}</p>  
+//     <p class="chat__message">${message}</p>
 //     <span class="chat__time-stamp chat__time-stamp--right">${timeStamp}</span>
 //    </div>`;
 // }
 
- function addFileToContainer(chatContainer, src, metaData, time, position, type) {
+function addFileToContainer(
+  chatContainer,
+  src,
+  metaData,
+  time,
+  position,
+  type
+) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
@@ -503,22 +530,62 @@ function addMessageToContainer(chatContainer, message, time, position) {
 function fillMessagesToChatBody(data, hash, lastClearedMessageIndex) {
   if (!data) return;
   console.log(data, hash);
-  let chatContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
+  let chatContainer = document.querySelector(
+    `.chat__chat-container[data-hash="${hash}"]`
+  );
   console.log(lastClearedMessageIndex);
   Object.values(data).forEach((message, idx) => {
-    if(idx <= lastClearedMessageIndex) return;
+    if (idx <= lastClearedMessageIndex) return;
     if (message.sender === user.uid) {
       "text" in message
-        ? addMessageToContainer(chatContainer, message.text, message.time, "right")
+        ? addMessageToContainer(
+            chatContainer,
+            message.text,
+            message.time,
+            "right"
+          )
         : "image" in message
-        ? addFileToContainer(chatContainer, message.image, message.metadata, message.time, "right", "image")
-        : addFileToContainer(chatContainer, message.file, message.metadata, message.time, "right", "file");
+        ? addFileToContainer(
+            chatContainer,
+            message.image,
+            message.metadata,
+            message.time,
+            "right",
+            "image"
+          )
+        : addFileToContainer(
+            chatContainer,
+            message.file,
+            message.metadata,
+            message.time,
+            "right",
+            "file"
+          );
     } else {
       "text" in message
-        ? addMessageToContainer(chatContainer, message.text, message.time, "left")
+        ? addMessageToContainer(
+            chatContainer,
+            message.text,
+            message.time,
+            "left"
+          )
         : "image" in message
-        ? addFileToContainer(chatContainer, message.image, message.metadata, message.time, "left", "image")
-        : addFileToContainer(chatContainer, message.file, message.metadata, message.time, "left", "file");
+        ? addFileToContainer(
+            chatContainer,
+            message.image,
+            message.metadata,
+            message.time,
+            "left",
+            "image"
+          )
+        : addFileToContainer(
+            chatContainer,
+            message.file,
+            message.metadata,
+            message.time,
+            "left",
+            "file"
+          );
     }
   });
   autoScroll();
@@ -526,28 +593,50 @@ function fillMessagesToChatBody(data, hash, lastClearedMessageIndex) {
 
 async function addMessageToChatBody(chat) {
   let hash = chat.ref.parent.parent.key;
-  let chatContainer = document.querySelector(`.chat__chat-container[data-hash="${hash}"]`);
-  console.log('done')
-  if(!chatContainer) return;
-  console.log('fun')
+  let timeStamp = new Date(chat.val().time);
+  if(pageLoadedTimeStamp > timeStamp){
+    return;
+  }
+  let chatContainer = document.querySelector(
+    `.chat__chat-container[data-hash="${hash}"]`
+  );
+  if (!chatContainer) return;
 
   let chatData = chat.val();
   if (!chatData) return;
 
   if ("image" in chatData) {
     if (
-      chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
+      chatContainer.querySelector(
+        `.chat__message-container[data-id="${chat.key}"]`
+      )
     )
       return;
-    addFileToContainer(chatContainer, chatData.image, chatData.metadata, chatData.time, "left", "image");
+    addFileToContainer(
+      chatContainer,
+      chatData.image,
+      chatData.metadata,
+      chatData.time,
+      "left",
+      "image"
+    );
     return;
   }
   if ("file" in chatData) {
     if (
-      chatContainer.querySelector(`.chat__message-container[data-id="${chat.key}"]`)
+      chatContainer.querySelector(
+        `.chat__message-container[data-id="${chat.key}"]`
+      )
     )
       return;
-    addFileToContainer(chatContainer, chatData.file, chatData.metadata, chatData.time, "left", "file");
+    addFileToContainer(
+      chatContainer,
+      chatData.file,
+      chatData.metadata,
+      chatData.time,
+      "left",
+      "file"
+    );
     return;
   }
 
@@ -572,7 +661,7 @@ function sendMessage() {
     time,
   };
   addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
-  updateDB(database, `chat/${chatHash}`, {lastMessageId: messageKey});
+  updateDB(database, `chat/${chatHash}`, { lastMessageId: messageKey });
   chatWindowMessageInput.value = "";
 }
 
@@ -581,7 +670,9 @@ function addEventListenerToFriendCards() {
   friends.forEach((friend) =>
     friend.addEventListener("click", function (e) {
       const prevSelected = document.querySelector(".chat__friend-card-active");
-      prevSelected ? prevSelected.classList.remove("chat__friend-card-active") : "";
+      prevSelected
+        ? prevSelected.classList.remove("chat__friend-card-active")
+        : "";
       this.classList.add("chat__friend-card-active");
       updateChatWindow(this);
     })
@@ -604,4 +695,3 @@ window.addEventListener("keyup", (e) => {
 document
   .querySelector(".chat__img--send")
   .addEventListener("click", sendMessage);
-
