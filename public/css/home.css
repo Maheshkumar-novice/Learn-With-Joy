@@ -28,6 +28,32 @@
 .header__notification-cnt {
   display: flex;
   align-items: center;
+  z-index: 5;
+}
+
+.header__notification-volume{
+  padding: .5rem;
+  position: absolute;
+  right: 10px;
+  top: 1rem;
+}
+
+.header__notification .volume{
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  padding: .7rem;
+  border-radius: 50%;
+  box-sizing: unset;
+}
+
+.header__notification .volume:hover{
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+.header__notification .volume[data-icon="volume-mute"], .header__notification .volume[data-icon="volume-mute"]:hover{
+  color: var(--error-color);
 }
 
 .header__notification {

@@ -5,12 +5,24 @@ let auth = firebase.auth();
 let user;
 let pageLoadedTimeStamp;
 
+const volumeIC = document.querySelectorAll(".volume");
 const notificationDisplay = document.querySelector(
   ".header__notification-display"
 );
 const notificationIC = document.querySelector(".header__notification-ic");
 const notificationSound = document.querySelector(".notification__sound");
 
+// mute volume
+volumeIC.forEach( volume => {
+  volume.addEventListener("click", function (e){
+    let otherIndex;
+    this.dataset.index === "1" ? 
+    (otherIndex = 0, notificationSound.volume = 1) : (otherIndex = 1, notificationSound.volume = 0);
+    this.classList.add("none");
+    volumeIC[otherIndex].classList.remove("none");
+  });
+});
+ 
 
 // each group
 const notificationAllCnt = document.querySelectorAll(".notification__common");
