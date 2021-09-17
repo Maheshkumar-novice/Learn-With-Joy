@@ -13,13 +13,18 @@ const notificationIC = document.querySelector(".header__notification-ic");
 const notificationSound = document.querySelector(".notification__sound");
 
 // mute volume
+function toggleMute(index){
+  let otherIndex;
+  index === "1" ? 
+  (otherIndex = 0, notificationSound.volume = 1) : (otherIndex = 1, notificationSound.volume = 0);
+  volumeIC[index].classList.add("none");
+  volumeIC[otherIndex].classList.remove("none");
+  window.localStorage.setItem("volumeIndex", otherIndex);
+}
+
 volumeIC.forEach( volume => {
   volume.addEventListener("click", function (e){
-    let otherIndex;
-    this.dataset.index === "1" ? 
-    (otherIndex = 0, notificationSound.volume = 1) : (otherIndex = 1, notificationSound.volume = 0);
-    this.classList.add("none");
-    volumeIC[otherIndex].classList.remove("none");
+    toggleMute(this.dataset.index);
   });
 });
  
@@ -126,22 +131,9 @@ notificationIC.addEventListener("click", (e) => {
   notificationDisplay.classList.toggle("none");
 });
 
-/*
-let time = timeStamp.toTimeString().split(" ")[0];
-  let date = `${timeStamp.getDate()}/${timeStamp.getMonth()+1}/${timeStamp.getFullYear()}}`
-  let dateTime = `${time} - ${date}`;
-  */
-
-/* 
-<div class="header__notification-eachmsg">
-                <p class="header__notification-msg">
-                  <span class="header__notification-highlight">Lorem</span> has accepted your friend request
-                </p>
-                <img
-                  src="./assets/icons/home/msg-clear.svg"
-                  class="header__notification-clrmsg"
-                  alt="clear message"
-                />
-                <div class="header__notification-time">19:20:25 - 20/12/2021</div>
-              </div>
-*/
+window.addEventListener("load", (e) => {
+  let volIndex = window.localStorage.getItem("volumeIndex");
+  if(volIndex){
+    toggleMute(volIndex);
+  }
+})
