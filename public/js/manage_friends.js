@@ -445,12 +445,14 @@ async function updateChatWindow(friendCard) {
     prevCard = friendContainer;
     friendContainer.classList.remove("none");
     autoScroll();
+    removeNotSeenCount(hash);
     return;
   }
   prevCard = friendContainer;
 
   let data = (await readDB(database, `chat/${hash}`)).val();
-  updateLastSeenMessage(hash, data.userLastMessage[fid])
+  removeNotSeenCount(hash);
+  data.userLastMessage ? updateLastSeenMessage(hash, data.userLastMessage[fid]) : ""; 
   let lastClearedMessageIndex = data.lastClearedMessage
     ? Object.keys(data.messages).findIndex(
         (key) => key === data.lastClearedMessage[user.uid]
@@ -600,6 +602,21 @@ function fillMessagesToChatBody(data, hash, lastClearedMessageIndex) {
   autoScroll();
 }
 
+function removeNotSeenCount(hash){
+  const friendContainer = document.querySelector(`.chat__friend-card[data-hash="${hash}"]`);
+  let msgCountCnt = friendContainer.querySelector(".chat__message-count");
+  msgCountCnt.classList.add("none");
+  msgCountCnt.innerText = "";
+}
+
+function increaseNotSeenCount(hash){
+  const friendContainer = document.querySelector(`.chat__friend-card[data-hash="${hash}"]`);
+  let msgCountCnt = friendContainer.querySelector(".chat__message-count");
+  msgCountCnt.classList.remove("none");
+  let countPresent = msgCountCnt.innerText
+  msgCountCnt.innerText = countPresent ? +countPresent+1 : 1;
+}
+
 async function addMessageToChatBody(chat) {
   let hash = chat.ref.parent.parent.key;
   let timeStamp = new Date(chat.val().time);
@@ -609,7 +626,13 @@ async function addMessageToChatBody(chat) {
   let chatContainer = document.querySelector(
     `.chat__chat-container[data-hash="${hash}"]`
   );
-  if (!chatContainer) return;
+  if (!chatContainer) {
+    increaseNotSeenCount(hash);
+    return;
+  }
+  if(chatContainer.classList.contains("none")){
+    increaseNotSeenCount(hash);
+  }
 
   let chatData = chat.val();
   if (!chatData) return;
@@ -655,6 +678,7 @@ async function addMessageToChatBody(chat) {
     addMessageToContainer(chatContainer, chatData.text, chatData.time, "left");
   }
   autoScroll();
+  !chatContainer.classList.contains("none") && (chatData.sender !== user.uid) ? updateLastSeenMessage(hash, chat.key): "";
 }
 
 function sendMessage() {

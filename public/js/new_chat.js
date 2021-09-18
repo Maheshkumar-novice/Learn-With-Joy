@@ -21,7 +21,7 @@ function returnMessageCount(mid, message){
     if(!message) return;
     let bool = false, count=0;
     Object.keys(message).forEach(msg => {
-        console.log(msg, mid)
+        // console.log(msg, mid)
         if(bool) count++;
         if(msg === mid) bool = true;
     });
@@ -36,18 +36,18 @@ function updateMessageCount(hash, no){
 }
 
 async function getEachChat(){
-    console.log(friendsList);
+    // console.log(friendsList);
     let notSeenNumber;
     for(let fid in friendsList){
         notSeenNumber = 0;
         let hash = friendsList[fid];
         let chat = await readDB(database, `chat/${hash}/lastSeenMessage/${user.uid}`);
-        console.log(chat.val());
+        // console.log(chat.val());
 
         const ref = (await firebase.database().ref(`chat/${hash}/messages`).orderByChild('sender')).equalTo(fid);
         const messageIDS = (await ref.get()).val();
         notSeenNumber = returnMessageCount(chat.val(), messageIDS);
-        console.log(notSeenNumber);
+        // console.log(notSeenNumber);
         if(notSeenNumber){
             updateMessageCount(hash, notSeenNumber)
         }
