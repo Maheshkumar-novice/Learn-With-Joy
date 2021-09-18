@@ -202,6 +202,7 @@ async function addFriendToFriendsList(data) {
   friendsContainer.innerHTML += `<div class="chat__friend-card" data-id=${fid} data-hash=${hash}>
       <img  src="${chatUid.photo}"  alt="Friend"  class="chat__img"/>
       <p class="chat__friend-name">${chatUid.name}</p>
+      <p class="chat__message-count none"></p>
       <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
      </div>\n`;
 
@@ -412,11 +413,11 @@ function setUpChatWindow(friendCard) {
   updateChatDataSet(friendCard);
 }
 
-function createFriendContainer(hash) {
+function createFriendContainer(hash, fid) {
   const friendContainer = document.createElement("div");
   friendContainer.classList.add("chat__chat-container");
   friendContainer.dataset.hash = hash;
-  friendContainer.dataset.lastMessage = "null";
+  friendContainer.dataset.fid = fid;
   chatWrapper.appendChild(friendContainer);
   return friendContainer;
 }
@@ -430,6 +431,7 @@ async function updateChatWindow(friendCard) {
   }
 
   let hash = friendCard.dataset.hash;
+  let fid = friendCard.dataset.id;
   setUpChatWindow(friendCard);
 
   let friendContainer = document.querySelector(
@@ -438,7 +440,7 @@ async function updateChatWindow(friendCard) {
   if (prevCard && prevCard === friendContainer) return;
   if (prevCard) prevCard.classList.add("none");
   if (!friendContainer) {
-    friendContainer = createFriendContainer(hash);
+    friendContainer = createFriendContainer(hash, fid);
   } else {
     prevCard = friendContainer;
     friendContainer.classList.remove("none");
@@ -448,12 +450,20 @@ async function updateChatWindow(friendCard) {
   prevCard = friendContainer;
 
   let data = (await readDB(database, `chat/${hash}`)).val();
+  updateLastSeenMessage(hash, data.userLastMessage[fid])
   let lastClearedMessageIndex = data.lastClearedMessage
     ? Object.keys(data.messages).findIndex(
         (key) => key === data.lastClearedMessage[user.uid]
       )
     : -1;
   fillMessagesToChatBody(data.messages, hash, lastClearedMessageIndex);
+}
+
+async function updateLastSeenMessage(hash, messageID){
+  if(!messageID) return;
+  let msg = {};
+  msg[user.uid] = messageID;
+  updateDB(database, `chat/${hash}/lastSeenMessage`, msg);
 }
 
 function createMessage(message, timeStamp, position) {
@@ -533,7 +543,6 @@ function fillMessagesToChatBody(data, hash, lastClearedMessageIndex) {
   let chatContainer = document.querySelector(
     `.chat__chat-container[data-hash="${hash}"]`
   );
-  console.log(lastClearedMessageIndex);
   Object.values(data).forEach((message, idx) => {
     if (idx <= lastClearedMessageIndex) return;
     if (message.sender === user.uid) {
@@ -662,6 +671,9 @@ function sendMessage() {
   };
   addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
   updateDB(database, `chat/${chatHash}`, { lastMessageId: messageKey });
+  let lastMessageID = {};
+  lastMessageID[user.uid] = messageKey;
+  updateDB(database, `chat/${chatHash}/userLastMessage`, lastMessageID);
   chatWindowMessageInput.value = "";
 }
 

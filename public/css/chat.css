@@ -67,6 +67,18 @@
   border: 1px solid white;
 }
 
+.chat__message-count{
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
 .chat__remove-friend-ic,
 .chat__add-friend-ic,
 .chat__pending-friend-ic,
