@@ -1,4 +1,5 @@
 import { readDB } from "./modules/firebase.js";
+import { pushFront } from "./modules/util.js";
 
 const auth = firebase.auth()
 const database = firebase.database();
@@ -30,6 +31,7 @@ function returnMessageCount(mid, message){
 
 function updateMessageCount(hash, no){
     const friendContainer = document.querySelector(`.chat__friend-card[data-hash="${hash}"]`);
+    pushFront(friendContainer);
     let msgCountCnt = friendContainer.querySelector(".chat__message-count");
     msgCountCnt.classList.remove("none");
     msgCountCnt.innerText = no;

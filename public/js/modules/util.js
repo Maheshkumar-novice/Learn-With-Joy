@@ -20,6 +20,13 @@ export function checkUserPresent(friendlist, friendsUID, uid) {
   return bool;
 }
 
+export function pushFront(friendContainer){
+  const parent = friendContainer.parentElement;
+  const first = parent.firstChild;
+  console.log(parent, first);
+  parent.insertBefore(friendContainer, first);
+}
+
 export function updateLocalStorage(key, value) {
   window.localStorage.setItem(key, value);
 }

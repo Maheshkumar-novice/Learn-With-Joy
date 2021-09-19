@@ -12,7 +12,7 @@ import {
   storageList,
   updateDB,
 } from "./modules/firebase.js";
-import { checkUserPresent } from "./modules/util.js";
+import { checkUserPresent, pushFront } from "./modules/util.js";
 
 const auth = firebase.auth();
 const database = firebase.database();
@@ -611,6 +611,7 @@ function removeNotSeenCount(hash){
 
 function increaseNotSeenCount(hash){
   const friendContainer = document.querySelector(`.chat__friend-card[data-hash="${hash}"]`);
+  pushFront(friendContainer);
   let msgCountCnt = friendContainer.querySelector(".chat__message-count");
   msgCountCnt.classList.remove("none");
   let countPresent = msgCountCnt.innerText
