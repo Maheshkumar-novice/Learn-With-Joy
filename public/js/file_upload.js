@@ -64,7 +64,7 @@ function docsPreview(files) {
   filePreview.innerHTML = html;
 }
 
-function triggerPreviewOnUpload(e){
+function triggerPreviewOnUpload(e) {
   console.log(e.target.files);
   filePreview.innerHTML = "";
   fileToUpload = [];
@@ -103,9 +103,9 @@ fileUploadClick.forEach((upload) => {
   });
 });
 
-toggleUploadBtn.addEventListener("click", function(e) {
+toggleUploadBtn.addEventListener("click", function (e) {
   console.log(this.dataset.mode);
-  if(this.dataset.mode === "disabled") return;
+  if (this.dataset.mode === "disabled") return;
   chatContainer = document.querySelector(
     `.chat__chat-container[data-hash="${inputChat.dataset.chatHash}"]`
   );
@@ -116,8 +116,8 @@ toggleUploadBtn.addEventListener("click", function(e) {
 function clearUploadWindow() {
   filePreview.innerHTML = "";
   fileToUpload = [];
-  fileUpload.forEach(toUpload => {
-    toUpload.value = ''
+  fileUpload.forEach((toUpload) => {
+    toUpload.value = "";
   });
 }
 
@@ -233,7 +233,7 @@ const storage = firebase.storage();
 const database = firebase.database();
 const auth = firebase.auth();
 sendBtn.addEventListener("click", async (e) => {
-  if(fileToUpload.length === 0 || uploadCnt.classList.contains("none")) return;
+  if (fileToUpload.length === 0 || uploadCnt.classList.contains("none")) return;
   toggleUploadBtn.dataset.mode = "disabled";
   fileCount = fileToUpload.length;
   imageTaskArray = [];
@@ -262,8 +262,7 @@ sendBtn.addEventListener("click", async (e) => {
     file.type.match(/image\//i)
       ? (createImagePreview(key, URL.createObjectURL(file), size),
         imageTaskArray.push(val))
-      : (createFilePreview(key, file.name, size),
-        fileTaskArray.push(val));
+      : (createFilePreview(key, file.name, size), fileTaskArray.push(val));
     console.log(ref);
     task(val, key, inputChat.dataset.chatHash, metadata);
   });
@@ -274,7 +273,7 @@ sendBtn.addEventListener("click", async (e) => {
 
 // fucntion for pause play cancel upload
 function provideImageFuntionality(taskArray) {
-  if(taskArray.length === 0) return;
+  if (taskArray.length === 0) return;
   const pausePlayElem = document.querySelectorAll(
     `.chat__message-container .chat__message--controls`
   );
@@ -301,11 +300,11 @@ function provideImageFuntionality(taskArray) {
 }
 
 function provideFileFunctionality(taskArray) {
-  if(taskArray.length === 0) return;
+  if (taskArray.length === 0) return;
   const pausePlayElem = document.querySelectorAll(
     `.chat__message-container .chat__message--file-controls`
   );
-    console.log(pausePlayElem);
+  console.log(pausePlayElem);
   pausePlayElem.forEach((pausePlay, idx) => {
     pausePlay.addEventListener("click", (e) => {
       e.target.src.includes("play")
@@ -376,7 +375,9 @@ function task(uploadTask, key, chatHash, metadata) {
         `.chat__message-container[data-id="${key}"]`
       );
       chatContainer.removeChild(toRemove);
-      fileCount === 1 ? toggleUploadBtn.dataset.mode = "enabled" : fileCount--;
+      fileCount === 1
+        ? (toggleUploadBtn.dataset.mode = "enabled")
+        : fileCount--;
     },
     async () => {
       const downloadURL = await storageDownloadURL(uploadTask.snapshot.ref);
@@ -395,11 +396,18 @@ function task(uploadTask, key, chatHash, metadata) {
       cnt.dataset.type === "image"
         ? updateImagePreview(cnt, downloadURL, message.time)
         : updateFilePreview(cnt, downloadURL, message.time);
-      updateDB(database, `chat/${chatHash}`, {lastMessageId: messageKey});
+      updateDB(database, `chat/${chatHash}`, { lastMessageId: messageKey });
+      // last message ID
+      let lastMessageID = {};
+      lastMessageID[user.uid] = messageKey;
+      updateDB(database, `chat/${chatHash}/userLastMessage`, lastMessageID);
+      
       addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
       console.log(message);
-      
-      fileCount === 1 ? toggleUploadBtn.dataset.mode = "enabled" : fileCount--;
+
+      fileCount === 1
+        ? (toggleUploadBtn.dataset.mode = "enabled")
+        : fileCount--;
     }
   );
 }

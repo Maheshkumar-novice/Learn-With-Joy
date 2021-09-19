@@ -23,7 +23,6 @@ export function checkUserPresent(friendlist, friendsUID, uid) {
 export function pushFront(friendContainer){
   const parent = friendContainer.parentElement;
   const first = parent.firstChild;
-  console.log(parent, first);
   parent.insertBefore(friendContainer, first);
 }
 

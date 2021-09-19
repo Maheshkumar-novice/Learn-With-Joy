@@ -21,11 +21,16 @@ auth.onAuthStateChanged(async (currentUser) => {
 function returnMessageCount(mid, message){
     if(!message) return;
     let bool = false, count=0;
-    Object.keys(message).forEach(msg => {
-        // console.log(msg, mid)
-        if(bool) count++;
-        if(msg === mid) bool = true;
-    });
+    if(mid === null){
+        count = Object.keys(message).length;
+    }
+    else{
+        Object.keys(message).forEach(msg => {
+            // console.log(msg, mid)
+            if(bool) count++;
+            if(msg === mid) bool = true;
+        });
+    }
     return count;
 }
 
