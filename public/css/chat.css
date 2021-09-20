@@ -738,13 +738,15 @@
 }
 
 /* main --chat-requests */
-.chat__requests {
+.chat__requests,
+.group__misc {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-.chat__requests > * {
+.chat__requests > *,
+.group__misc > * {
   max-height: 50%;
   flex: 1;
   border-radius: 15px;
@@ -753,12 +755,80 @@
   flex-direction: column;
 }
 
+.group__participants {
+  max-height: 60%;
+}
+
+.group__creator {
+  max-height: 40%;
+  display: flex;
+  flex-direction: column;
+  font-size: 2rem;
+}
+
+.group__input-data {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 1rem;
+  flex: 1;
+}
+
+.group-logo-upload {
+  width: 40px;
+  height: 40px;
+  margin-left: 50px;
+  cursor: pointer;
+}
+
+.group__creator label {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.group__creator input {
+  width: 100%;
+  height: 5rem;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  border-bottom: 2px solid var(--primary-color);
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--primary-color);
+}
+
+.group__creator input[type="file"] {
+  border: none;
+}
+
+.group__creator button {
+  width: 80%;
+  margin: 0 auto;
+  height: 4rem;
+  font-size: 2rem;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.group__creator button:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
 .chat__req-cards {
   flex: 1;
   overflow: auto;
 }
 
-.chat__req-header {
+.chat__req-header,
+.group__misc-header {
   background-color: var(--primary-color);
   font-size: 3rem;
   font-weight: normal;

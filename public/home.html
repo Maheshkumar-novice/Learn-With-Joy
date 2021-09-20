@@ -171,9 +171,7 @@
                 </div>
               </div>
               <div class="chat__chat-body">
-                <p class="chat__chat-info">
-                  Please select a friend to chat
-                </p>
+                <p class="chat__chat-info">Please select a friend to chat</p>
 
                 <div class="upload none">
                   <div class="upload__info">
@@ -299,11 +297,19 @@
           </div>
           <div class="group__group-cnt">
             <div class="group__group-card">
-              <img src="https://lh3.googleusercontent.com/a/AATXAJx84nwQ5Udk7ix0OsX68S7KOhoYmZXtHJhHpXc=s96-c" alt="Friend" class="group__img">
+              <img
+                src="https://lh3.googleusercontent.com/a/AATXAJx84nwQ5Udk7ix0OsX68S7KOhoYmZXtHJhHpXc=s96-c"
+                alt="Friend"
+                class="group__img"
+              />
               <p class="group__group-name">Arul</p>
               <p class="group__message-count none"></p>
-              <img class="group__remove-group-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
-             </div>
+              <img
+                class="group__remove-group-ic"
+                src="./assets/icons/home/reject.svg"
+                alt="remove friend"
+              />
+            </div>
           </div>
         </div>
         <div class="group__container no-padding">
@@ -351,9 +357,7 @@
                 </div>
               </div>
               <div class="group__chat-body">
-                <p class="group__chat-info">
-                  Please select a group to chat
-                </p>
+                <p class="group__chat-info">Please select a group to chat</p>
                 <div class="upload none">
                   <div class="upload__info">
                     <h4 class="upload__info--no">Max file Limit: 5</h4>
@@ -453,7 +457,37 @@
             </div>
           </div>
         </div>
-        <div class="group__container"></div>
+        <div class="group__container group__misc">
+          <div class="group__participants">
+            <h2 class="group__misc-header">Participants</h2>
+          </div>
+          <div class="group__creator">
+            <h2 class="group__misc-header">Create Group</h2>
+            <div class="group__input-data">
+              <label for="group-name">
+                Name:
+                <input type="text" />
+              </label>
+              <label for="group-logo">
+                Upload Logo:
+                <input
+                  class="upload__input upload__input-image"
+                  type="file"
+                  accept="image/*"
+                  hidden="hidden"
+                  multiple
+                  data-type="image"
+                />
+                <img
+                  class="group-logo-upload"
+                  src="./assets/icons/home/image-upload.svg"
+                  alt="img-upload"
+                />
+              </label>
+              <button>Create</button>
+            </div>
+          </div>
+        </div>
       </section>
       <section class="notes section-tab"></section>
       <section class="calendar section-tab"></section>
