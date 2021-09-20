@@ -12,10 +12,24 @@ const auth = firebase.auth();
 const database = firebase.database();
 const userProfilePic = document.querySelector(".header__img");
 const userName = document.querySelector(".header__title--username");
+const navTabs = document.querySelectorAll(".navbar__tab");
+const sectionTabs = document.querySelectorAll(".section-tab");
 
 function updateUserDetails(user) {
   userProfilePic.src = user.photoURL;
   userName.innerText = user.displayName;
+}
+
+function removeAllActiveTabs() {
+  navTabs.forEach((tab) => {
+    tab.classList.remove("navbar__tab--active");
+  });
+}
+
+function hideAllSections() {
+  sectionTabs.forEach((tab) => {
+    tab.classList.add("none");
+  });
 }
 
 auth.onAuthStateChanged(async (currentUser) => {
@@ -35,4 +49,13 @@ auth.onAuthStateChanged(async (currentUser) => {
 
 userProfilePic.addEventListener("click", () => {
   userSignOut(auth);
+});
+
+navTabs.forEach((tab) => {
+  tab.addEventListener("click", (e) => {
+    removeAllActiveTabs();
+    e.target.classList.add("navbar__tab--active");
+    hideAllSections();
+    sectionTabs[[...navTabs].indexOf(tab)].classList.remove("none");
+  });
 });
