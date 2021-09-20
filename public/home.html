@@ -172,7 +172,7 @@
               </div>
               <div class="chat__chat-body">
                 <p class="chat__chat-info">
-                  Please select the friend to chat with them
+                  Please select a group to chat with them
                 </p>
 
                 <div class="upload none">
@@ -297,7 +297,14 @@
               disabled
             />
           </div>
-          <div class="group__group-cnt"></div>
+          <div class="group__group-cnt">
+            <div class="group__group-card">
+              <img src="https://lh3.googleusercontent.com/a/AATXAJx84nwQ5Udk7ix0OsX68S7KOhoYmZXtHJhHpXc=s96-c" alt="Friend" class="group__img">
+              <p class="group__group-name">Arul</p>
+              <p class="group__message-count none"></p>
+              <img class="group__remove-group-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
+             </div>
+          </div>
         </div>
         <div class="group__container no-padding">
           <div class="group__search-cnt none">
@@ -311,15 +318,15 @@
             </div>
             <div class="group__search-result-cnt"></div>
           </div>
-          <div class="group__group">
-            <div class="group__group-window">
-              <div class="group__group-header none">
+          <div class="group__chat">
+            <div class="group__chat-window">
+              <div class="group__chat-header none">
                 <img
                   src="./assets/icons/home/user.svg"
                   alt="User Profile Picture"
-                  class="group__img--group"
+                  class="group__img--chat"
                 />
-                <p class="group__group-username">Lorem Ipsum</p>
+                <p class="group__chat-username">Lorem Ipsum</p>
                 <svg
                   aria-hidden="true"
                   focusable="false"
@@ -328,7 +335,7 @@
                   class="
                     svg-inline--fa
                     fa-ellipsis-v fa-w-6
-                    group__group-menu-ic
+                    group__chat-menu-ic
                   "
                   role="img"
                   xmlns="http://www.w3.org/2000/svg"
@@ -339,13 +346,13 @@
                     d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
                   ></path>
                 </svg>
-                <div class="group__group-menu-cnt none">
+                <div class="group__chat-menu-cnt none">
                   <p class="menu__item">Clear group</p>
                 </div>
               </div>
-              <div class="group__group-body">
-                <p class="group__group-info">
-                  Please select the friend to group with them
+              <div class="group__chat-body">
+                <p class="group__chat-info">
+                  Please select a friend to group with them
                 </p>
                 <div class="upload none">
                   <div class="upload__info">
@@ -406,9 +413,9 @@
                     </div>
                   </div>
                 </div>
-                <div class="group__group-wrapper"></div>
+                <div class="group__chat-wrapper"></div>
               </div>
-              <div class="group__group-message-sender none">
+              <div class="group__chat-message-sender none">
                 <svg
                   class="group__img--file"
                   data-mode="enabled"
@@ -426,7 +433,7 @@
                 <input
                   type="text"
                   placeholder="Enter Message..."
-                  class="group__input group__input--group"
+                  class="group__input group__input--chat"
                   data-group-hash="null"
                 />
                 <svg

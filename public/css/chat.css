@@ -91,6 +91,7 @@
 }
 
 .chat__remove-friend-ic,
+.group__remove-group-ic,
 .chat__add-friend-ic,
 .chat__pending-friend-ic,
 .chat__send-friend-ic {
@@ -170,7 +171,7 @@
 .chat__serach-msg,
 .group__serach-msg,
 .chat__chat-info,
-.group__group-info {
+.group__chat-info {
   font-size: 3rem;
   color: var(--white);
   border: 3px dashed var(--primary-color);
@@ -184,7 +185,7 @@
 
 /* main- chat-window */
 .chat__chat,
-.grou__chat {
+.group__chat {
   padding: 0;
   height: 100%;
 }
