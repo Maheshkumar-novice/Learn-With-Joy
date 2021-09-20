@@ -59,3 +59,8 @@ navTabs.forEach((tab) => {
     sectionTabs[[...navTabs].indexOf(tab)].classList.remove("none");
   });
 });
+
+window.addEventListener("load", () => {
+  hideAllSections();
+  sectionTabs[0].classList.remove("none");
+});
