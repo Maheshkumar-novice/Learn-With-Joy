@@ -287,7 +287,167 @@
           </div>
         </div>
       </section>
-      <section class="group section-tab"></section>
+      <section class="group section-tab">
+        <div class="group__container">
+          <div class="group__search-trigger">
+            <input
+              type="text"
+              placeholder="Search New Groups...(Esc)"
+              class="group__input"
+              disabled
+            />
+          </div>
+          <div class="group__group-cnt"></div>
+        </div>
+        <div class="group__container no-padding">
+          <div class="group__search-cnt none">
+            <div class="group__search-header">
+              <h1 class="group__search-result-heading">Search Results</h1>
+              <img
+                class="group__search-close-icon"
+                src="./assets/icons/home/msg-clear.svg"
+                alt="close"
+              />
+            </div>
+            <div class="group__search-result-cnt"></div>
+          </div>
+          <div class="group__group">
+            <div class="group__group-window">
+              <div class="group__group-header none">
+                <img
+                  src="./assets/icons/home/user.svg"
+                  alt="User Profile Picture"
+                  class="group__img--group"
+                />
+                <p class="group__group-username">Lorem Ipsum</p>
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  data-prefix="fas"
+                  data-icon="ellipsis-v"
+                  class="
+                    svg-inline--fa
+                    fa-ellipsis-v fa-w-6
+                    group__group-menu-ic
+                  "
+                  role="img"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 192 512"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+                  ></path>
+                </svg>
+                <div class="group__group-menu-cnt none">
+                  <p class="menu__item">Clear group</p>
+                </div>
+              </div>
+              <div class="group__group-body">
+                <p class="group__group-info">
+                  Please select the friend to group with them
+                </p>
+                <div class="upload none">
+                  <div class="upload__info">
+                    <h4 class="upload__info--no">Max file Limit: 5</h4>
+                    <h4 class="upload__info--size">Max file Size: 10MB</h4>
+                  </div>
+                  <div class="upload__preview none"></div>
+
+                  <div class="upload__dragndrop">
+                    <div class="upload__dragndrop--info">
+                      <img
+                        class="upload__dragndrop-ic"
+                        src="./assets/icons/home/upload.svg"
+                        alt=""
+                      />
+                      <h3>Drag and Drop to Upload Files</h3>
+                    </div>
+                  </div>
+
+                  <div class="upload__click">
+                    <div
+                      class="upload__click--each upload__file"
+                      data-value="0"
+                    >
+                      <input
+                        class="upload__input upload__input-file"
+                        type="file"
+                        accept=".xlsx, .xl, .doc,.docx, .ppt, .pptx, .txt, .pdf"
+                        hidden="hidden"
+                        multiple
+                        data-type="docs"
+                      />
+                      <img
+                        class="upload__click-ic"
+                        src="./assets/icons/home/file-upload.svg"
+                        alt="docs-upload"
+                      />
+                      <span>Files</span>
+                    </div>
+                    <div
+                      class="upload__click--each upload__image"
+                      data-value="1"
+                    >
+                      <input
+                        class="upload__input upload__input-image"
+                        type="file"
+                        accept="image/*"
+                        hidden="hidden"
+                        multiple
+                        data-type="image"
+                      />
+                      <img
+                        class="upload__click-ic"
+                        src="./assets/icons/home/image-upload.svg"
+                        alt="img-upload"
+                      />
+                      <span>Images</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="group__group-wrapper"></div>
+              </div>
+              <div class="group__group-message-sender none">
+                <svg
+                  class="group__img--file"
+                  data-mode="enabled"
+                  width="834"
+                  height="834"
+                  viewBox="0 0 834 834"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M416.667 0C186.667 0 0 186.667 0 416.667C0 646.667 186.667 833.333 416.667 833.333C646.667 833.333 833.333 646.667 833.333 416.667C833.333 186.667 646.667 0 416.667 0ZM625 458.333H458.333V625H375V458.333H208.333V375H375V208.333H458.333V375H625V458.333Z"
+                    fill="#2BA9C5"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Enter Message..."
+                  class="group__input group__input--group"
+                  data-group-hash="null"
+                />
+                <svg
+                  class="group__img--send"
+                  width="438"
+                  height="375"
+                  viewBox="0 0 438 375"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0.208333 375L437.5 187.5L0.208333 0L0 145.833L312.5 187.5L0 229.167L0.208333 375Z"
+                    fill="#2BA9C5"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="group__container"></div>
+      </section>
       <section class="notes section-tab"></section>
       <section class="calendar section-tab"></section>
       <section class="entertainment section-tab"></section>
