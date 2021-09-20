@@ -1,8 +1,12 @@
 import { firebaseConfig, userSignOut, readDB } from "./modules/firebase.js";
+import { displayTime, setGreeting } from "./modules/util.js";
 
 // firebase initialization
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+
+displayTime(document.querySelector(".footer__time"));
+setGreeting(document.querySelector(".header__title--greet"));
 
 const auth = firebase.auth();
 const database = firebase.database();
@@ -16,7 +20,7 @@ function updateUserDetails(user) {
 
 auth.onAuthStateChanged(async (currentUser) => {
   if (currentUser) {
-    console.log(currentUser)
+    console.log(currentUser);
     let check_presence = await readDB(database, `users/${currentUser.uid}`);
     if (!currentUser.emailVerified || !check_presence.val()) {
       window.location = "./index.html";
@@ -32,39 +36,3 @@ auth.onAuthStateChanged(async (currentUser) => {
 userProfilePic.addEventListener("click", () => {
   userSignOut(auth);
 });
-
-function displayTime() {
-  let date = new Date();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-  let currentTime =
-    (hours < 10 ? "0" + hours : hours) +
-    ":" +
-    (minutes < 10 ? "0" + minutes : minutes) +
-    ":" +
-    (seconds < 10 ? "0" + seconds : seconds);
-  document.querySelector(".footer__time").innerHTML = currentTime;
-  setTimeout(displayTime, 1000);
-}
-
-displayTime();
-
-let dateObject = new Date();
-let time = dateObject.getHours();
-let greetHolder = document.querySelector(".header__title--greet");
-if (time < 12) {
-  greetHolder.textContent = "Good morning! ";
-}
-if (time > 12 && time <= 16) {
-  greetHolder.textContent = "Good afternoon! ";
-}
-if (time > 16 && time <= 20) {
-  greetHolder.textContent = "Good Evening! ";
-}
-if (time > 20) {
-  greetHolder.textContent = "Good Night! ";
-}
-if (time == 12) {
-  greetHolder.textContent = "Go Eat Lunch! ";
-}

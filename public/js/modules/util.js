@@ -20,7 +20,7 @@ export function checkUserPresent(friendlist, friendsUID, uid) {
   return bool;
 }
 
-export function pushFront(friendContainer){
+export function pushFront(friendContainer) {
   const parent = friendContainer.parentElement;
   const first = parent.firstChild;
   parent.insertBefore(friendContainer, first);
@@ -49,4 +49,24 @@ export function displayTime(element) {
   setTimeout(() => {
     displayTime(element);
   }, 1000);
+}
+
+export function setGreeting(element) {
+  let dateObject = new Date();
+  let time = dateObject.getHours();
+  if (time < 12) {
+    element.textContent = "Good morning! ";
+  }
+  if (time > 12 && time <= 16) {
+    element.textContent = "Good afternoon! ";
+  }
+  if (time > 16 && time <= 20) {
+    element.textContent = "Good Evening! ";
+  }
+  if (time > 20) {
+    element.textContent = "Good Night! ";
+  }
+  if (time == 12) {
+    element.textContent = "Go Eat Lunch! ";
+  }
 }
