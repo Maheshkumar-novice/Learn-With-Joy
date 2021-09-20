@@ -112,6 +112,7 @@ searchInput.addEventListener("click", (e) => {
 });
 
 searchCloseIcon.addEventListener("click", function (e) {
+  searchInput.value = '';
   searchWrap.classList.add("none");
   chatArea.classList.remove("none");
 });
@@ -725,6 +726,10 @@ window.addEventListener("keyup", (e) => {
     sendMessage();
   }
   if (e.key === "Escape") {
+    if(document.activeElement === searchInput || document.activeElement === chatWindowMessageInput){
+    console.log(document.activeElement)
+    document.activeElement.blur();
+    }
     document.querySelector(".chat__search-close-icon").click();
   }
 });
