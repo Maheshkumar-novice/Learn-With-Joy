@@ -10,7 +10,8 @@
 }
 
 .chat__img,
-.group__img {
+.group__img,
+.group__participant-img {
   height: 100%;
 }
 
@@ -46,6 +47,7 @@
 .chat__received-card,
 .chat__sent-card,
 .group__group-card,
+.group__participant-card,
 .group__result-card {
   background-color: var(--gray-bg);
   height: 3em;
@@ -101,6 +103,17 @@
   cursor: pointer;
 }
 
+.group__participant-option-ic{
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: transform .3s ease;
+}
+
+.group__participant-option-ic:hover{
+  transform: scale(1.2);
+}
+
 .chat__remove-friend-ic:hover,
 .chat__add-friend-ic:hover,
 .chat__send-friend-ic:hover {
@@ -108,7 +121,8 @@
 }
 
 .chat__friend-name,
-.group__group-name {
+.group__group-name,
+.group__participant-name {
   flex: 1;
   margin-left: 2rem;
   text-overflow: ellipsis;
@@ -775,11 +789,25 @@
   flex: 1;
 }
 
+label[for=group-logo]{
+  display: flex;
+  align-items: center;
+}
+
 .group-logo-upload {
-  width: 40px;
-  height: 40px;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
   margin-left: 50px;
   cursor: pointer;
+}
+
+.group__participants-title{
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin: 1rem;
+  padding-top: .5rem;
+  border-bottom: 1px solid var(--primary-color);
 }
 
 .group__creator label {
@@ -839,10 +867,35 @@
   align-items: center;
 }
 
+.group__misc-header{
+  height: 50px;
+}
+
 .chat__req-rec {
   background-color: var(--container-bg);
 }
 
 .chat__req-sent {
   background-color: var(--container-bg);
+}
+
+.group__participant-card{
+  cursor: default;
+}
+
+.group__participants-add{
+  width: 80%;
+  margin: .5rem auto 0 auto;
+  font-size: 2rem;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  text-align: center;
+  border-radius: 2rem;
+  padding: .5rem 2rem;
+  cursor: pointer;
+}
+
+.group__participants-add:hover{
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
 }
