@@ -66,13 +66,13 @@ navTabs.forEach((tab) => {
 });
 
 const tabMap = {
+  "home": navTabs[0],
   "friends": navTabs[0],
   "groups": navTabs[1],
   "notes": navTabs[2],
   "calendar": navTabs[3],
   "entertainment": navTabs[4],
   "timer": navTabs[5],
-
 }
 
 // window.addEventListener("load", () => {

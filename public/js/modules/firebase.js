@@ -11,11 +11,11 @@ export const firebaseConfig = {
 };
 
 export const actionCodeVerify = {
-  url: 'https://learn-with-joy.netlify.app/home.html'
+  url: 'https://learn-with-joy.web.app/friends'
 }
 
 export const actionCodePasswordReset = {
-  url: 'https://learn-with-joy.netlify.app/reset_password.html'
+  url: 'https://learn-with-joy.web.app/reset_password.html'
 }
 
 // ----------------------------------------Authentication-------------------------------------

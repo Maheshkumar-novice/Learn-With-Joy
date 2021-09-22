@@ -137,7 +137,7 @@ function resetPassword(actionCode, newPassword) {
     .confirmPasswordReset(actionCode, newPassword)
     .then((resp) => {
       if (auth.currentUser) userSignOut(auth);
-      window.location.href = "https://learn-with-joy.netlify.app";
+      window.location = "./index.html";
     })
     .catch((error) => {
       console.log("error");
