@@ -238,7 +238,7 @@
 
 .chat__chat-menu-ic:hover,
 .group__chat-menu-ic:hover {
-  color: #fff;
+  color:var(--secondary-color);
 }
 
 .chat__chat-menu-cnt,
@@ -246,20 +246,21 @@
   position: absolute;
   right: 10px;
   top: 110%;
-  width: 200px;
-  padding: 1rem 3rem;
-  background-color: var(--container-bg);
-  color: var(--white);
+  width: 250px;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   z-index: 2;
 }
 
 .menu__item {
   cursor: pointer;
+  margin-top: 10px;
   border-bottom: 2px solid transparent;
 }
 
 .menu__item:hover {
-  border-color: var(--white);
+  border-color: var(--secondary-color);
 }
 
 .chat__chat-message-sender,
