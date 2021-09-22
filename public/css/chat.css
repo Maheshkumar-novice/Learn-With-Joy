@@ -101,19 +101,21 @@
   height: 40px;
   margin: 0 0.5rem;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
-.group__participant-option-ic{
+.group__participant-option-ic {
   width: 30px;
   height: 30px;
   cursor: pointer;
-  transition: transform .3s ease;
+  transition: transform 0.3s ease;
 }
 
-.group__participant-option-ic:hover{
+.group__participant-option-ic:hover {
   transform: scale(1.2);
 }
 
+.group__remove-group-ic:hover,
 .chat__remove-friend-ic:hover,
 .chat__add-friend-ic:hover,
 .chat__send-friend-ic:hover {
@@ -789,7 +791,7 @@
   flex: 1;
 }
 
-label[for=group-logo]{
+label[for="group-logo"] {
   display: flex;
   align-items: center;
 }
@@ -802,11 +804,11 @@ label[for=group-logo]{
   cursor: pointer;
 }
 
-.group__participants-title{
+.group__participants-title {
   font-size: 2rem;
   color: var(--primary-color);
   margin: 1rem;
-  padding-top: .5rem;
+  padding-top: 0.5rem;
   border-bottom: 1px solid var(--primary-color);
 }
 
@@ -855,6 +857,13 @@ label[for=group-logo]{
   overflow: auto;
 }
 
+.group__misc-wrapper {
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--primary-color);
+  border-radius: 15px 15px 0 0;
+}
+
 .chat__req-header,
 .group__misc-header {
   background-color: var(--primary-color);
@@ -867,7 +876,7 @@ label[for=group-logo]{
   align-items: center;
 }
 
-.group__misc-header{
+.group__misc-header {
   height: 50px;
 }
 
@@ -879,23 +888,17 @@ label[for=group-logo]{
   background-color: var(--container-bg);
 }
 
-.group__participant-card{
+.group__participant-card {
   cursor: default;
 }
 
-.group__participants-add{
-  width: 80%;
-  margin: .5rem auto 0 auto;
-  font-size: 2rem;
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
-  text-align: center;
-  border-radius: 2rem;
-  padding: .5rem 2rem;
+.group__participants-add {
+  height: 100%;
+  width: 50px;
   cursor: pointer;
+  transition: all 0.5s ease-in-out;
 }
 
-.group__participants-add:hover{
-  background-color: var(--secondary-color);
-  color: var(--primary-color);
+.group__participants-add:hover {
+ transform: scale(1.1);
 }
