@@ -52,7 +52,6 @@ function startTimer() {
     timerDisplay.textContent = "00:00";
     endTime.textContent = "Start The Timer!";
     clearInterval(countdown);
-    document.title = "00:00";
     return;
   }
   const seconds = parseInt(time);
@@ -70,7 +69,6 @@ window.addEventListener("keyup", function (e) {
       clearInterval(countdown);
       timerDisplay.textContent = "******!";
       endTime.textContent = "Enter a Valid Minute Value! (> 0)";
-      document.title = "Error!";
     }
     document.querySelector("input[name='minutes']").value = "";
   }
