@@ -41,7 +41,6 @@
   border: 3px solid;
 }
 
-/* main - friends & search */
 .chat__friend-card,
 .chat__result-card,
 .chat__received-card,
@@ -64,6 +63,7 @@
 .chat__friend-card,
 .group__group-card {
   border: 1px solid transparent;
+  transition: background 0.3s ease-in-out;
 }
 
 .chat__friend-card:hover,
@@ -199,7 +199,6 @@
   transform: translate(-50%, -50%);
 }
 
-/* main- chat-window */
 .chat__chat,
 .group__chat {
   padding: 0;
@@ -212,7 +211,6 @@
   border-radius: 15px;
 }
 
-/* main --chat-header */
 .chat__chat-header,
 .group__chat-header {
   height: 7%;
@@ -264,7 +262,6 @@
   border-color: var(--white);
 }
 
-/* main --chat-sender */
 .chat__chat-message-sender,
 .group__chat-message-sender {
   height: 8%;
@@ -311,12 +308,6 @@
   fill: var(--primary-color);
 }
 
-/* .chat__img--file {
-  flex: 1;
-  background-color: var(--container-bg);
-} */
-
-/* main --chat-body */
 .chat__chat-body,
 .group__chat-body {
   height: 85%;
@@ -327,7 +318,6 @@
   position: relative;
 }
 
-/* main --chat-container */
 .chat__chat-wrapper,
 .group__chat-wrapper {
   width: 100%;
@@ -342,13 +332,6 @@
   gap: 3rem;
   padding: 2rem;
 }
-
-/* .chat__chat-info{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-} */
 
 .chat__message-container,
 .group__message-container {
@@ -454,13 +437,7 @@
   transform: translate(5px, 5px);
   stroke-dasharray: 380;
   stroke-dashoffset: 380;
-  /* animation:  uploading-image 2s linear infinite; */
 }
-
-/* .chat__message--progress svg circle{
-  stroke-dashoffset: calc(380 - (380 * 100) / 100);
-  260
-} */
 
 .chat__message--cancel,
 .group__message--cancel,
@@ -486,7 +463,6 @@
   height: 90px;
   stroke-dasharray: 260;
   stroke-dashoffset: 260;
-  /* animation:  uploading-file 2s linear infinite; */
 }
 
 @keyframes uploading-image {
@@ -629,7 +605,6 @@
   color: var(--white);
 }
 
-/* upload */
 .upload {
   width: 100%;
   height: 100%;
@@ -685,7 +660,6 @@
   color: var(--white);
   flex-direction: column;
   align-items: center;
-  /* justify-content: space-between; */
   margin: 0 4rem;
 }
 
@@ -753,7 +727,6 @@
   justify-content: space-evenly;
 }
 
-/* main --chat-requests */
 .chat__requests,
 .group__misc {
   display: flex;
@@ -900,5 +873,5 @@ label[for="group-logo"] {
 }
 
 .group__participants-add:hover {
- transform: scale(1.1);
+  transform: scale(1.1);
 }
