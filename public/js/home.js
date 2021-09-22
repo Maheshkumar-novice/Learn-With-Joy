@@ -1,5 +1,5 @@
 import { firebaseConfig, userSignOut, readDB } from "./modules/firebase.js";
-import { displayTime, setGreeting } from "./modules/util.js";
+import { displayTime, pushState, setGreeting } from "./modules/util.js";
 
 // firebase initialization
 firebase.initializeApp(firebaseConfig);
@@ -51,16 +51,43 @@ userProfilePic.addEventListener("click", () => {
   userSignOut(auth);
 });
 
+function changeTabs(tab, bool){
+  removeAllActiveTabs();
+  tab.classList.add("navbar__tab--active");
+  hideAllSections();
+  sectionTabs[[...navTabs].indexOf(tab)].classList.remove("none");
+  bool ? pushState(tab.innerText.toLowerCase()) : "";
+}
+
 navTabs.forEach((tab) => {
   tab.addEventListener("click", (e) => {
-    removeAllActiveTabs();
-    e.target.classList.add("navbar__tab--active");
-    hideAllSections();
-    sectionTabs[[...navTabs].indexOf(tab)].classList.remove("none");
+    changeTabs(e.target, 1)
   });
 });
 
-window.addEventListener("load", () => {
-  hideAllSections();
-  sectionTabs[0].classList.remove("none");
+const tabMap = {
+  "friends": navTabs[0],
+  "groups": navTabs[1],
+  "notes": navTabs[2],
+  "calendar": navTabs[3],
+  "entertainment": navTabs[4],
+  "timer": navTabs[5],
+
+}
+
+// window.addEventListener("load", () => {
+//   hideAllSections();
+//   sectionTabs[0].classList.remove("none");
+// });
+
+
+window.addEventListener("DOMContentLoaded", () => {
+  console.log(window.location)
+  let tabPath = window.location.pathname.replace(/\//gi, "");
+  changeTabs(tabMap[tabPath], 1)
 });
+
+window.addEventListener("popstate", (e) => {
+  console.log(e, e.state);
+  changeTabs(tabMap[e.state], 0)
+})

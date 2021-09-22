@@ -5,6 +5,29 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "rewrites": [
+      {
+        "source": "/home",
+        "destination": "/home.html"
+      },
+      {
+        "source": "/friends",
+        "destination": "/home.html"
+      },
+      {
+        "source": "/groups",
+        "destination": "/home.html"
+      },
+      {
+        "source": "/notes",
+        "destination": "/home.html"
+      },
+      {
+        "source": "/reset_password",
+        "destination": "/reset_password.html"
+      }
+    ],
+    "cleanUrls": true
   }
 }

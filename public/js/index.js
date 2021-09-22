@@ -423,7 +423,7 @@ auth.onAuthStateChanged(async (user) => {
     if (!currentUser.val()) {
       showNewNameGoogleInput();
     } else {
-      window.location = "../home.html";
+      window.location = "./friends";
     }
   }
 });

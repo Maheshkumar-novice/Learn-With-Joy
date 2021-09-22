@@ -70,3 +70,8 @@ export function setGreeting(element) {
     element.textContent = "Go Eat Lunch! ";
   }
 }
+
+export function pushState(pathName){
+  console.log(pathName, history.length);
+  window.history.pushState(pathName, null, `/${pathName}`);
+}
