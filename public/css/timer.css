@@ -1,0 +1,73 @@
+.timer {
+  height: 100%;
+  background-color: var(--container-bg);
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 1rem;
+}
+
+.timer_controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.timer_controls > * {
+  font-size: 2rem;
+  cursor: pointer;
+  flex: 1;
+}
+
+.timer_controls form {
+  flex: 1;
+  display: flex;
+}
+
+.timer_controls input {
+  font-size: 2rem;
+  flex: 1;
+  border: 0;
+  outline: none;
+  padding: 2rem;
+  background-color: inherit;
+  color: var(--primary-color);
+  max-width: 100%;
+  border: 2px dashed var(--secondary-color);
+}
+
+.timer__button {
+  text-transform: capitalize;
+  background: inherit;
+  color: var(--primary-color);
+  border: 2px dashed var(--secondary-color);
+  padding: 8px 12px 8px 0;
+  transition: 0.3s linear
+}
+
+.timer__button:hover,
+.timer_controls input:hover {
+  border-style: solid;
+  border-color: var(--primary-color);
+}
+
+.display {
+  /* flex: 1; */
+  margin-top: 15rem;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+}
+
+.display_time-left {
+  font-weight: 500;
+  font-size: clamp(6rem, 10vw, 16rem);
+  color: var(--primary-color);
+}
+
+.display_end-time,
+.stop-sound {
+  font-size: 4rem;
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
+}

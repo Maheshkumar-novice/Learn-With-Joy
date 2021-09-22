@@ -24,6 +24,18 @@
         "destination": "/home.html"
       },
       {
+        "source": "/calendar",
+        "destination": "/home.html"
+      },
+      {
+        "source": "/entertainment",
+        "destination": "/home.html"
+      },
+      {
+        "source": "/timer",
+        "destination": "/home.html"
+      },
+      {
         "source": "/reset_password",
         "destination": "/reset_password.html"
       }
