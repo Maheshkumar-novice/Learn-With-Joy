@@ -175,7 +175,6 @@
   color: var(--secondary-color);
 }
 
-
 /* navbar */
 .navbar {
   height: 45px;
@@ -210,7 +209,45 @@
 
 .navbar__img {
   height: 50%;
-  margin-right: 2rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.available-tabs {
+  position: absolute;
+  right: 0px;
+  top: 115px;
+  width: 250px;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  border-radius: 15px;
+  min-height: 100px;
+}
+
+.available-tab {
+  font-size: 2rem;
+  font-weight: normal;
+  margin: 1rem;
+  transition: all 0.3s ease-in-out;
+  height: 50px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.available-tab:hover {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   cursor: pointer;
 }
 

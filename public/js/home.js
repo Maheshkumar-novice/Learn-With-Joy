@@ -13,6 +13,8 @@ const database = firebase.database();
 const userProfilePic = document.querySelector(".header__profile-img");
 const userName = document.querySelector(".header__title--username");
 const navTabs = document.querySelectorAll(".navbar__tab");
+const otherAvailableTabsTrigger = document.querySelector(".navbar__img");
+const otherAvailableTabs = document.querySelector(".available-tabs");
 const sectionTabs = document.querySelectorAll(".section-tab");
 const userOptions = document.querySelector(".user-options");
 const signOutOption = document.querySelector(".sign-out-option");
@@ -57,6 +59,11 @@ signOutOption.addEventListener("click", () => {
   userSignOut(auth);
 });
 
+otherAvailableTabsTrigger.addEventListener("click", function () {
+  this.classList.toggle("rotate-180");
+  otherAvailableTabs.classList.toggle("none");
+});
+
 function changeTabs(tab, bool) {
   removeAllActiveTabs();
   tab.classList.add("navbar__tab--active");
@@ -93,4 +100,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("popstate", (e) => {
   changeTabs(tabMap[e.state], 0);
+});
+
+window.addEventListener("click", () => {
+  // otherAvailableTabs.classList.add("none");
+  // userOptions.classList.add("none");
 });
