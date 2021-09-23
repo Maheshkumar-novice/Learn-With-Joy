@@ -65,9 +65,8 @@ createButton.addEventListener("click", async (e) => {
     toggleCreateGroupButton(1);
     let groupHash = pushKey(database, `groups/`, groupName)
     let profileURL = !groupLogoUpload.value 
-    ? "./assets/icons/Group/group-default.svg" 
+    ? "./assets/icons/groups/group-default.svg"
     : await uploadGroupProfilePic(groupHash, groupLogoUpload.files[0]);
-    console.log(profileURL);
     createGroup(groupHash, groupName, profileURL);
 });
 
