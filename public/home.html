@@ -290,26 +290,12 @@
           <div class="group__search-trigger">
             <input
               type="text"
-              placeholder="Search New Groups...(Esc)"
+              placeholder="Search Groups...(Esc)"
               class="group__input"
               disabled
             />
           </div>
           <div class="group__group-cnt">
-            <div class="group__group-card">
-              <img
-                src="https://lh3.googleusercontent.com/a/AATXAJx84nwQ5Udk7ix0OsX68S7KOhoYmZXtHJhHpXc=s96-c"
-                alt="Friend"
-                class="group__img"
-              />
-              <p class="group__group-name">Arul</p>
-              <p class="group__message-count none"></p>
-              <img
-                class="group__remove-group-ic"
-                src="./assets/icons/home/reject.svg"
-                alt="remove friend"
-              />
-            </div>
           </div>
         </div>
         <div class="group__container no-padding">
@@ -485,17 +471,17 @@
             <div class="group__input-data">
               <label for="group-name">
                 Name:
-                <input type="text" />
+                <input type="text" class="groupt__input-name"/>
               </label>
               <label for="group-logo">
                 Upload Logo:
                 <input
-                  class="upload__input upload__input-image"
+                  class="grouup__logo-input"
                   type="file"
                   accept="image/*"
                   hidden="hidden"
-                  multiple
                   data-type="image"
+                  required
                 />
                 <img
                   class="group-logo-upload"
@@ -503,7 +489,8 @@
                   alt="img-upload"
                 />
               </label>
-              <button>Create</button>
+              <button class="group-create-button">Create <img src="./assets/icons/home/pending.svg" class="create-loader none"></button>
+              <p class="create-group-error"></p>
             </div>
           </div>
         </div>
@@ -529,6 +516,8 @@
     <script type="module" src="./js/manage_friends.js"></script>
     <script type="module" src="./js/file_upload.js"></script>
     <script type="module" src="./js/new_chat.js"></script>
+    <!--Group script -->
+    <script type="module" src="./js/Groups/groups.js"></script>
     <script type="module" src="./js/notification.js"></script>
   </body>
 </html>

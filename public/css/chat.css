@@ -15,6 +15,10 @@
   height: 100%;
 }
 
+.group__img{
+  width: 50px;
+}
+
 .chat__input,
 .group__input {
   background-color: inherit;
@@ -787,6 +791,7 @@
   justify-content: space-evenly;
   gap: 1rem;
   flex: 1;
+  position: relative;
 }
 
 label[for=group-logo]{
@@ -795,7 +800,6 @@ label[for=group-logo]{
 }
 
 .group-logo-upload {
-  border-radius: 50%;
   width: 60px;
   height: 60px;
   margin-left: 50px;
@@ -898,4 +902,37 @@ label[for=group-logo]{
 .group__participants-add:hover{
   background-color: var(--secondary-color);
   color: var(--primary-color);
+}
+
+.group-create-button{
+  position: relative;
+}
+
+.create-loader{
+  position: absolute;
+  width: 15px;
+  right: 10px;
+  top: 50%;
+}
+
+.add-loading-animation{
+  animation: loading-rotate 1s linear infinite;
+}
+
+@keyframes loading-rotate{
+  0%{
+    transform: translateY(-50%) rotate(0deg);
+  }
+  100%{
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+.create-group-error{
+  color: var(--error-color);
+  font-size: 1.2rem;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
 }
