@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./css/home.css" />
     <link rel="stylesheet" href="./css/chat.css" />
     <link rel="stylesheet" href="./css/loader.css" />
+    <link rel="stylesheet" href="./css/timer.css" />
   </head>
   <body>
     <audio
@@ -445,10 +446,16 @@
         </div>
         <div class="group__container group__misc">
           <div class="group__participants">
-            <h2 class="group__misc-header">Participants</h2>
-            <div class="group__participants-add">Add Participants</div>
+            <div class="group__misc-wrapper">
+              <h2 class="group__misc-header">Participants</h2>
+              <img
+                src="./assets/icons/home/accept.svg"
+                alt=""
+                class="group__participants-add"
+              />
+            </div>
             <div class="group__participants-list">
-              <h4 class="group__participants-title">People Here</h4>
+              <!-- <h4 class="group__participants-title">People Here</h4> -->
               <div class="group__participant">
                 <div class="group__participant-card">
                   <img
@@ -461,6 +468,19 @@
                     class="group__participant-option-ic"
                     src="./assets/icons/home/chat-menu.svg"
                     alt="options"
+                  />
+                </div>
+                <div class="group__participant-card">
+                  <img
+                    src="https://lh3.googleusercontent.com/a/AATXAJx84nwQ5Udk7ix0OsX68S7KOhoYmZXtHJhHpXc=s96-c"
+                    alt="Friend"
+                    class="group__participant-img"
+                  />
+                  <p class="group__participant-name">Arul</p>
+                  <img
+                    class="group__participant-option-ic"
+                    src="./assets/icons/groups/admin.svg"
+                    alt="admin"
                   />
                 </div>
               </div>
@@ -485,7 +505,7 @@
                 />
                 <img
                   class="group-logo-upload"
-                  src="./assets/icons/Group/group-default.svg"
+                  src="./assets/icons/groups/group-default.svg"
                   alt="img-upload"
                 />
               </label>
@@ -498,7 +518,26 @@
       <section class="notes section-tab"></section>
       <section class="calendar section-tab"></section>
       <section class="entertainment section-tab"></section>
-      <section class="timer section-tab"></section>
+      <section class="timer section-tab">
+        <div class="timer_controls">
+          <button class="timer__button" data-time="30">30 Secs</button>
+          <button class="timer__button" data-time="1500">Work 25</button>
+          <button class="timer__button" data-time="300">Break 5</button>
+          <button class="timer__button" data-time="900">Long Break 15</button>
+          <button class="timer__button" data-time="reset">Reset</button>
+          <input
+            type="text"
+            name="minutes"
+            placeholder="Enter Minutes"
+            autofocus
+          />
+        </div>
+        <div class="display">
+          <h1 class="display_time-left">00:00</h1>
+          <p class="display_end-time">Start The Timer!</p>
+          <p class="stop-sound"></p>
+        </div>
+      </section>
     </main>
     <footer class="footer">
       <p class="footer__time">01:21:19</p>
@@ -519,6 +558,7 @@
     <!--Group script -->
     <script type="module" src="./js/Groups/groups.js"></script>
     <script type="module" src="./js/notification.js"></script>
+    <script type="module" src="./js/timer/timer.js"></script>
   </body>
 </html>
 
