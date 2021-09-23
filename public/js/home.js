@@ -19,6 +19,7 @@ const otherAvailableTabs = document.querySelector(".available-tabs");
 const sectionTabs = document.querySelectorAll(".section-tab");
 const userOptions = document.querySelector(".user-options");
 const signOutOption = document.querySelector(".sign-out-option");
+const timerStatus = document.querySelector(".timer-status");
 
 function updateUserDetails(user) {
   userProfilePic.src = user.photoURL;
@@ -115,4 +116,8 @@ window.addEventListener("popstate", (e) => {
 window.addEventListener("click", () => {
   // otherAvailableTabs.classList.add("none");
   // userOptions.classList.add("none");
+});
+
+timerStatus.addEventListener("click", () => {
+  changeTabs(tabMap["timer"], 1);
 });
