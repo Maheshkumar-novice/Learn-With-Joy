@@ -76,3 +76,18 @@ export const signupTemplate = `<div class="input__field">
   <p class="re-password-error error none">Password does not match.</p>
 </div>
 <button type="submit" class="form__button">Signup</button>`;
+
+// -------------------------------------------------------- groups.js---------------------------------------------
+
+export function groupCardTemplate(groupHash, groupData) {
+  return `
+  <div class="group__group-card" data-id=${groupHash}>
+      <img
+      src="${groupData.profileURL}"
+      alt="group name"
+      class="group__img"
+      />
+      <p class="group__group-name">${groupData.name}</p>
+      <p class="group__message-count none"></p>
+  </div>`
+}

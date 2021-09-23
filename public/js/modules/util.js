@@ -75,3 +75,9 @@ export function pushState(pathName){
   console.log(pathName, history.length);
   window.history.pushState(pathName, null, `/${pathName}`);
 }
+
+export function checkAndChangeAngularBrackets(value){
+  value = value.replace(/</g, "&lt;");
+  value = value.replace(/>/g, "&gt;");
+  return value;
+}
