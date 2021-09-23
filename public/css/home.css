@@ -5,7 +5,7 @@
   align-items: center;
   height: 100px;
   padding: 2rem;
-  padding-right: 3rem;
+  padding-right: 0.5rem;
   background-color: var(--primary-color);
   border-top: 5px solid;
   height: 70px;
@@ -175,10 +175,24 @@
   color: var(--secondary-color);
 }
 
+.options-drop-down-img {
+  height: 20px;
+  margin-right: 1rem;
+  margin-left: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.profile-options-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* navbar */
 .navbar {
   height: 45px;
-  padding: 1rem;
+  /* padding: 1rem; */
   padding-bottom: 0;
   padding-top: 0;
   background-color: var(--primary-color);

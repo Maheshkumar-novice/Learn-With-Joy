@@ -11,6 +11,7 @@ setGreeting(document.querySelector(".header__title--greet"));
 const auth = firebase.auth();
 const database = firebase.database();
 const userProfilePic = document.querySelector(".header__profile-img");
+const userOptionsTrigger = document.querySelector(".options-drop-down-img");
 const userName = document.querySelector(".header__title--username");
 const navTabs = document.querySelectorAll(".navbar__tab");
 const otherAvailableTabsTrigger = document.querySelector(".navbar__img");
@@ -36,6 +37,11 @@ function hideAllSections() {
   });
 }
 
+function toggleUserOptions() {
+  userOptions.classList.toggle("none");
+  userOptionsTrigger.classList.toggle("rotate-180");
+}
+
 auth.onAuthStateChanged(async (currentUser) => {
   if (currentUser) {
     console.log(currentUser);
@@ -52,7 +58,11 @@ auth.onAuthStateChanged(async (currentUser) => {
 });
 
 userProfilePic.addEventListener("click", () => {
-  userOptions.classList.toggle("none");
+  toggleUserOptions();
+});
+
+userOptionsTrigger.addEventListener("click", () => {
+  toggleUserOptions();
 });
 
 signOutOption.addEventListener("click", () => {
