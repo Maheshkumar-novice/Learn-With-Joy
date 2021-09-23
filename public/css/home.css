@@ -8,6 +8,7 @@
   padding-right: 3rem;
   background-color: var(--primary-color);
   border-top: 5px solid;
+  height: 70px;
 }
 
 .header__title {
@@ -25,8 +26,15 @@
   cursor: pointer;
 }
 
+.header__profile-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
 .header__options {
   display: flex;
+  align-items: center;
 }
 
 .header__notification-cnt {
@@ -131,9 +139,42 @@
   height: 20px;
   cursor: pointer;
 }
-.header {
-  height: 70px;
+
+.user-options {
+  position: absolute;
+  right: 10px;
+  top: 70px;
+  /* height: 100px; */
+  width: 250px;
+  /* padding: 1rem; */
+  font-size: 2rem;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  /* gap: 2rem; */
+  border-radius: 15px;
 }
+
+.user-option {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: inherit;
+  background-color: inherit;
+  color: inherit;
+  flex: 1;
+  min-height: 50px;
+  margin: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.user-option:hover {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
 
 /* navbar */
 .navbar {
