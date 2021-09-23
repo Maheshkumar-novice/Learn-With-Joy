@@ -82,12 +82,10 @@ const tabMap = {
 
 
 window.addEventListener("DOMContentLoaded", () => {
-  console.log(window.location)
   let tabPath = window.location.pathname.replace(/\//gi, "");
   changeTabs(tabMap[tabPath], 1)
 });
 
 window.addEventListener("popstate", (e) => {
-  console.log(e, e.state);
   changeTabs(tabMap[e.state], 0)
 })

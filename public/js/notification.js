@@ -101,7 +101,6 @@ function updateFriendsNotification(data) {
 auth.onAuthStateChanged(async (current_user) => {
   if (current_user) {
     user = current_user;
-    console.log(user);
 
     pageLoadedTimeStamp = Date.now();
     setDBListener(
