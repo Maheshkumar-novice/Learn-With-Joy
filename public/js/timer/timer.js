@@ -82,6 +82,7 @@ buttons.forEach((button) => button.addEventListener("click", startTimer));
 window.addEventListener("keyup", function (e) {
   if (e.key === "Enter") {
     const minutesInput = document.querySelector("input[name='minutes']");
+    if (!minutesInput.value) return;
     if (parseInt(minutesInput.value)) {
       timer(parseInt(minutesInput.value) * 60);
     } else {
