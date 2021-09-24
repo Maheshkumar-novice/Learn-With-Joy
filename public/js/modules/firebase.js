@@ -82,6 +82,14 @@ export function pushKey(db, reference, key) {
   return db.ref(reference).child(key).push().key;
 }
 
+// data by order
+export async function getOrderBy(db, id, value, caseVal){
+  switch(caseVal){
+    case 1:
+      return await db.ref(`groups/${id}/participants`).orderByValue().equalTo(value).get();
+  }
+}
+
 // set Listener
 export function setDBListener(db, reference, type, callBack) {
   db.ref(reference).on(type, callBack);

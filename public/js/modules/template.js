@@ -80,14 +80,42 @@ export const signupTemplate = `<div class="input__field">
 // -------------------------------------------------------- groups.js---------------------------------------------
 
 export function groupCardTemplate(groupHash, groupData) {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("group__group-card");
+  wrapper.dataset.id = groupHash;
+  wrapper.innerHTML = `<img
+                       src="${groupData.profileURL}"
+                       alt="group name"
+                       class="group__img"/>
+                       <p class="group__group-name">${groupData.name}</p>
+                       <p class="group__message-count none"></p>`
+  return wrapper;
+}
+
+export function addParticipantsFriendsCardTemplate(fid, photoURL, name){
   return `
-  <div class="group__group-card" data-id=${groupHash}>
-      <img
-      src="${groupData.profileURL}"
-      alt="group name"
-      class="group__img"
-      />
-      <p class="group__group-name">${groupData.name}</p>
-      <p class="group__message-count none"></p>
+  <div class="group__add-friend-card" data-id=${fid}>
+    <img src="${photoURL}" alt="Friend" class="chat__img">
+    <p class="group__add-friend-name">${name}</p>
+    <img class="group__add-friend-ic" src="./assets/icons/home/accept.svg" alt="Add to group">
   </div>`
+}
+
+export function addParticipantCardTemplate(fid, photoURL, name, admin){
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("group__participant-card");
+  wrapper.dataset.id = fid;
+  wrapper.dataset.admin = admin;
+  wrapper.innerHTML =`<img
+                        src="${photoURL}"
+                        alt="Friend"
+                        class="group__participant-img"
+                      />
+                      <p class="group__participant-name">${name}</p>
+                      <img
+                        class="group__participant-option-ic"
+                        src=${admin ? "./assets/icons/groups/admin.svg" : "./assets/icons/home/chat-menu.svg"}
+                        alt="${admin ? "admin" : "option"}"
+                      />`
+  return wrapper;
 }
