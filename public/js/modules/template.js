@@ -102,7 +102,9 @@ export function addParticipantsFriendsCardTemplate(fid, photoURL, name){
 }
 
 function checkAdminStatus(admin, isUserAdmin){
+  console.log(typeof isUserAdmin)
   if(admin){
+    console.log(isUserAdmin)
     return `<img
               class="group__participant-option-ic"
               data-admin="true"
@@ -111,6 +113,7 @@ function checkAdminStatus(admin, isUserAdmin){
             />`
   }
   else if(isUserAdmin){
+    console.log(isUserAdmin)
     return `<img
               class="group__participant-option-ic"
               data-admin="false"
@@ -118,13 +121,14 @@ function checkAdminStatus(admin, isUserAdmin){
               alt="option"
             />`
   }
+  console.log(isUserAdmin)
   return "";
 }
 export function addParticipantCardTemplate(fid, photoURL, name, admin, isUserAdmin){
   const wrapper = document.createElement("div");
   wrapper.classList.add("group__participant-card");
   wrapper.dataset.id = fid;
-  // wrapper.dataset.admin = admin;
+  wrapper.dataset.admin = admin;
   wrapper.innerHTML =`<img
                         src="${photoURL}"
                         alt="Friend"
@@ -132,5 +136,6 @@ export function addParticipantCardTemplate(fid, photoURL, name, admin, isUserAdm
                       />
                       <p class="group__participant-name">${name}</p>
                       ${checkAdminStatus(admin, isUserAdmin)}`
+  console.log(wrapper);
   return wrapper;
 }
