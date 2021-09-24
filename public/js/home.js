@@ -10,10 +10,16 @@ setGreeting(document.querySelector(".header__title--greet"));
 
 const auth = firebase.auth();
 const database = firebase.database();
-const userProfilePic = document.querySelector(".header__img");
+const userProfilePic = document.querySelector(".header__profile-img");
+const userOptionsTrigger = document.querySelector(".options-drop-down-img");
 const userName = document.querySelector(".header__title--username");
 const navTabs = document.querySelectorAll(".navbar__tab");
+const otherAvailableTabsTrigger = document.querySelector(".navbar__img");
+const otherAvailableTabs = document.querySelector(".available-tabs");
 const sectionTabs = document.querySelectorAll(".section-tab");
+const userOptions = document.querySelector(".user-options");
+const signOutOption = document.querySelector(".sign-out-option");
+const timerStatus = document.querySelector(".timer-status");
 
 function updateUserDetails(user) {
   userProfilePic.src = user.photoURL;
@@ -32,6 +38,11 @@ function hideAllSections() {
   });
 }
 
+function toggleUserOptions() {
+  userOptions.classList.toggle("none");
+  userOptionsTrigger.classList.toggle("rotate-180");
+}
+
 auth.onAuthStateChanged(async (currentUser) => {
   if (currentUser) {
     console.log(currentUser);
@@ -48,10 +59,23 @@ auth.onAuthStateChanged(async (currentUser) => {
 });
 
 userProfilePic.addEventListener("click", () => {
+  toggleUserOptions();
+});
+
+userOptionsTrigger.addEventListener("click", () => {
+  toggleUserOptions();
+});
+
+signOutOption.addEventListener("click", () => {
   userSignOut(auth);
 });
 
-function changeTabs(tab, bool){
+otherAvailableTabsTrigger.addEventListener("click", function () {
+  this.classList.toggle("rotate-180");
+  otherAvailableTabs.classList.toggle("none");
+});
+
+function changeTabs(tab, bool) {
   removeAllActiveTabs();
   tab.classList.add("navbar__tab--active");
   hideAllSections();
@@ -61,31 +85,39 @@ function changeTabs(tab, bool){
 
 navTabs.forEach((tab) => {
   tab.addEventListener("click", (e) => {
-    changeTabs(e.target, 1)
+    changeTabs(e.target, 1);
   });
 });
 
 const tabMap = {
-  "home": navTabs[0],
-  "friends": navTabs[0],
-  "groups": navTabs[1],
-  "notes": navTabs[2],
-  "calendar": navTabs[3],
-  "entertainment": navTabs[4],
-  "timer": navTabs[5],
-}
+  home: navTabs[0],
+  friends: navTabs[0],
+  groups: navTabs[1],
+  notes: navTabs[2],
+  calendar: navTabs[3],
+  entertainment: navTabs[4],
+  timer: navTabs[5],
+};
 
 // window.addEventListener("load", () => {
 //   hideAllSections();
 //   sectionTabs[0].classList.remove("none");
 // });
 
-
 window.addEventListener("DOMContentLoaded", () => {
   let tabPath = window.location.pathname.replace(/\//gi, "");
-  changeTabs(tabMap[tabPath], 1)
+  changeTabs(tabMap[tabPath], 1);
 });
 
 window.addEventListener("popstate", (e) => {
-  changeTabs(tabMap[e.state], 0)
-})
+  changeTabs(tabMap[e.state], 0);
+});
+
+window.addEventListener("click", () => {
+  // otherAvailableTabs.classList.add("none");
+  // userOptions.classList.add("none");
+});
+
+timerStatus.addEventListener("click", () => {
+  changeTabs(tabMap["timer"], 1);
+});
