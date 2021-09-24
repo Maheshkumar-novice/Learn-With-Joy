@@ -296,8 +296,7 @@
               disabled
             />
           </div>
-          <div class="group__group-cnt">
-          </div>
+          <div class="group__group-cnt"></div>
         </div>
         <div class="group__container no-padding">
           <div class="group__search-cnt none">
@@ -451,38 +450,128 @@
               <img
                 src="./assets/icons/home/accept.svg"
                 alt=""
-                class="group__participants-add"
+                class="group__participants-add none"
               />
             </div>
             <div class="group__participants-list">
-              <!-- <h4 class="group__participants-title">People Here</h4> -->
+              <div class="group__participants-add-list none">
+                <div class="add-participant-search-cnt">
+                  <input
+                    type="text"
+                    class="search__friends-input"
+                    placeholder="Search Friends"
+                    tabindex="0"
+                  />
+                  <img
+                    src="./assets/icons/home/msg-clear.svg"
+                    alt="close search"
+                    class="add-friends-search-close"
+                  />
+                </div>
+                <div
+                  class="group__add-friends-cnt none"
+                  data-type="search-cnt"
+                ></div>
+                <div
+                  class="group__add-friends-cnt"
+                  data-type="friends-cnt"
+                ></div>
+              </div>
               <div class="group__participant">
-                <div class="group__participant-card">
-                  <img
-                    src="https://lh3.googleusercontent.com/a/AATXAJx84nwQ5Udk7ix0OsX68S7KOhoYmZXtHJhHpXc=s96-c"
-                    alt="Friend"
-                    class="group__participant-img"
-                  />
-                  <p class="group__participant-name">Arul</p>
-                  <img
-                    class="group__participant-option-ic"
-                    src="./assets/icons/home/chat-menu.svg"
-                    alt="options"
-                  />
+                <div class="participants__options none" data-participant="null">
+                  <p class="participants__option">Make Admin</p>
+                  <p class="participants__option">Remove</p>
                 </div>
-                <div class="group__participant-card">
-                  <img
-                    src="https://lh3.googleusercontent.com/a/AATXAJx84nwQ5Udk7ix0OsX68S7KOhoYmZXtHJhHpXc=s96-c"
-                    alt="Friend"
-                    class="group__participant-img"
-                  />
-                  <p class="group__participant-name">Arul</p>
-                  <img
-                    class="group__participant-option-ic"
-                    src="./assets/icons/groups/admin.svg"
-                    alt="admin"
-                  />
-                </div>
+                <!-- <div
+                  class="group__participant-each"
+                  data-id="-MkIFEyppLnBmFthMCpF"
+                >
+                  <div
+                    class="group__participant-card"
+                    data-id="HnYmkLTfAWMkvPQKQ9cD5noWhoR2"
+                    data-admin="true"
+                  >
+                    <img
+                      src="https://lh3.googleusercontent.com/a/AATXAJx84nwQ5Udk7ix0OsX68S7KOhoYmZXtHJhHpXc=s96-c"
+                      alt="Friend"
+                      class="group__participant-img"
+                    />
+                    <p class="group__participant-name">Arul</p>
+                    <img
+                      class="group__participant-option-ic"
+                      src="./assets/icons/groups/admin.svg"
+                      alt="admin"
+                    />
+                  </div>
+                  <div
+                    class="group__participant-card"
+                    data-id="H8oY8BO2eLPfEOi0E6bdcjIV0yf1"
+                    data-admin="false"
+                  >
+                    <img
+                      src="http://localhost:5000/assets/icons/home/user.svg"
+                      alt="Friend"
+                      class="group__participant-img"
+                    />
+                    <p class="group__participant-name">test</p>
+                    <img
+                      class="group__participant-option-ic"
+                      src="./assets/icons/home/chat-menu.svg"
+                      alt="option"
+                    />
+                  </div>
+                  <div
+                    class="group__participant-card"
+                    data-id="K6UlIHk3U5ZmOy1NxqEBgknsplj1"
+                    data-admin="false"
+                  >
+                    <img
+                      src="http://localhost:5000/assets/icons/home/user.svg"
+                      alt="Friend"
+                      class="group__participant-img"
+                    />
+                    <p class="group__participant-name">Arul Murugavel</p>
+                    <img
+                      class="group__participant-option-ic"
+                      src="./assets/icons/home/chat-menu.svg"
+                      alt="option"
+                    />
+                  </div>
+                  <div
+                    class="group__participant-card"
+                    data-id="nP2NUi792EQcmqIvNvFEe3Jjdzh2"
+                    data-admin="false"
+                  >
+                    <img
+                      src="https://lh3.googleusercontent.com/a/AATXAJxMCqpzd2Zb6aH73dvh35dQwe5ct3-Lb9OH-Blb=s96-c"
+                      alt="Friend"
+                      class="group__participant-img"
+                    />
+                    <p class="group__participant-name">Maheshkumar</p>
+                    <img
+                      class="group__participant-option-ic"
+                      src="./assets/icons/home/chat-menu.svg"
+                      alt="option"
+                    />
+                  </div>
+                  <div
+                    class="group__participant-card"
+                    data-id="oX1h3ITazcVCTYjxoc4VQsJSx8W2"
+                    data-admin="false"
+                  >
+                    <img
+                      src="https://lh3.googleusercontent.com/a-/AOh14GjCIxTvx-Ab-Ks7bhVMyfVBAE_HiXYwG6aXtmYq=s96-c"
+                      alt="Friend"
+                      class="group__participant-img"
+                    />
+                    <p class="group__participant-name">kant</p>
+                    <img
+                      class="group__participant-option-ic"
+                      src="./assets/icons/home/chat-menu.svg"
+                      alt="option"
+                    />
+                  </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -491,7 +580,7 @@
             <div class="group__input-data">
               <label for="group-name">
                 Name:
-                <input type="text" class="groupt__input-name"/>
+                <input type="text" class="groupt__input-name" />
               </label>
               <label for="group-logo">
                 Upload Logo:
@@ -509,7 +598,13 @@
                   alt="img-upload"
                 />
               </label>
-              <button class="group-create-button">Create <img src="./assets/icons/home/pending.svg" class="create-loader none"></button>
+              <button class="group-create-button">
+                Create
+                <img
+                  src="./assets/icons/home/pending.svg"
+                  class="create-loader none"
+                />
+              </button>
               <p class="create-group-error"></p>
             </div>
           </div>

@@ -20,7 +20,8 @@
 }
 
 .chat__input,
-.group__input {
+.group__input,
+.search__friends-input {
   background-color: inherit;
   outline: none;
   border: none;
@@ -51,7 +52,8 @@
 .chat__sent-card,
 .group__group-card,
 .group__participant-card,
-.group__result-card {
+.group__result-card,
+.group__add-friend-card {
   background-color: var(--gray-bg);
   height: 3em;
   margin: 1.5rem;
@@ -100,7 +102,8 @@
 .group__remove-group-ic,
 .chat__add-friend-ic,
 .chat__pending-friend-ic,
-.chat__send-friend-ic {
+.chat__send-friend-ic,
+.group__add-friend-ic {
   width: 40px;
   height: 40px;
   margin: 0 0.5rem;
@@ -122,13 +125,15 @@
 .group__remove-group-ic:hover,
 .chat__remove-friend-ic:hover,
 .chat__add-friend-ic:hover,
-.chat__send-friend-ic:hover {
+.chat__send-friend-ic:hover,
+.group__add-friend-ic:hover {
   transform: scale(1.2);
 }
 
 .chat__friend-name,
 .group__group-name,
-.group__participant-name {
+.group__participant-name,
+.group__add-friend-name {
   flex: 1;
   margin-left: 2rem;
   text-overflow: ellipsis;
@@ -751,6 +756,7 @@
 
 .group__participants {
   max-height: 60%;
+  overflow: hidden;
 }
 
 .group__creator {
@@ -878,11 +884,6 @@ label[for="group-logo"] {
   transition: all 0.5s ease-in-out;
 }
 
-.group__participants-add:hover{
-  background-color: var(--secondary-color);
-  color: var(--primary-color);
-}
-
 .group-create-button{
   position: relative;
 }
@@ -917,4 +918,79 @@ label[for="group-logo"] {
 }
 .group__participants-add:hover {
   transform: scale(1.1);
+}
+
+/* Add participant UI */
+
+
+.group__participants-list{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  margin-bottom: .5rem;
+}
+
+.group__participants-add-list{
+  height: 100%;
+  position: relative;
+}
+
+.add-participant-search-cnt{
+  position: sticky;
+  top: 0;
+  left: 0;
+  border-bottom: 1px solid var(--primary-color);
+  background-color: var(--container-bg);
+  z-index: 2;
+}
+
+.search__friends-input{
+  top: 0;
+  left: 0;
+  padding: 1rem;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  width: calc(100% - 50px);
+}
+
+.add-friends-search-close{
+  width: 20px;
+  position: absolute;
+  top: 20px;
+  transform: translate(-50%, -50%);
+  right: 5px;
+  cursor: pointer;
+}
+
+.group__add-friends-cnt{
+  height: 100%;
+}
+
+.group__add-friend-card{
+  cursor: default;
+}
+
+/* participant options */
+.group__participant{
+  position: relative;
+}
+.participants__options{
+  right: 2px;
+  position: absolute;
+  background-color: var(--container-bg);
+  color: var(--primary-color);
+  font-size: 1.3rem;
+  transform: translateY(-50%);
+}
+
+.participants__option{
+  margin: 1rem;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+}
+
+.participants__option:hover{
+  color: var(--gray-bg);
+  border-color: var(--gray-bg);
 }
