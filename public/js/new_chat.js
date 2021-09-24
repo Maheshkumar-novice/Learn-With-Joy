@@ -7,6 +7,7 @@ const database = firebase.database();
 let user, friendsList;
 async function updateFriendsList() {
     let friendsData = await readDB(database, `friends/${user.uid}`);
+    if(!friendsData.val()) return;
     friendsList = friendsData.val().friends;
 }
 

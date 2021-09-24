@@ -12,6 +12,7 @@ import {
   storageList,
   updateDB,
 } from "./modules/firebase.js";
+import { addParticipantsFriendsCardTemplate } from "./modules/template.js";
 import { checkUserPresent, pushFront } from "./modules/util.js";
 
 const auth = firebase.auth();
@@ -191,6 +192,8 @@ async function updateFriendsList() {
   friendsList = friendsData.val();
 }
 
+// add Friends to friend list and add participant friends lists
+const participantListCnt = document.querySelector(".group__add-friends-cnt[data-type='friends-cnt']");
 async function addFriendToFriendsList(data) {
   if (!data.val()) return;
 
@@ -206,6 +209,7 @@ async function addFriendToFriendsList(data) {
       <p class="chat__message-count none"></p>
       <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
      </div>\n`;
+  participantListCnt.innerHTML += addParticipantsFriendsCardTemplate(fid, chatUid.photo, chatUid.name);
 
   document
     .querySelectorAll(`.chat__friend-card>.chat__remove-friend-ic`)
