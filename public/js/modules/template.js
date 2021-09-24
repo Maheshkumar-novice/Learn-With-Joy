@@ -101,21 +101,36 @@ export function addParticipantsFriendsCardTemplate(fid, photoURL, name){
   </div>`
 }
 
-export function addParticipantCardTemplate(fid, photoURL, name, admin){
+function checkAdminStatus(admin, isUserAdmin){
+  if(admin){
+    return `<img
+              class="group__participant-option-ic"
+              data-admin="true"
+              src="./assets/icons/groups/admin.svg"
+              alt="admin"
+            />`
+  }
+  else if(isUserAdmin){
+    return `<img
+              class="group__participant-option-ic"
+              data-admin="false"
+              src="./assets/icons/home/chat-menu.svg"
+              alt="option"
+            />`
+  }
+  return "";
+}
+export function addParticipantCardTemplate(fid, photoURL, name, admin, isUserAdmin){
   const wrapper = document.createElement("div");
   wrapper.classList.add("group__participant-card");
   wrapper.dataset.id = fid;
-  wrapper.dataset.admin = admin;
+  // wrapper.dataset.admin = admin;
   wrapper.innerHTML =`<img
                         src="${photoURL}"
                         alt="Friend"
                         class="group__participant-img"
                       />
                       <p class="group__participant-name">${name}</p>
-                      <img
-                        class="group__participant-option-ic"
-                        src=${admin ? "./assets/icons/groups/admin.svg" : "./assets/icons/home/chat-menu.svg"}
-                        alt="${admin ? "admin" : "option"}"
-                      />`
+                      ${checkAdminStatus(admin, isUserAdmin)}`
   return wrapper;
 }
