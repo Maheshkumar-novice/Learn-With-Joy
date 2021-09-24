@@ -29,7 +29,17 @@ const participantFriendCnt = document.querySelector(".group__participants-add-li
 const searchFriendsInput = document.querySelector(".search__friends-input");
 const searchFriendsInputClose = document.querySelector(".add-friends-search-close");
 
-addParticipantIC.addEventListener("click", (e) => {
+addParticipantIC.addEventListener("click", function(e){
+    if(this.src.includes("accept.svg")){
+        this.src = "./assets/icons/home/msg-clear.svg";
+        optionsCnt.classList.add("none");
+    }
+    else{
+        this.src = "./assets/icons/home/accept.svg";
+        searchFriendsInput.value = '';
+        participantAddFriendsCnt.classList.remove("none");
+        participantSearchListFriendsCnt.classList.add("none");
+    }
     participantFriendCnt.classList.toggle("none");
     groupParticpantCnt.classList.toggle("none");
 });
@@ -47,9 +57,14 @@ searchFriendsInput.addEventListener("input", function(e){
     participantSearchListFriendsCnt.innerText = '';
     searchFriendsList.forEach((name, idx) => {
         if(name.match(regex)){
-            participantSearchListFriendsCnt.appendChild(participantAddFriendsCard[idx]);
+            const clone = participantAddFriendsCard[idx].cloneNode(true);
+            participantSearchListFriendsCnt.appendChild(clone);
         }
     });
+    const addIC = participantSearchListFriendsCnt.querySelectorAll(".group__add-friend-ic");
+    addIC.forEach(ic => {
+        ic.addEventListener("click", addFriendsToGroup);
+    })
 });
 
 searchFriendsInputClose.addEventListener("click", function(e){
@@ -90,6 +105,7 @@ const createButton = document.querySelector(".group-create-button");
 const createButtonLoader = document.querySelector(".create-loader");
 const groupCreateError = document.querySelector(".create-group-error");
 const groupParticpantCnt = document.querySelector(".group__participant");
+const optionsCnt = document.querySelector(".participants__options");
 
 groupLogoIC.addEventListener("click", (e) => {
     groupLogoUpload.click();
@@ -167,14 +183,17 @@ function addFriendsToGroup(){
     const groupHash = document.querySelector(".group__group-card-active").dataset.id;
     addChlidDB(database, `groups/${groupHash}/participants`, fid, false);
     addChlidDB(database, `friends/${fid}/groups/`, groupHash, fid);
-    this.classList.add("none");
+    const allCardIC = document.querySelectorAll(`.group__add-friend-card[data-id="${fid}"] .group__add-friend-ic`);
+    console.log(allCardIC)
+    allCardIC.forEach(ic => {
+        ic.classList.add("none");
+    })
 }
 
 function updateAddParticipantsFriendsList(elem){
     let friendsCard = participantAddFriendsCnt.querySelectorAll(".group__add-friend-card");
     friendsCard.forEach(card => {
         const isPresent = elem.querySelector(`.group__participant-card[data-id=${card.dataset.id}]`);
-        console.log(isPresent);
         if(isPresent){
             card.querySelector(".group__add-friend-ic").classList.add("none");
         }
@@ -184,15 +203,16 @@ function updateAddParticipantsFriendsList(elem){
     });
 }
 
+function clearAllActiveOptions(){
+
+}
+
 async function makeCardActive(card){
     const prevSelected = document.querySelector(".group__group-card-active");
     const participantCnt = prevSelected ? document.querySelector(`.group__participant-each[data-id="${prevSelected.dataset.id}"]`) : "";
-    console.log(participantCnt)
     prevSelected 
     ? (prevSelected.classList.remove("group__group-card-active"), participantCnt.classList.add("none")) : "";
     card.classList.add("group__group-card-active");
-    const isAdmin = (await readDB(database, `groups/${card.dataset.id}/participants/${user.uid}`)).val();
-    isAdmin ? addParticipantIC.classList.remove("none") : addParticipantIC.classList.add("none");
 }
 
 async function checkGroupPresent(hash){
@@ -206,6 +226,8 @@ async function checkGroupPresent(hash){
 
 }
 async function showParticipantsList(hash){
+    const isAdmin = (await readDB(database, `groups/${hash}/participants/${user.uid}`)).val();
+    isAdmin ? addParticipantIC.classList.remove("none") : addParticipantIC.classList.add("none");
     const participantCnt = document.createElement("div");
     participantCnt.classList.add("group__participant-each");
     participantCnt.dataset.id = hash;
@@ -216,13 +238,11 @@ async function showParticipantsList(hash){
     for(let id in adminData){
         const checkFriend = document.querySelector(`.group__add-friend-card[data-id=${id}]`);
         if(checkFriend){
-            console.log(checkFriend)
             const photoURL = checkFriend.querySelector(".chat__img").src;
             const name = checkFriend.querySelector(".group__add-friend-name").innerText;
             participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, true));
         }
         else{
-            console.log("no")
             const data = (await readDB(database, `users/${id}`)).val();
             const photoURL = data.photo;
             const name = data.name;
@@ -232,22 +252,33 @@ async function showParticipantsList(hash){
     for(let id in nonAdminData){
         const checkFriend = document.querySelector(`.group__add-friend-card[data-id=${id}]`);
         if(checkFriend){
-            console.log(checkFriend)
             const photoURL = checkFriend.querySelector(".chat__img").src;
             const name = checkFriend.querySelector(".group__add-friend-name").innerText;
             participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, false));
         }
         else{
-            console.log("no")
             const data = (await readDB(database, `users/${id}`)).val();
             const photoURL = data.photo;
             const name = data.name;
             participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, false));
         }
     }
-    console.log(participantCnt);
     groupParticpantCnt.appendChild(participantCnt);
     updateAddParticipantsFriendsList(document.querySelector(`.group__participant-each[data-id="${hash}"]`));
+    const participantOptionsIC = document.querySelectorAll(".group__participant-option-ic[data-admin='false']");
+    console.log(participantOptionsIC);
+    participantOptionsIC.forEach(options => {
+        options.addEventListener("click", function(e){
+            const card = this.parentElement;
+            if(optionsCnt.dataset.participant === card.dataset.id){
+                optionsCnt.classList.add("none");
+                return;
+            }
+            optionsCnt.classList.remove("none");
+            optionsCnt.dataset.participant = card.dataset.id;
+            optionsCnt.style.top = `${card.offsetTop+card.offsetHeight+20}px`;
+        });
+    });
 }
 
 async function updateParticipantList(data){
@@ -256,13 +287,11 @@ async function updateParticipantList(data){
     if(!participantCnt) return;
     const checkFriend = document.querySelector(`.group__add-friend-card[data-id=${data.key}]`);
     if(checkFriend){
-        console.log(checkFriend)
         const photoURL = checkFriend.querySelector(".chat__img").src;
         const name = checkFriend.querySelector(".group__add-friend-name").innerText;
         participantCnt.appendChild(addParticipantCardTemplate(data.key, photoURL, name, false));
     }
     else{
-        console.log("no")
         const data = (await readDB(database, `users/${id}`)).val();
         const photoURL = data.photo;
         const name = data.name;
@@ -271,6 +300,7 @@ async function updateParticipantList(data){
 }
 
 function updateGroupClick(e){
+    clearAllActiveOptions();
     makeCardActive(this);
     checkGroupPresent(this.dataset.id);
 }
