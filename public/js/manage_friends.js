@@ -735,6 +735,10 @@ window.addEventListener("keyup", (e) => {
     document.activeElement.blur();
     }
     document.querySelector(".chat__search-close-icon").click();
+    const optionsCnt = document.querySelector(".participants__options")
+    if(!optionsCnt.classList.contains("none")){
+      optionsCnt.classList.add("none");
+    }
   }
 });
 

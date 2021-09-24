@@ -204,7 +204,9 @@ function updateAddParticipantsFriendsList(elem){
 }
 
 function clearAllActiveOptions(){
-
+    optionsCnt.classList.add("none");
+    optionsCnt.dataset.participant = "null";
+    if(!addParticipantIC.src.includes("accept.svg")) addParticipantIC.click();
 }
 
 async function makeCardActive(card){
@@ -216,18 +218,18 @@ async function makeCardActive(card){
 }
 
 async function checkGroupPresent(hash){
+    const isAdmin = (await readDB(database, `groups/${hash}/participants/${user.uid}`)).val();
+    isAdmin ? addParticipantIC.classList.remove("none") : addParticipantIC.classList.add("none");
     const participantCnt = document.querySelector(`.group__participant-each[data-id="${hash}"]`);
     if(participantCnt){
         participantCnt.classList.remove("none");
         updateAddParticipantsFriendsList(participantCnt);
         return;
     }
-    showParticipantsList(hash);
+    showParticipantsList(hash, isAdmin);
 
 }
-async function showParticipantsList(hash){
-    const isAdmin = (await readDB(database, `groups/${hash}/participants/${user.uid}`)).val();
-    isAdmin ? addParticipantIC.classList.remove("none") : addParticipantIC.classList.add("none");
+async function showParticipantsList(hash, userAdminStatus){
     const participantCnt = document.createElement("div");
     participantCnt.classList.add("group__participant-each");
     participantCnt.dataset.id = hash;
@@ -240,13 +242,13 @@ async function showParticipantsList(hash){
         if(checkFriend){
             const photoURL = checkFriend.querySelector(".chat__img").src;
             const name = checkFriend.querySelector(".group__add-friend-name").innerText;
-            participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, true));
+            participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, true, userAdminStatus));
         }
         else{
             const data = (await readDB(database, `users/${id}`)).val();
             const photoURL = data.photo;
             const name = data.name;
-            participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, true));
+            participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, true, userAdminStatus));
         }
     }
     for(let id in nonAdminData){
@@ -254,21 +256,22 @@ async function showParticipantsList(hash){
         if(checkFriend){
             const photoURL = checkFriend.querySelector(".chat__img").src;
             const name = checkFriend.querySelector(".group__add-friend-name").innerText;
-            participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, false));
+            participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, false, userAdminStatus));
         }
         else{
             const data = (await readDB(database, `users/${id}`)).val();
             const photoURL = data.photo;
             const name = data.name;
-            participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, false));
+            participantCnt.appendChild(addParticipantCardTemplate(id, photoURL, name, false, userAdminStatus));
         }
     }
     groupParticpantCnt.appendChild(participantCnt);
     updateAddParticipantsFriendsList(document.querySelector(`.group__participant-each[data-id="${hash}"]`));
-    const participantOptionsIC = document.querySelectorAll(".group__participant-option-ic[data-admin='false']");
+    const participantOptionsIC = participantCnt.querySelectorAll(".group__participant-option-ic[data-admin='false']");
     console.log(participantOptionsIC);
     participantOptionsIC.forEach(options => {
         options.addEventListener("click", function(e){
+            console.log("hello")
             const card = this.parentElement;
             if(optionsCnt.dataset.participant === card.dataset.id){
                 optionsCnt.classList.add("none");
