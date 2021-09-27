@@ -10,7 +10,7 @@ import {
   actionCodeVerify,
 } from "./modules/firebase.js";
 import { loader, loginTemplate, signupTemplate } from "./modules/template.js";
-import { displayTime } from "./modules/util.js";
+import { displayTime, getParameterByName } from "./modules/util.js";
 
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
@@ -461,10 +461,6 @@ nextButton.addEventListener("click", function (e) {
   if (newNameInput.value === "") return;
   updateUserState(1);
 });
-
-function getParameterByName(urlParams, name) {
-  return urlParams.get(name);
-}
 
 function handleURL() {
   const urlParams = new URLSearchParams(window.location.search);

@@ -81,3 +81,7 @@ export function checkAndChangeAngularBrackets(value){
   value = value.replace(/>/g, "&gt;");
   return value;
 }
+
+export function getParameterByName(urlParams, name) {
+  return urlParams.get(name);
+}
