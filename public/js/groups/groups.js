@@ -1,6 +1,6 @@
 import { addChlidDB, getOrderBy, pushKey, readDB, removeDB, setDBListener, storageRef, updateDB, writeDB } from "../modules/firebase.js";
 import { addParticipantCardTemplate, groupCardTemplate } from "../modules/template.js";
-import { checkAndChangeAngularBrackets } from "../modules/util.js";
+import { checkAndChangeAngularBrackets, getParameterByName } from "../modules/util.js";
 
 let user;
 let userCreatedGroup=[];
@@ -17,6 +17,7 @@ auth.onAuthStateChanged( async (currentUser) => {
     totalFriends = (await readDB(database, `friends/${user.uid}/friends`)).numChildren();
     checkAddFriendsList(); 
     createDBListener();
+    handleGroupJoinURL();
   }
 });
 
@@ -108,6 +109,7 @@ const groupCreateError = document.querySelector(".create-group-error");
 const groupParticpantCnt = document.querySelector(".group__participant");
 const optionsCnt = document.querySelector(".participants__options");
 const participantOption = document.querySelectorAll(".participants__option");
+const groupLink = document.querySelector(".group-share-link");
 
 groupLogoIC.addEventListener("click", (e) => {
     groupLogoUpload.click();
@@ -196,6 +198,7 @@ async function createGroup(groupHash, name, profileURL){
     userCreatedGroup.push(name);
     updateDB(database, `friends/${user.uid}`, {groupsCreated:userCreatedGroup});
     addChlidDB(database, `friends/${user.uid}/groups/`, groupHash, user.uid);
+    console.log(`${window.location.href}?share=${user.uid}&gid=${groupHash}&gname=${name}`)
     toggleCreateGroupButton(0);
 }
 
@@ -233,7 +236,7 @@ function clearAllActiveOptions(){
     if(!addParticipantIC.src.includes("accept.svg")) addParticipantIC.click();
 }
 
-async function makeCardActive(card){
+function makeCardActive(card){
     const prevSelected = document.querySelector(".group__group-card-active");
     const participantCnt = prevSelected ? document.querySelector(`.group__participant-each[data-id="${prevSelected.dataset.id}"]`) : "";
     prevSelected 
@@ -241,9 +244,23 @@ async function makeCardActive(card){
     card.classList.add("group__group-card-active");
 }
 
+const copyLinkIC = document.querySelector(".copy-link");
+copyLinkIC.addEventListener("click", copyLink);
+function copyLink(){
+    navigator.clipboard.writeText(groupLink.innerText);
+}
+
+function updateGroupLink(groupHash){
+    const groupName = document.querySelector(".group__group-card-active").innerText;
+    // const link = `https://learn-with-joy.web.app/groups?share=${user.uid}&gid=${groupHash}&gname=${groupName}`;
+    const link = `http://localhost:5000/groups?share=${user.uid}&gid=${groupHash}&gname=${groupName}`;
+    groupLink.innerText = link;
+    groupLink.title = link;
+}
+
 async function checkGroupPresent(hash){
     const isAdmin = (await readDB(database, `groups/${hash}/participants/${user.uid}`)).val();
-    isAdmin ? addParticipantIC.classList.remove("none") : addParticipantIC.classList.add("none");
+    isAdmin ? (addParticipantIC.classList.remove("none"), updateGroupLink(hash)) : addParticipantIC.classList.add("none");
     const participantCnt = document.querySelector(`.group__participant-each[data-id="${hash}"]`);
     if(participantCnt){
         participantCnt.classList.remove("none");
@@ -251,8 +268,8 @@ async function checkGroupPresent(hash){
         return;
     }
     showParticipantsList(hash, isAdmin);
-
 }
+
 async function showParticipantsList(hash, userAdminStatus){
     const participantCnt = document.createElement("div");
     participantCnt.classList.add("group__participant-each");
@@ -414,6 +431,10 @@ function updateGroupClick(e){
     checkGroupPresent(this.dataset.id);
 }
 
+async function handleSharedGroupLink(){
+
+} 
+
 // ------------------------------------------------- UI Creation --------------------------------------------
 const groupContainer = document.querySelector(".group__group-cnt");
 let groupCard;
@@ -451,4 +472,29 @@ function createDBListener(){
 async function updateUserCreatedGroups(data){
     if(!data.val()) return
     userCreatedGroup = [...data.val()];
+}
+
+async function addFriendsToGroupUsingLink(groupHash, groupName){
+    console.log("hello");
+    const DBgroupName = (await readDB(database, `groups/${groupHash}/details/name`)).val();
+    if(DBgroupName !== groupName) return;
+    const isAddedAlready = (await readDB(database, `groups/${groupHash}/participants/${user.uid}`)).val();
+    console.log(isAddedAlready);
+    if(isAddedAlready === null){
+        console.log("Inside");
+        addChlidDB(database, `groups/${groupHash}/participants`, user.uid, false);
+        addChlidDB(database, `friends/${user.uid}/groups/`, groupHash, user.uid);
+    }
+    history.replaceState(null, null, "/groups")
+    console.log("hello");
+}
+
+function handleGroupJoinURL(){
+    const urlParams = new URLSearchParams(window.location.search);
+    const share = getParameterByName(urlParams, "share");
+    console.log(share);
+    if(!share || share === user.uid) return;
+    const groupHash = getParameterByName(urlParams, "gid");
+    const groupName = getParameterByName(urlParams, "gname");
+    addFriendsToGroupUsingLink(groupHash, groupName);
 }
