@@ -1,0 +1,35 @@
+.gsearch{
+    background-color: var(--container-bg);
+}
+
+.iframe-cnt, .gsearch-cnt{
+    width: 100%;
+    height: 100%;
+}
+
+iframe{
+    width: 100%;
+    height: 100%;
+}
+
+.gsearch-inp-cnt{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.gsearch-input{
+    flex: 1;
+    padding: 1.5rem;
+    font-size: 1.6rem;
+    margin-right: 2rem;
+    background-color: transparent;
+    border: 2px solid var(--primary-color);
+    border-radius: 2rem;
+    outline: none;
+    color: var(--primary-color);
+}
+
+.gsearch-attribute{
+    font-size: 2rem;
+}
