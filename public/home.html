@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./css/common.css" />
     <link rel="stylesheet" href="./css/home.css" />
     <link rel="stylesheet" href="./css/chat.css" />
+    <link rel="stylesheet" href="./css/gsearch.css">
     <link rel="stylesheet" href="./css/loader.css" />
     <link rel="stylesheet" href="./css/timer.css" />
   </head>
@@ -109,7 +110,7 @@
             class="header__img header__profile-img"
           />
           <img
-            src="./assets/icons/home/drop down.svg"            
+            src="./assets/icons/home/drop down.svg"
             class="options-drop-down-img"
           />
         </div>
@@ -120,18 +121,19 @@
       </div>
     </header>
     <nav class="navbar">
-      <h2 class="navbar__title navbar__tab navbar__tab--active">Friends</h2>
-      <h2 class="navbar__title navbar__tab">Groups</h2>
-      <h2 class="navbar__title navbar__tab">Notes</h2>
-      <h2 class="navbar__title navbar__tab">Calendar</h2>
-      <h2 class="navbar__title navbar__tab">Entertainment</h2>
-      <h2 class="navbar__title navbar__tab">Timer</h2>
+      <h2 class="navbar__title navbar__tab navbar__tab--active" data-tab="friends">Friends</h2>
+      <h2 class="navbar__title navbar__tab" data-tab="groups">Groups</h2>
+      <h2 class="navbar__title navbar__tab" data-tab="notes">Notes</h2>
+      <h2 class="navbar__title navbar__tab" data-tab="gsearch">G Search</h2>
+      <h2 class="navbar__title navbar__tab" data-tab="entertainment">Entertainment</h2>
+      <h2 class="navbar__title navbar__tab" data-tab="timer">Timer</h2>
       <img
         src="./assets/icons/home/drop down.svg"
         alt="Drop Down Menu"
         class="navbar__img"
       />
       <div class="available-tabs none">
+        <h2 class="available-tab navbar__title navbar__tab" data-tab="calendar">Calendar</h2>
         <h2 class="available-tab">Resources</h2>
         <h2 class="available-tab">Resources</h2>
       </div>
@@ -140,7 +142,7 @@
       <div class="lds-dual-ring"></div>
     </div>
     <main class="main none">
-      <section class="chat section-tab">
+      <section class="chat section-tab" data-tab="friends">
         <div class="chat__container chat__friends">
           <div class="chat__search-trigger">
             <input
@@ -308,7 +310,7 @@
           </div>
         </div>
       </section>
-      <section class="group section-tab">
+      <section class="group section-tab" data-tab="group">
         <div class="group__container">
           <div class="group__search-trigger">
             <input
@@ -478,17 +480,23 @@
             <div class="group__participants-list">
               <div class="group__participants-add-list none">
                 <div class="add-participant-search-cnt">
-                  <input
-                    type="text"
-                    class="search__friends-input"
-                    placeholder="Search Friends"
-                    tabindex="0"
-                  />
-                  <img
-                    src="./assets/icons/home/msg-clear.svg"
-                    alt="close search"
-                    class="add-friends-search-close"
-                  />
+                  <div class="add-participant-share-link">
+                    <p class="group-share-link" title=""></p>
+                    <img class="copy-link" src="./assets/icons/groups/share-link.svg" alt="copy-link">
+                  </div>
+                  <div class="add-participant-input-cnt">
+                    <input
+                      type="text"
+                      class="search__friends-input"
+                      placeholder="Search Friends"
+                      tabindex="0"
+                    />
+                    <img
+                      src="./assets/icons/home/msg-clear.svg"
+                      alt="close search"
+                      class="add-friends-search-close"
+                    />
+                  </div>
                 </div>
                 <div
                   class="group__add-friends-cnt none"
@@ -504,96 +512,6 @@
                   <p class="participants__option">Make Admin</p>
                   <p class="participants__option">Remove</p>
                 </div>
-                <!-- <div
-                  class="group__participant-each"
-                  data-id="-MkIFEyppLnBmFthMCpF"
-                >
-                  <div
-                    class="group__participant-card"
-                    data-id="HnYmkLTfAWMkvPQKQ9cD5noWhoR2"
-                    data-admin="true"
-                  >
-                    <img
-                      src="https://lh3.googleusercontent.com/a/AATXAJx84nwQ5Udk7ix0OsX68S7KOhoYmZXtHJhHpXc=s96-c"
-                      alt="Friend"
-                      class="group__participant-img"
-                    />
-                    <p class="group__participant-name">Arul</p>
-                    <img
-                      class="group__participant-option-ic"
-                      src="./assets/icons/groups/admin.svg"
-                      alt="admin"
-                    />
-                  </div>
-                  <div
-                    class="group__participant-card"
-                    data-id="H8oY8BO2eLPfEOi0E6bdcjIV0yf1"
-                    data-admin="false"
-                  >
-                    <img
-                      src="http://localhost:5000/assets/icons/home/user.svg"
-                      alt="Friend"
-                      class="group__participant-img"
-                    />
-                    <p class="group__participant-name">test</p>
-                    <img
-                      class="group__participant-option-ic"
-                      src="./assets/icons/home/chat-menu.svg"
-                      alt="option"
-                    />
-                  </div>
-                  <div
-                    class="group__participant-card"
-                    data-id="K6UlIHk3U5ZmOy1NxqEBgknsplj1"
-                    data-admin="false"
-                  >
-                    <img
-                      src="http://localhost:5000/assets/icons/home/user.svg"
-                      alt="Friend"
-                      class="group__participant-img"
-                    />
-                    <p class="group__participant-name">Arul Murugavel</p>
-                    <img
-                      class="group__participant-option-ic"
-                      src="./assets/icons/home/chat-menu.svg"
-                      alt="option"
-                    />
-                  </div>
-                  <div
-                    class="group__participant-card"
-                    data-id="nP2NUi792EQcmqIvNvFEe3Jjdzh2"
-                    data-admin="false"
-                  >
-                    <img
-                      src="https://lh3.googleusercontent.com/a/AATXAJxMCqpzd2Zb6aH73dvh35dQwe5ct3-Lb9OH-Blb=s96-c"
-                      alt="Friend"
-                      class="group__participant-img"
-                    />
-                    <p class="group__participant-name">Maheshkumar</p>
-                    <img
-                      class="group__participant-option-ic"
-                      src="./assets/icons/home/chat-menu.svg"
-                      alt="option"
-                    />
-                  </div>
-                  <div
-                    class="group__participant-card"
-                    data-id="oX1h3ITazcVCTYjxoc4VQsJSx8W2"
-                    data-admin="false"
-                  >
-                    <img
-                      src="https://lh3.googleusercontent.com/a-/AOh14GjCIxTvx-Ab-Ks7bhVMyfVBAE_HiXYwG6aXtmYq=s96-c"
-                      alt="Friend"
-                      class="group__participant-img"
-                    />
-                    <p class="group__participant-name">kant</p>
-                    <img
-                      class="group__participant-option-ic"
-                      src="./assets/icons/home/chat-menu.svg"
-                      alt="option"
-                    />
-                  </div>
-                </div> -->
               </div>
             </div>
           </div>
@@ -632,10 +550,10 @@
           </div>
         </div>
       </section>
-      <section class="notes section-tab"></section>
-      <section class="calendar section-tab"></section>
-      <section class="entertainment section-tab"></section>
-      <section class="timer section-tab">
+      <section class="notes section-tab" data-tab="notes"></section>
+      <section class="gsearch section-tab" data-tab="gsearch"></section>
+      <section class="entertainment section-tab" data-tab="entertainment"></section>
+      <section class="timer section-tab" data-tab="timer">
         <div class="timer_controls">
           <button class="timer__button" data-time="30">30 Secs</button>
           <button class="timer__button" data-time="1500">Work 25</button>
@@ -655,6 +573,7 @@
           <p class="stop-sound none">Reset the timer to Stop the sound</p>
         </div>
       </section>
+      <section class="calendar section-tab" data-tab="calendar"></section>
     </main>
     <footer class="footer">
       <p class="footer__time">01:21:19</p>
@@ -676,6 +595,8 @@
     <script type="module" src="./js/groups/groups.js"></script>
     <script type="module" src="./js/notification.js"></script>
     <script type="module" src="./js/timer/timer.js"></script>
+    <!--Google search engine-->
+    <script async src="https://cse.google.com/cse.js?cx=08b8c294f94bb3952"></script>
   </body>
 </html>
 
