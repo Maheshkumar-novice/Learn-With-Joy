@@ -30,6 +30,7 @@ const participantFriendCnt = document.querySelector(".group__participants-add-li
 const searchFriendsInput = document.querySelector(".search__friends-input");
 const searchFriendsInputClose = document.querySelector(".add-friends-search-close");
 
+//Toggle Add participant friends container
 addParticipantIC.addEventListener("click", function(e){
     if(this.src.includes("accept.svg")){
         this.src = "./assets/icons/home/msg-clear.svg";
@@ -46,6 +47,7 @@ addParticipantIC.addEventListener("click", function(e){
     groupParticpantCnt.classList.toggle("none");
 });
 
+//Search friends from friends list
 searchFriendsInput.addEventListener("input", function(e){
     let value = this.value;
     if(value == ''){
@@ -75,6 +77,7 @@ searchFriendsInputClose.addEventListener("click", function(e){
     participantSearchListFriendsCnt.classList.add("none");
 });
 
+//Update the friendds list and add listener for adding to groups
 async function checkAddFriendsList(){
     const participantAddFriendsCount = participantAddFriendsCnt.childElementCount
     console.log(typeof totalFriends ,typeof participantAddFriendsCount)
@@ -124,6 +127,7 @@ groupLogoUpload.addEventListener("change", (e) => {
     groupLogoIC.src = URL.createObjectURL(e.target.files[0]);
 });
 
+// loading while group creation
 function toggleCreateGroupButton(bool){
     if(bool){
         createButton.disabled = true; 
@@ -157,25 +161,6 @@ createButton.addEventListener("click", async (e) => {
     createGroup(groupHash, groupName, profileURL);
 });
 
-participantOption.forEach(option => {
-    option.addEventListener("click", async function(e){
-        const groupHash = document.querySelector(".group__group-card-active").dataset.id;
-        const fid = this.parentElement.dataset.participant;
-        console.log(groupHash, fid); 
-        if(this.innerText === "Make Admin"){
-            const obj = {};
-            obj[fid] = true;
-            updateDB(database, `groups/${groupHash}/participants`, obj);
-        }
-        else{
-            removeDB(database, `groups/${groupHash}/participants/${fid}`);
-            removeDB(database, `friends/${fid}/groups/${groupHash}`);
-        }
-        optionsCnt.classList.add("none");
-        optionsCnt.dataset.participant = "null";
-    });
-});
-
 async function uploadGroupProfilePic(groupHash, file){
     const ref = storageRef(
         storage,
@@ -202,6 +187,7 @@ async function createGroup(groupHash, name, profileURL){
     toggleCreateGroupButton(0);
 }
 
+// Add friends to group list
 function addFriendsToGroup(){
     const fid = this.parentElement.dataset.id;
     const groupHash = document.querySelector(".group__group-card-active").dataset.id;
@@ -217,6 +203,7 @@ function addFriendsToGroup(){
     });
 }
 
+// Update friends list after adding to the group
 function updateAddParticipantsFriendsList(elem){
     let friendsCard = participantAddFriendsCnt.querySelectorAll(".group__add-friend-card");
     friendsCard.forEach(card => {
@@ -230,6 +217,7 @@ function updateAddParticipantsFriendsList(elem){
     });
 }
 
+// toggle group utils
 function clearAllActiveOptions(){
     optionsCnt.classList.add("none");
     optionsCnt.dataset.participant = "null";
@@ -244,6 +232,7 @@ function makeCardActive(card){
     card.classList.add("group__group-card-active");
 }
 
+// copy group share link
 const copyLinkIC = document.querySelector(".copy-link");
 copyLinkIC.addEventListener("click", copyLink);
 function copyLink(){
@@ -252,24 +241,28 @@ function copyLink(){
 
 function updateGroupLink(groupHash){
     const groupName = document.querySelector(".group__group-card-active").innerText;
-    // const link = `https://learn-with-joy.web.app/groups?share=${user.uid}&gid=${groupHash}&gname=${groupName}`;
-    const link = `http://localhost:5000/groups?share=${user.uid}&gid=${groupHash}&gname=${groupName}`;
+    const link = `https://learn-with-joy.web.app/groups?share=${user.uid}&gid=${groupHash}&gname=${groupName}`;
+    // const link = `http://localhost:5000/groups?share=${user.uid}&gid=${groupHash}&gname=${groupName}`;
     groupLink.innerText = link;
     groupLink.title = link;
 }
 
+// to check wheather Groups had already been loaded or not
 async function checkGroupPresent(hash){
     const isAdmin = (await readDB(database, `groups/${hash}/participants/${user.uid}`)).val();
     isAdmin ? (addParticipantIC.classList.remove("none"), updateGroupLink(hash)) : addParticipantIC.classList.add("none");
     const participantCnt = document.querySelector(`.group__participant-each[data-id="${hash}"]`);
-    if(participantCnt){
+    if(participantCnt){ 
+        // if already clicked toggle the container
         participantCnt.classList.remove("none");
         updateAddParticipantsFriendsList(participantCnt);
         return;
     }
+    // else create the container
     showParticipantsList(hash, isAdmin);
 }
 
+// creating participant list based on the access
 async function showParticipantsList(hash, userAdminStatus){
     const participantCnt = document.createElement("div");
     participantCnt.classList.add("group__participant-each");
@@ -315,6 +308,7 @@ async function showParticipantsList(hash, userAdminStatus){
     });
 }
 
+// participant option container toggler
 function showOptionsCnt(e){
     console.log("hello");
     const card = this.parentElement;
@@ -328,6 +322,28 @@ function showOptionsCnt(e){
     optionsCnt.style.top = `${card.offsetTop+card.offsetHeight+20}px`;
 }
 
+// Admin and remove participant event listener
+participantOption.forEach(option => {
+    option.addEventListener("click", async function(e){
+        const groupHash = document.querySelector(".group__group-card-active").dataset.id;
+        const fid = this.parentElement.dataset.participant;
+        console.log(groupHash, fid); 
+        if(this.innerText === "Make Admin"){
+            const obj = {};
+            obj[fid] = true;
+            updateDB(database, `groups/${groupHash}/participants`, obj);
+        }
+        else{
+            removeDB(database, `groups/${groupHash}/participants/${fid}`);
+            removeDB(database, `friends/${fid}/groups/${groupHash}`);
+        }
+        optionsCnt.classList.add("none");
+        optionsCnt.dataset.participant = "null";
+    });
+});
+
+// ---------------------------------- Dynamic db Listener ---------------------------------------
+// Update the newly added participants to the participant container 
 async function updateParticipantList(data){
     const groupHash = data.ref.parent.parent.key;
     const participantCnt = document.querySelector(`.group__participant-each[data-id="${groupHash}"]`);
@@ -351,6 +367,7 @@ async function updateParticipantList(data){
     newcard ? newcard.addEventListener("click", showOptionsCnt) : "";
 }
 
+// Update the newly made admin
 function makeParticipantAdmin(data){
     console.log(data.key, data.val());
     if(!data.val()){
@@ -406,6 +423,7 @@ function makeParticipantAdmin(data){
     participantCnt.insertBefore(participantCard, nonAdminFirstCard[0]);
 }
 
+// Update the removed participant
 function deleteParticipant(data){
     console.log(data.key, data.val());
     if(data.key === user.uid) return;
@@ -431,13 +449,10 @@ function updateGroupClick(e){
     checkGroupPresent(this.dataset.id);
 }
 
-async function handleSharedGroupLink(){
-
-} 
-
 // ------------------------------------------------- UI Creation --------------------------------------------
 const groupContainer = document.querySelector(".group__group-cnt");
 let groupCard;
+// creating groups and displaying it
 async function addGroupToGroupsList(data){
     const groupHash = data.key;
     const groupData = (await readDB(database, `groups/${groupHash}/details`)).val();
@@ -456,12 +471,14 @@ function removeGroupFromGroupsList(data){
     participantCnt ? groupParticpantCnt.removeChild(participantCnt) : "";
 }
 
+// Db listener for the group after creating it
 function createDBListenerForGroupParticipants(groupHash){
     setDBListener(database, `groups/${groupHash}/participants`, "child_added", updateParticipantList);
     setDBListener(database, `groups/${groupHash}/participants`, "child_changed", makeParticipantAdmin);
     setDBListener(database, `groups/${groupHash}/participants`, "child_removed", deleteParticipant);
 }
 
+// Db listener for loading the groups
 function createDBListener(){
     setDBListener(database, `friends/${user.uid}/groupsCreated`, "value", updateUserCreatedGroups)
     setDBListener(database, `friends/${user.uid}/groups`, "child_added", addGroupToGroupsList);
@@ -469,11 +486,13 @@ function createDBListener(){
 }
 
 // ---------------------------------- util needed------------------------------------
+// To check wheather user had created the same group already
 async function updateUserCreatedGroups(data){
     if(!data.val()) return
     userCreatedGroup = [...data.val()];
 }
 
+// function to handle group share link
 async function addFriendsToGroupUsingLink(groupHash, groupName){
     console.log("hello");
     const DBgroupName = (await readDB(database, `groups/${groupHash}/details/name`)).val();
