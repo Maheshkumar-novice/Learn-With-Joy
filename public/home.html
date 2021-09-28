@@ -551,7 +551,19 @@
         </div>
       </section>
       <section class="notes section-tab" data-tab="notes"></section>
-      <section class="gsearch section-tab" data-tab="gsearch"></section>
+      <section class="gsearch section-tab" data-tab="gsearch">
+        <div class="iframe-cnt">
+          <iframe src="https://google.com" frameborder="0"></iframe>
+        </div>
+        <div class="extension-installer-popup none">
+          <p>To access the google Search please install the Extension</p>
+          <a href="https://chrome.google.com/webstore/detail/iframe-allow/gifgpciglhhpmeefjdmlpboipkibhbjg" target="_blank" title="iframe-allow">Iframe Allow</a>
+          <div class="close-cnt">
+            <div class="close">Close</div>
+            <div class="permanent-close">Do Not Show Again</div>
+          </div>
+        </div>
+      </section>
       <section class="entertainment section-tab" data-tab="entertainment"></section>
       <section class="timer section-tab" data-tab="timer">
         <div class="timer_controls">
@@ -595,56 +607,8 @@
     <script type="module" src="./js/groups/groups.js"></script>
     <script type="module" src="./js/notification.js"></script>
     <script type="module" src="./js/timer/timer.js"></script>
+    <script type="module" src="./js/gsearch/gsearch.js"></script>
     <!--Google search engine-->
     <script async src="https://cse.google.com/cse.js?cx=08b8c294f94bb3952"></script>
   </body>
 </html>
-
-<!-- <p>No New notification</p>
-<div class="header__notification-eachmsg">
-  <p class="header__notification-msg">
-    <span class="header__notification-highlight">Lorem</span> has accepted your friend request
-  </p>
-  <img
-    src="./assets/icons/home/msg-clear.svg"
-    class="header__notification-clrmsg"
-    alt="clear message"
-  />
-  <div class="header__notification-time">19:20:25 - 20/12/2021</div>
-</div> -->
-
-<!-- <div class="chat__friend-card">
-        <img
-          src="./assets/icons/home/user.svg"
-          alt="Friend"
-          class="chat__img"
-        />
-        <p class="chat__friend-name">Lorem Ipsum</p>
-        <button class="chat__remove-friend">Remove</button>
-</div>
-<div class="chat__friend-card">
-      <img
-        src="./assets/icons/home/user.svg"
-        alt="Friend"
-        class="chat__img"
-      />
-      <p class="chat__friend-name">Lorem Ipsum</p>
-      <button class="chat__remove-friend">Remove</button>
-  </div> -->
-
-<!-- <div class="chat__friend-card default">
-        <img
-          src="./assets/icons/home/user.svg"
-          alt="Friend"
-          class="chat__img"
-        />
-        <p class="chat__friend-name">Lorem Ipsum</p>
-        <img class="chat__add-friend-ic" src="./assets/icons/home/accept.svg" alt="accept">
-        <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="reject">
-</div> -->
-
-<!-- <div class="chat__friend-card default">
-        <img  src="./assets/icons/home/user.svg"  alt="Friend"  class="chat__img"/>
-        <p class="chat__friend-name">Lorem Ipsum</p>
-        <img class="chat__pending-friend-ic default" src="./assets/icons/home/pending.svg" alt="pending">
-</div> -->
