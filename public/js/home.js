@@ -1,5 +1,5 @@
 import { firebaseConfig, userSignOut, readDB } from "./modules/firebase.js";
-import { displayTime, pushState, setGreeting } from "./modules/util.js";
+import { displayTime, getParameterByName, pushState, setGreeting } from "./modules/util.js";
 
 // firebase initialization
 firebase.initializeApp(firebaseConfig);
@@ -80,7 +80,8 @@ function changeTabs(tab, bool) {
   tab.classList.add("navbar__tab--active");
   hideAllSections();
   sectionTabs[[...navTabs].indexOf(tab)].classList.remove("none");
-  bool ? pushState(tab.innerText.toLowerCase()) : "";
+  console.log(tab.dataset.tab);
+  bool ? pushState(tab.dataset.tab) : "";
 }
 
 navTabs.forEach((tab) => {
@@ -94,9 +95,10 @@ const tabMap = {
   friends: navTabs[0],
   groups: navTabs[1],
   notes: navTabs[2],
-  calendar: navTabs[3],
+  gsearch: navTabs[3],
   entertainment: navTabs[4],
   timer: navTabs[5],
+  calendar: navTabs[6]
 };
 
 // window.addEventListener("load", () => {
@@ -106,6 +108,12 @@ const tabMap = {
 
 window.addEventListener("DOMContentLoaded", () => {
   let tabPath = window.location.pathname.replace(/\//gi, "");
+  const urlParams = new URLSearchParams(window.location.search);
+  const share = getParameterByName(urlParams, "share");
+  if(share){
+    changeTabs(tabMap[tabPath], 0);
+    return;
+  }
   changeTabs(tabMap[tabPath], 1);
 });
 
