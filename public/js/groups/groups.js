@@ -693,8 +693,15 @@ function setUpChatWindow(groupCard) {
   updateFriendDataAtChatWindow(groupCard);
   updateChatDataSet(groupCard);
 }
+
 let prevCard = null;
 async function updateChatWindow(groupCard) {
+  let upload = document.querySelector(".upload");
+  if (!upload.classList.contains("none")) {
+    upload.classList.add("none");
+    chatWrapper.classList.remove("none");
+  }
+
   setUpChatWindow(groupCard);
 
   let id = chatWindowHeader.dataset.groupId;
@@ -726,6 +733,7 @@ function sendMessage() {
   let message = {
     text: chatWindowMessageInput.value,
     sender: user.uid,
+    time: new Date().toISOString(),
   };
   addChlidDB(
     database,
@@ -746,29 +754,89 @@ function fillMessagesToChatBody(data, groupId) {
     `.group__chat-container[data-group-id="${groupId}"]`
   );
   Object.values(data).forEach((message, idx) => {
+    let sender = document.querySelector(
+      `.group__participant-card[data-id=${message.sender}]`
+    ).textContent;
     if (message.sender === user.uid) {
-      addMessageToContainer(chatContainer, message.text, "right");
+      "text" in message
+        ? addMessageToContainer(
+            chatContainer,
+            message.text,
+            message.time,
+            sender,
+            "right"
+          )
+        : "image" in message
+        ? addFileToContainer(
+            chatContainer,
+            message.image,
+            message.metadata,
+            message.time,
+            "right",
+            "image"
+          )
+        : addFileToContainer(
+            chatContainer,
+            message.file,
+            message.metadata,
+            message.time,
+            "right",
+            "file"
+          );
     } else {
-      addMessageToContainer(chatContainer, message.text, "left");
+      "text" in message
+        ? addMessageToContainer(
+            chatContainer,
+            message.text,
+            message.time,
+            sender,
+            "left"
+          )
+        : "image" in message
+        ? addFileToContainer(
+            chatContainer,
+            message.image,
+            message.metadata,
+            message.time,
+            "left",
+            "image"
+          )
+        : addFileToContainer(
+            chatContainer,
+            message.file,
+            message.metadata,
+            message.time,
+            "left",
+            "file"
+          );
     }
   });
   autoScroll();
 }
 
-function addMessageToContainer(chatContainer, message, position) {
-  chatContainer.appendChild(createMessage(message, position));
+function addMessageToContainer(chatContainer, message, time, sender, position) {
+  let datePart = new Date(time).toDateString();
+  let timePart = new Date(time).toTimeString().split(" ")[0];
+  let timeStamp = datePart + " " + timePart;
+  chatContainer.appendChild(
+    createMessage(message, timeStamp, sender, position)
+  );
 }
 
-function createMessage(message, position) {
+function createMessage(message, timeStamp, sender, position) {
   let messageWrapper = document.createElement("div");
   let chatMessage = document.createElement("p");
+  let chatTimeStamp = document.createElement("span");
 
   messageWrapper.className = `group__message-container group__message-container--${position}`;
   chatMessage.className = "group__message";
+  chatTimeStamp.className = "group__time-stamp";
 
   chatMessage.textContent = message;
+  chatTimeStamp.textContent = sender + " " + timeStamp;
 
   messageWrapper.appendChild(chatMessage);
+  messageWrapper.appendChild(chatTimeStamp);
   return messageWrapper;
 }
 
@@ -785,11 +853,97 @@ async function addMessageToChatBody(chat) {
   let chatData = chat.val();
   if (!chatData) return;
 
-  if (chatData.sender === user.uid) {
-    addMessageToContainer(chatContainer, chatData.text, "right");
-  } else {
-    addMessageToContainer(chatContainer, chatData.text, "left");
+  if ("image" in chatData) {
+    if (
+      chatContainer.querySelector(
+        `.group__message-container[data-id="${chat.key}"]`
+      )
+    )
+      return;
+    addFileToContainer(
+      chatContainer,
+      chatData.image,
+      chatData.metadata,
+      chatData.time,
+      "left",
+      "image"
+    );
+    return;
   }
+  if ("file" in chatData) {
+    if (
+      chatContainer.querySelector(
+        `.group__message-container[data-id="${chat.key}"]`
+      )
+    )
+      return;
+    addFileToContainer(
+      chatContainer,
+      chatData.file,
+      chatData.metadata,
+      chatData.time,
+      "left",
+      "file"
+    );
+    return;
+  }
+  let sender = document.querySelector(
+    `.group__participant-card[data-id=${chatData.sender}]`
+  ).textContent;
+  if (chatData.sender === user.uid) {
+    addMessageToContainer(
+      chatContainer,
+      chatData.text,
+      chatData.time,
+      sender,
+      "right"
+    );
+  } else {
+    addMessageToContainer(
+      chatContainer,
+      chatData.text,
+      chatData.time,
+      sender,
+      "left"
+    );
+  }
+  autoScroll();
+}
+
+function addFileToContainer(
+  chatContainer,
+  src,
+  metaData,
+  time,
+  position,
+  type
+) {
+  let datePart = new Date(time).toDateString();
+  let timePart = new Date(time).toTimeString().split(" ")[0];
+  let timeStamp = datePart + " " + timePart;
+  let size = metaData.size;
+  let name = metaData.name;
+  chatContainer.innerHTML +=
+    type === "image"
+      ? `<div class="group__message-container group__message-container--${position}">
+          <div class="group__message--image-cnt">
+            <a class="group__message--link" href="${src}" download target="_blank"><img src="${src}" alt="image" class="group__message--image" loading="lazy"></a>
+            <span class="group__message--downloaded">${size} MB</span>
+          </div>
+          <span class="group__time-stamp group__time-stamp--left">${timeStamp}</span>
+        </div>`
+      : `<div class="group__message-container group__message-container--${position}">
+          <div class="group__message--file-cnt">
+            <div class="group__message--file-download"> 
+              <a class="group__message--link" href="${src}" download="${name}" target="_blank"><img class="group__message--download-ic" src="./assets/icons/home/download.svg" alt=""></a>
+            </div>
+            <div class="group__message--file-detail">
+              <h3 class="group__message--file-name">${name}</h3>
+              <span class="group__message--downloaded">${size} MB</span>
+            </div>
+          </div>
+          <span class="group__time-stamp group__time-stamp--left">${timeStamp}</span>
+        </div>`;
   autoScroll();
 }
 
