@@ -106,12 +106,19 @@ export function groupCardTemplate(groupHash, groupData) {
 }
 
 export function addParticipantsFriendsCardTemplate(fid, photoURL, name){
-  return `
-  <div class="group__add-friend-card" data-id=${fid}>
-    <img src="${photoURL}" alt="Friend" class="chat__img">
-    <p class="group__add-friend-name">${name}</p>
-    <img class="group__add-friend-ic" src="./assets/icons/home/accept.svg" alt="Add to group">
-  </div>`
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("group__add-friend-card");
+  wrapper.dataset.id = fid;
+  wrapper.innerHTML = `<img src="${photoURL}" alt="Friend" class="chat__img">
+                       <p class="group__add-friend-name">${name}</p>
+                       <img class="group__add-friend-ic" src="./assets/icons/home/accept.svg" alt="Add to group">`;
+  return wrapper;
+  // return `
+  // <div class="group__add-friend-card" data-id=${fid}>
+  //   <img src="${photoURL}" alt="Friend" class="chat__img">
+  //   <p class="group__add-friend-name">${name}</p>
+  //   <img class="group__add-friend-ic" src="./assets/icons/home/accept.svg" alt="Add to group">
+  // </div>`
 }
 
 function checkAdminStatus(admin, isUserAdmin){

@@ -33,7 +33,6 @@ auth.onAuthStateChanged(async (currentUser) => {
     totalFriends = (
       await readDB(database, `friends/${user.uid}/friends`)
     ).numChildren();
-    checkAddFriendsList();
     createDBListener();
     handleGroupJoinURL();
   }
@@ -105,26 +104,14 @@ searchFriendsInputClose.addEventListener("click", function (e) {
 });
 
 //Update the friendds list and add listener for adding to groups
-async function checkAddFriendsList() {
-  const participantAddFriendsCount = participantAddFriendsCnt.childElementCount;
-  if (participantAddFriendsCount === totalFriends) {
-    updateFriendsForAddParticipantsUtil();
-    return;
-  }
-  setTimeout(checkAddFriendsList, 1000);
-}
+const refreshParticipant = document.querySelector(".dummy-participant-refresh");
+refreshParticipant.addEventListener("click", updateFriendsForAddParticipants);
 
-function updateFriendsForAddParticipantsUtil() {
-  participantAddFriendsCard = participantAddFriendsCnt.querySelectorAll(
-    ".group__add-friend-card"
-  );
-  participantAddFriendsCard.forEach((card) => {
-    updateFriendsForAddParticipants(card);
-  });
-}
-
-function updateFriendsForAddParticipants(card) {
+const participantListCnt = document.querySelector(".group__add-friends-cnt[data-type='friends-cnt']");
+function updateFriendsForAddParticipants() {
+  const card = participantListCnt.lastChild;
   const participantAddFriendsIc = card.querySelector(".group__add-friend-ic");
+  console.log(participantAddFriendsIc)
   searchFriendsList.push(
     card.querySelector(".group__add-friend-name").innerText
   );
@@ -226,11 +213,12 @@ async function createGroup(groupHash, name, profileURL) {
 
 // Add friends to group list
 function addFriendsToGroup() {
+  console.log("hello");
   const fid = this.parentElement.dataset.id;
   const groupHash = document.querySelector(".group__group-card-active").dataset
     .id;
   const isAddedAlready = document.querySelector(
-    `.group__participant-each[data-id="${groupHash}"] .group__participant-card[data-id=${fid}]`
+    `.group__participant-each[data-id="${groupHash}"] .group__participant-card[data-id="${fid}"]`
   );
   if (!isAddedAlready) {
     addChlidDB(database, `groups/${groupHash}/participants`, fid, false);
@@ -251,7 +239,7 @@ function updateAddParticipantsFriendsList(elem) {
   );
   friendsCard.forEach((card) => {
     const isPresent = elem.querySelector(
-      `.group__participant-card[data-id=${card.dataset.id}]`
+      `.group__participant-card[data-id="${card.dataset.id}"]`
     );
     if (isPresent) {
       card.querySelector(".group__add-friend-ic").classList.add("none");

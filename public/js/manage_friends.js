@@ -165,6 +165,7 @@ async function notificationFriendRequestAccept(fid, name) {
 }
 
 async function removeFriend(e) {
+  e.stopPropagation();
   await updateFriendsList();
   let hash = e.target.parentElement.dataset.hash;
   let fid = e.target.parentElement.dataset.id;
@@ -204,13 +205,7 @@ async function addFriendToFriendsList(data) {
 
   friendsUID.push(fid);
   friendsContainer.appendChild(friendCardTemplate(fid, hash, chatUid));
-  // friendsContainer.innerHTML += `<div class="chat__friend-card" data-id=${fid} data-hash=${hash}>
-  //     <img  src="${chatUid.photo}"  alt="Friend"  class="chat__img"/>
-  //     <p class="chat__friend-name">${chatUid.name}</p>
-  //     <p class="chat__message-count none"></p>
-  //     <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
-  //    </div>\n`;
-  participantListCnt.innerHTML += addParticipantsFriendsCardTemplate(fid, chatUid.photo, chatUid.name);
+  participantListCnt.appendChild(addParticipantsFriendsCardTemplate(fid, chatUid.photo, chatUid.name));
   document.querySelector(`.chat__friend-card[data-id="${fid}"] .chat__remove-friend-ic`).addEventListener("click", removeFriend);
   addEventListenerToFriendCards(fid);
   setDBListener(
@@ -219,9 +214,11 @@ async function addFriendToFriendsList(data) {
     "child_added",
     addMessageToChatBody
   );
+  document.querySelector(".dummy-participant-refresh").click();
 }
 
 async function removeFriendFromFriendsList(data) {
+
   await updateFriendsList();
   let friendsContainer = document.querySelector(".chat__friend-cnt");
   if (!data.val()) {
@@ -706,7 +703,6 @@ function sendMessage() {
 function addEventListenerToFriendCards(fid) {
   let friends = document.querySelector(`.chat__friend-card[data-id="${fid}"]`);
   friends.addEventListener("click", function (e) {
-    if(e.target.classList.contains("chat__remove-friend-ic")) return;
     const prevSelected = document.querySelector(".chat__friend-card-active");
     prevSelected
       ? prevSelected.classList.remove("chat__friend-card-active")
