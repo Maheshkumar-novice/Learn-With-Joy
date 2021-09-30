@@ -8,12 +8,12 @@ import {
 } from "./modules/firebase.js";
 
 const toggleUploadBtn = document.querySelector(".chat__img--file");
-const uploadCnt = document.querySelector(".upload");
+const uploadCnt = document.querySelector(".chat .upload");
 const chatWrapper = document.querySelector(".chat__chat-wrapper");
-const fileUpload = document.querySelectorAll(".upload__input");
-const filePreview = document.querySelector(".upload__preview");
-const fileDragnDrop = document.querySelector(".upload__dragndrop");
-const fileUploadClick = document.querySelectorAll(".upload__click--each");
+const fileUpload = document.querySelectorAll(".chat .upload__input");
+const filePreview = document.querySelector(".chat .upload__preview");
+const fileDragnDrop = document.querySelector(".chat .upload__dragndrop");
+const fileUploadClick = document.querySelectorAll(".chat .upload__click--each");
 const sendBtn = document.querySelector(".chat__img--send");
 const inputChat = document.querySelector(".chat__input--chat");
 let chatContainer;
@@ -401,7 +401,7 @@ function task(uploadTask, key, chatHash, metadata) {
       let lastMessageID = {};
       lastMessageID[user.uid] = messageKey;
       updateDB(database, `chat/${chatHash}/userLastMessage`, lastMessageID);
-      
+
       addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
       console.log(message);
 

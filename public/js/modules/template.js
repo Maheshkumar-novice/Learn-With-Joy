@@ -102,7 +102,6 @@ export function addParticipantsFriendsCardTemplate(fid, photoURL, name){
 }
 
 function checkAdminStatus(admin, isUserAdmin){
-  console.log(typeof isUserAdmin)
   if(admin){
     return `<img
               class="group__participant-option-ic"
@@ -133,6 +132,5 @@ export function addParticipantCardTemplate(fid, photoURL, name, admin, isUserAdm
                       />
                       <p class="group__participant-name">${name}</p>
                       ${checkAdminStatus(admin, isUserAdmin)}`
-  console.log(wrapper);
   return wrapper;
 }

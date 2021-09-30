@@ -45,7 +45,6 @@ function toggleUserOptions() {
 
 auth.onAuthStateChanged(async (currentUser) => {
   if (currentUser) {
-    console.log(currentUser);
     let check_presence = await readDB(database, `users/${currentUser.uid}`);
     if (!currentUser.emailVerified || !check_presence.val()) {
       window.location = "./index.html";
@@ -80,7 +79,6 @@ function changeTabs(tab, bool) {
   tab.classList.add("navbar__tab--active");
   hideAllSections();
   sectionTabs[[...navTabs].indexOf(tab)].classList.remove("none");
-  console.log(tab.dataset.tab);
   bool ? pushState(tab.dataset.tab) : "";
 }
 

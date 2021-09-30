@@ -72,7 +72,6 @@ export function setGreeting(element) {
 }
 
 export function pushState(pathName){
-  console.log(pathName, history.length);
   window.history.pushState(pathName, null, `/${pathName}`);
 }
 

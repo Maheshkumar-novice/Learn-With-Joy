@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./css/common.css" />
     <link rel="stylesheet" href="./css/home.css" />
     <link rel="stylesheet" href="./css/chat.css" />
-    <link rel="stylesheet" href="./css/gsearch.css">
+    <link rel="stylesheet" href="./css/gsearch.css" />
     <link rel="stylesheet" href="./css/loader.css" />
     <link rel="stylesheet" href="./css/timer.css" />
   </head>
@@ -121,11 +121,18 @@
       </div>
     </header>
     <nav class="navbar">
-      <h2 class="navbar__title navbar__tab navbar__tab--active" data-tab="friends">Friends</h2>
+      <h2
+        class="navbar__title navbar__tab navbar__tab--active"
+        data-tab="friends"
+      >
+        Friends
+      </h2>
       <h2 class="navbar__title navbar__tab" data-tab="groups">Groups</h2>
       <h2 class="navbar__title navbar__tab" data-tab="notes">Notes</h2>
       <h2 class="navbar__title navbar__tab" data-tab="gsearch">G Search</h2>
-      <h2 class="navbar__title navbar__tab" data-tab="entertainment">Entertainment</h2>
+      <h2 class="navbar__title navbar__tab" data-tab="entertainment">
+        Entertainment
+      </h2>
       <h2 class="navbar__title navbar__tab" data-tab="timer">Timer</h2>
       <img
         src="./assets/icons/home/drop down.svg"
@@ -133,7 +140,9 @@
         class="navbar__img"
       />
       <div class="available-tabs none">
-        <h2 class="available-tab navbar__title navbar__tab" data-tab="calendar">Calendar</h2>
+        <h2 class="available-tab navbar__title navbar__tab" data-tab="calendar">
+          Calendar
+        </h2>
         <h2 class="available-tab">Resources</h2>
         <h2 class="available-tab">Resources</h2>
       </div>
@@ -482,7 +491,11 @@
                 <div class="add-participant-search-cnt">
                   <div class="add-participant-share-link">
                     <p class="group-share-link" title=""></p>
-                    <img class="copy-link" src="./assets/icons/groups/share-link.svg" alt="copy-link">
+                    <img
+                      class="copy-link"
+                      src="./assets/icons/groups/share-link.svg"
+                      alt="copy-link"
+                    />
                   </div>
                   <div class="add-participant-input-cnt">
                     <input
@@ -557,14 +570,22 @@
         </div>
         <div class="extension-installer-popup none">
           <p>To access the google Search please install the Extension</p>
-          <a href="https://chrome.google.com/webstore/detail/iframe-allow/gifgpciglhhpmeefjdmlpboipkibhbjg" target="_blank" title="iframe-allow">Iframe Allow</a>
+          <a
+            href="https://chrome.google.com/webstore/detail/iframe-allow/gifgpciglhhpmeefjdmlpboipkibhbjg"
+            target="_blank"
+            title="iframe-allow"
+            >Iframe Allow</a
+          >
           <div class="close-cnt">
             <div class="close">Close</div>
             <div class="permanent-close">Do Not Show Again</div>
           </div>
         </div>
       </section>
-      <section class="entertainment section-tab" data-tab="entertainment"></section>
+      <section
+        class="entertainment section-tab"
+        data-tab="entertainment"
+      ></section>
       <section class="timer section-tab" data-tab="timer">
         <div class="timer_controls">
           <button class="timer__button" data-time="30">30 Secs</button>
@@ -605,10 +626,14 @@
     <script type="module" src="./js/new_chat.js"></script>
     <!--Group script -->
     <script type="module" src="./js/groups/groups.js"></script>
+    <script type="module" src="./js/groups/file-group.js"></script>
     <script type="module" src="./js/notification.js"></script>
     <script type="module" src="./js/timer/timer.js"></script>
     <script type="module" src="./js/gsearch/gsearch.js"></script>
     <!--Google search engine-->
-    <script async src="https://cse.google.com/cse.js?cx=08b8c294f94bb3952"></script>
+    <script
+      async
+      src="https://cse.google.com/cse.js?cx=08b8c294f94bb3952"
+    ></script>
   </body>
 </html>
