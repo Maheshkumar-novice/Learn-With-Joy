@@ -213,7 +213,6 @@ async function createGroup(groupHash, name, profileURL) {
 
 // Add friends to group list
 function addFriendsToGroup() {
-  console.log("hello");
   const fid = this.parentElement.dataset.id;
   const groupHash = document.querySelector(".group__group-card-active").dataset
     .id;

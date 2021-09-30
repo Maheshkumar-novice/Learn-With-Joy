@@ -218,7 +218,6 @@ async function addFriendToFriendsList(data) {
 }
 
 async function removeFriendFromFriendsList(data) {
-
   await updateFriendsList();
   let friendsContainer = document.querySelector(".chat__friend-cnt");
   if (!data.val()) {
@@ -237,6 +236,9 @@ async function removeFriendFromFriendsList(data) {
   );
   friendsContainer.removeChild(removedFriend);
   resetChatContainer(hash);
+  // remove from add friend to group container
+  const groupFriendCard = document.querySelector(`.group__add-friend-card[data-id="${data.key}"]`);
+  participantListCnt.removeChild(groupFriendCard);
 }
 
 async function addFriendRequestReceived(data) {
