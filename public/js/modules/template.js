@@ -77,6 +77,19 @@ export const signupTemplate = `<div class="input__field">
 </div>
 <button type="submit" class="form__button">Signup</button>`;
 
+// --------------------------------------------------- Friends.js --------------------------------------------
+export function friendCardTemplate(fid, hash, chatUid){
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("chat__friend-card");
+  wrapper.dataset.id = fid;
+  wrapper.dataset.hash = hash;
+  wrapper.innerHTML = `<img  src="${chatUid.photo}"  alt="Friend"  class="chat__img"/>
+                       <p class="chat__friend-name">${chatUid.name}</p>
+                       <p class="chat__message-count none"></p>
+                       <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">`;
+  return wrapper;
+}
+
 // -------------------------------------------------------- groups.js---------------------------------------------
 
 export function groupCardTemplate(groupHash, groupData) {

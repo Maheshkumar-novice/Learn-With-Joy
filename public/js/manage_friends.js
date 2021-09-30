@@ -12,7 +12,7 @@ import {
   storageList,
   updateDB,
 } from "./modules/firebase.js";
-import { addParticipantsFriendsCardTemplate } from "./modules/template.js";
+import { addParticipantsFriendsCardTemplate, friendCardTemplate } from "./modules/template.js";
 import { checkUserPresent, pushFront } from "./modules/util.js";
 
 const auth = firebase.auth();
@@ -203,20 +203,16 @@ async function addFriendToFriendsList(data) {
   let chatUid = (await readDB(database, `users/${fid}`)).val();
 
   friendsUID.push(fid);
-  friendsContainer.innerHTML += `<div class="chat__friend-card" data-id=${fid} data-hash=${hash}>
-      <img  src="${chatUid.photo}"  alt="Friend"  class="chat__img"/>
-      <p class="chat__friend-name">${chatUid.name}</p>
-      <p class="chat__message-count none"></p>
-      <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
-     </div>\n`;
+  friendsContainer.appendChild(friendCardTemplate(fid, hash, chatUid));
+  // friendsContainer.innerHTML += `<div class="chat__friend-card" data-id=${fid} data-hash=${hash}>
+  //     <img  src="${chatUid.photo}"  alt="Friend"  class="chat__img"/>
+  //     <p class="chat__friend-name">${chatUid.name}</p>
+  //     <p class="chat__message-count none"></p>
+  //     <img class="chat__remove-friend-ic" src="./assets/icons/home/reject.svg" alt="remove friend">
+  //    </div>\n`;
   participantListCnt.innerHTML += addParticipantsFriendsCardTemplate(fid, chatUid.photo, chatUid.name);
-
-  document
-    .querySelectorAll(`.chat__friend-card>.chat__remove-friend-ic`)
-    .forEach((rejectIcon) => {
-      rejectIcon.addEventListener("click", removeFriend);
-    });
-  addEventListenerToFriendCards();
+  document.querySelector(`.chat__friend-card[data-id="${fid}"] .chat__remove-friend-ic`).addEventListener("click", removeFriend);
+  addEventListenerToFriendCards(fid);
   setDBListener(
     database,
     `chat/${hash}/messages`,
@@ -707,18 +703,17 @@ function sendMessage() {
   chatWindowMessageInput.value = "";
 }
 
-function addEventListenerToFriendCards() {
-  let friends = document.querySelectorAll(".chat__friend-card");
-  friends.forEach((friend) =>
-    friend.addEventListener("click", function (e) {
-      const prevSelected = document.querySelector(".chat__friend-card-active");
-      prevSelected
-        ? prevSelected.classList.remove("chat__friend-card-active")
-        : "";
-      this.classList.add("chat__friend-card-active");
-      updateChatWindow(this);
-    })
-  );
+function addEventListenerToFriendCards(fid) {
+  let friends = document.querySelector(`.chat__friend-card[data-id="${fid}"]`);
+  friends.addEventListener("click", function (e) {
+    if(e.target.classList.contains("chat__remove-friend-ic")) return;
+    const prevSelected = document.querySelector(".chat__friend-card-active");
+    prevSelected
+      ? prevSelected.classList.remove("chat__friend-card-active")
+      : "";
+    this.classList.add("chat__friend-card-active");
+    updateChatWindow(this);
+  });
 }
 
 function autoScroll() {
