@@ -12,6 +12,7 @@ import {
   storageList,
   updateDB,
 } from "./modules/firebase.js";
+import { chatMessageCollection, chatSearchResult, client } from "./modules/search_index.js";
 import { addParticipantsFriendsCardTemplate, friendCardTemplate } from "./modules/template.js";
 import { checkUserPresent, pushFront } from "./modules/util.js";
 
@@ -453,12 +454,12 @@ async function updateChatWindow(friendCard) {
   let data = (await readDB(database, `chat/${hash}`)).val();
   removeNotSeenCount(hash);
   data.userLastMessage ? updateLastSeenMessage(hash, data.userLastMessage[fid]) : ""; 
-  let lastClearedMessageIndex = data.lastClearedMessage
-    ? Object.keys(data.messages).findIndex(
-        (key) => key === data.lastClearedMessage[user.uid]
-      )
-    : -1;
-  fillMessagesToChatBody(data.messages, hash, lastClearedMessageIndex);
+  const lastClearedMessage = data.lastClearedMessage;
+  //   ? Object.keys(data.messages).findIndex(
+  //       (key) => key === data.lastClearedMessage[user.uid]
+  //     )
+  //   : -1;
+  fillMessagesToChatBody(data.messages, hash, lastClearedMessage);
 }
 
 async function updateLastSeenMessage(hash, messageID){
@@ -468,12 +469,13 @@ async function updateLastSeenMessage(hash, messageID){
   updateDB(database, `chat/${hash}/lastSeenMessage`, msg);
 }
 
-function createMessage(message, timeStamp, position) {
+function createMessage(message, timeStamp, key, position) {
   let messageWrapper = document.createElement("div");
   let chatMessage = document.createElement("p");
   let chatTimeStamp = document.createElement("span");
 
   messageWrapper.className = `chat__message-container chat__message-container--${position}`;
+  messageWrapper.dataset.messageId = key;
   chatMessage.className = "chat__message";
   chatTimeStamp.className = "chat__time-stamp";
 
@@ -485,11 +487,11 @@ function createMessage(message, timeStamp, position) {
   return messageWrapper;
 }
 
-function addMessageToContainer(chatContainer, message, time, position) {
+function addMessageToContainer(chatContainer, message, time, key, position) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
   let timeStamp = datePart + " " + timePart;
-  chatContainer.appendChild(createMessage(message, timeStamp, position));
+  chatContainer.appendChild(createMessage(message, timeStamp, key, position));
 }
 
 // function addMessageToContainer(chatContainer, message, time, position) {
@@ -539,66 +541,141 @@ function addFileToContainer(
   autoScroll();
 }
 
-function fillMessagesToChatBody(data, hash, lastClearedMessageIndex) {
+function CreateAndFillMessages(key, data, chatContainer){
+  if (data[key].sender === user.uid) {
+    "text" in data[key]
+      ? addMessageToContainer(
+          chatContainer,
+          data[key].text,
+          data[key].time,
+          key,
+          "right"
+        )
+      : "image" in data[key]
+      ? addFileToContainer(
+          chatContainer,
+          data[key].image,
+          data[key].metadata,
+          data[key].time,
+          "right",
+          "image"
+        )
+      : addFileToContainer(
+          chatContainer,
+          data[key].file,
+          data[key].metadata,
+          data[key].time,
+          "right",
+          "file"
+        );
+  } else {
+    "text" in data[key]
+      ? addMessageToContainer(
+          chatContainer,
+          data[key].text,
+          data[key].time,
+          key,
+          "left"
+        )
+      : "image" in data[key]
+      ? addFileToContainer(
+          chatContainer,
+          data[key].image,
+          data[key].metadata,
+          data[key].time,
+          "left",
+          "image"
+        )
+      : addFileToContainer(
+          chatContainer,
+          data[key].file,
+          data[key].metadata,
+          data[key].time,
+          "left",
+          "file"
+        );
+  }
+}
+
+function fillMessagesToChatBody(data, hash, lastClearedMessage) {
   if (!data) return;
   console.log(data, hash);
   let chatContainer = document.querySelector(
     `.chat__chat-container[data-hash="${hash}"]`
   );
-  Object.values(data).forEach((message, idx) => {
-    if (idx <= lastClearedMessageIndex) return;
-    if (message.sender === user.uid) {
-      "text" in message
-        ? addMessageToContainer(
-            chatContainer,
-            message.text,
-            message.time,
-            "right"
-          )
-        : "image" in message
-        ? addFileToContainer(
-            chatContainer,
-            message.image,
-            message.metadata,
-            message.time,
-            "right",
-            "image"
-          )
-        : addFileToContainer(
-            chatContainer,
-            message.file,
-            message.metadata,
-            message.time,
-            "right",
-            "file"
-          );
-    } else {
-      "text" in message
-        ? addMessageToContainer(
-            chatContainer,
-            message.text,
-            message.time,
-            "left"
-          )
-        : "image" in message
-        ? addFileToContainer(
-            chatContainer,
-            message.image,
-            message.metadata,
-            message.time,
-            "left",
-            "image"
-          )
-        : addFileToContainer(
-            chatContainer,
-            message.file,
-            message.metadata,
-            message.time,
-            "left",
-            "file"
-          );
+  let lastClearedMessageKey = lastClearedMessage && lastClearedMessage[user.uid] ? lastClearedMessage[user.uid] : false;
+  let idx = 0;
+  if(!lastClearedMessageKey){
+    for(let key in data){
+      CreateAndFillMessages(key, data, chatContainer);
     }
-  });
+  }
+  else{
+    for(let key in data){
+      if (lastClearedMessageKey) {
+        if(key === lastClearedMessageKey){
+          lastClearedMessageKey = false;
+        }
+        continue;
+      }
+      CreateAndFillMessages(key, data, chatContainer);
+    }
+  }
+  
+  // Object.values(data).forEach((message, idx) => {
+  //   if (idx <= lastClearedMessageIndex) return;
+  //   if (message.sender === user.uid) {
+  //     "text" in message
+  //       ? addMessageToContainer(
+  //           chatContainer,
+  //           message.text,
+  //           message.time,
+  //           "right"
+  //         )
+  //       : "image" in message
+  //       ? addFileToContainer(
+  //           chatContainer,
+  //           message.image,
+  //           message.metadata,
+  //           message.time,
+  //           "right",
+  //           "image"
+  //         )
+  //       : addFileToContainer(
+  //           chatContainer,
+  //           message.file,
+  //           message.metadata,
+  //           message.time,
+  //           "right",
+  //           "file"
+  //         );
+  //   } else {
+  //     "text" in message
+  //       ? addMessageToContainer(
+  //           chatContainer,
+  //           message.text,
+  //           message.time,
+  //           "left"
+  //         )
+  //       : "image" in message
+  //       ? addFileToContainer(
+  //           chatContainer,
+  //           message.image,
+  //           message.metadata,
+  //           message.time,
+  //           "left",
+  //           "image"
+  //         )
+  //       : addFileToContainer(
+  //           chatContainer,
+  //           message.file,
+  //           message.metadata,
+  //           message.time,
+  //           "left",
+  //           "file"
+  //         );
+  //   }
+  // });
   autoScroll();
 }
 
@@ -738,3 +815,6 @@ window.addEventListener("keyup", (e) => {
 document
   .querySelector(".chat__img--send")
   .addEventListener("click", sendMessage);
+
+
+
