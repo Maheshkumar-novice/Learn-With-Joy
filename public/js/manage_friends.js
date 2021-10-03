@@ -361,21 +361,44 @@ let chatWindowHeader = document.querySelector(".chat__chat-header");
 let chatWindowMessageSender = document.querySelector(
   ".chat__chat-message-sender"
 );
-let chatWrapper = document.querySelector(".chat__chat-wrapper");
+const chatWrapper = document.querySelector(".chat__chat-wrapper");
 const chatMenuIc = document.querySelector(".chat__chat-menu-ic");
 const chatMenuCnt = document.querySelector(".chat__chat-menu-cnt");
-const chatMenuItem = document.querySelector(".menu__item");
-let chatContainer;
-// = document.querySelector(".chat__chat-container");
+const chatMenuItem = document.querySelectorAll(".menu__item");
+const searchCnt = document.querySelector(".search_message");
 
 // function to clear Up chat window
-chatMenuIc.addEventListener("click", (e) => {
+function toggleChatContainer(){
   chatMenuCnt.classList.toggle("none");
+}
+chatMenuIc.addEventListener("click", toggleChatContainer);
+
+chatMenuItem.forEach(menu => {
+  menu.addEventListener("click", function(e){
+    if(this.dataset.value === "clear"){
+      clearChat();
+    }
+    else if(this.dataset.value === "search"){
+      enableSearch();
+    }
+    toggleChatContainer();
+  });
 });
 
-chatMenuItem.addEventListener("click", clearChat);
+const search_input = document.querySelector(".search_message--input");
+function enableSearch(){
+  if(searchCnt.classList.contains("none")){
+    searchCnt.classList.remove("none");
+    chatWrapper.style.maxHeight = "calc(100% - 60px)";
+  }
+  else{
+    searchCnt.classList.add("none");
+    chatWrapper.style.maxHeight = "100%";
+  }
+  search_input.value = "";
+}
 
-async function clearChat(e) {
+async function clearChat() {
   let hash = chatWindowMessageInput.dataset.chatHash;
   console.log("helo", chatWindowMessageInput.dataset.chatHash);
   const lastMessageId = (
@@ -425,6 +448,7 @@ function createFriendContainer(hash, fid) {
 
 let prevCard = null;
 async function updateChatWindow(friendCard) {
+  !searchCnt.classList.contains("none") ? enableSearch() : "";
   let upload = document.querySelector(".upload");
   if (!upload.classList.contains("none")) {
     upload.classList.add("none");
@@ -751,9 +775,9 @@ async function addMessageToChatBody(chat) {
   }
 
   if (chatData.sender === user.uid) {
-    addMessageToContainer(chatContainer, chatData.text, chatData.time, "right");
+    addMessageToContainer(chatContainer, chatData.text, chatData.time, chat.key, "right");
   } else {
-    addMessageToContainer(chatContainer, chatData.text, chatData.time, "left");
+    addMessageToContainer(chatContainer, chatData.text, chatData.time, chat.key, "left");
   }
   autoScroll();
   !chatContainer.classList.contains("none") && (chatData.sender !== user.uid) ? updateLastSeenMessage(hash, chat.key): "";
@@ -765,7 +789,8 @@ function sendMessage() {
   let messageKey = pushKey(database, `chat/${chatHash}/messages`, user.uid);
   let text = chatWindowMessageInput.value;
   let sender = user.uid;
-  let time = new Date().toISOString();
+  let timeStamp = new Date();
+  let time = timeStamp.toISOString();
   let message = {
     text,
     sender,
@@ -777,6 +802,14 @@ function sendMessage() {
   lastMessageID[user.uid] = messageKey;
   updateDB(database, `chat/${chatHash}/userLastMessage`, lastMessageID);
   chatWindowMessageInput.value = "";
+  // update for chat message searching [index]
+  const dataDocument = {
+    "chat_hash": chatHash,
+    "message_id": messageKey,
+    "text": text,
+    "timestamp": timeStamp.getTime()
+  };
+  client.collections('chat').documents().create(dataDocument);
 }
 
 function addEventListenerToFriendCards(fid) {
@@ -817,4 +850,8 @@ document
   .addEventListener("click", sendMessage);
 
 
-
+// ----------------------------------------- testing -------------------------------------------------
+// client.collections().create(chatMessageCollection);
+// client.collections('chat').delete()
+// console.log(await client.collections().retrieve());
+// console.log((await chatSearchResult("this is", "-MkvGbP95mINny-NJs6c")));
