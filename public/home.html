@@ -201,7 +201,8 @@
                   ></path>
                 </svg>
                 <div class="chat__chat-menu-cnt none">
-                  <p class="menu__item">Clear Chat</p>
+                  <p class="menu__item" data-value="clear">Clear Chat</p>
+                  <p class="menu__item" data-value="search">Search in Chat</p>
                 </div>
               </div>
               <div class="chat__chat-body">
@@ -267,7 +268,24 @@
                   </div>
                 </div>
 
-                <div class="chat__chat-wrapper"></div>
+                <div class="search_message none">
+                    <div class="search__message-operation">
+                      <input type="text" name="chat_search" class="search_message--input" placeholder="Enter text to Search" autocomplete="off">
+                      <img class="search_result-ic" src="./assets/icons/home/search.svg" data-value="prev" alt="previous">
+                      <!-- <img class="search_result-ic" src="./assets/icons/home/pending.svg" data-value="prev" alt="previous"> -->
+                      <div class="search_file">
+                        <input type="checkbox" name="file" id="include-file">
+                        <label for="include-file">Search File</label>
+                      </div>
+                      <img class="search_result-move-ic" src="./assets/icons/home/search_prev.svg" data-value="prev" alt="previous">
+                      <img class="search_result-move-ic" src="./assets/icons/home/search_next.svg" data-value="next" alt="next">
+                      <div class="search-count">
+                        <span class="current_count"></span>
+                        <span class="total_count"></span>
+                      </div>
+                    </div>
+                </div>
+                <div class="chat__chat-wrapper"></div> 
               </div>
               <div class="chat__chat-message-sender none">
                 <svg
@@ -566,9 +584,9 @@
       </section>
       <section class="notes section-tab" data-tab="notes"></section>
       <section class="gsearch section-tab" data-tab="gsearch">
-        <div class="iframe-cnt">
+        <!-- <div class="iframe-cnt">
           <iframe src="https://google.com" frameborder="0"></iframe>
-        </div>
+        </div> -->
         <div class="extension-installer-popup none">
           <p>To access the google Search please install the Extension</p>
           <a
@@ -620,6 +638,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
+
     <!-- Main script -->
     <script type="module" src="./js/home.js"></script>
     <script type="module" src="./js/manage_friends.js"></script>
@@ -631,10 +650,8 @@
     <script type="module" src="./js/notification.js"></script>
     <script type="module" src="./js/timer/timer.js"></script>
     <script type="module" src="./js/gsearch/gsearch.js"></script>
-    <!--Google search engine-->
-    <script
-      async
-      src="https://cse.google.com/cse.js?cx=08b8c294f94bb3952"
-    ></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/typesense@latest/dist/typesense.min.js"></script>
+    <script type="module" src="./js/chat_message_search/search.js"></script>
   </body>
 </html>

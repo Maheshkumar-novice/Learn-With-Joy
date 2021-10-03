@@ -31,3 +31,16 @@
 .no-padding {
   padding: 0 !important;
 }
+
+span.yellow{
+  background-color: yellow;
+}
+
+span.green{
+  background-color: yellowgreen;
+}
+
+img{
+  -webkit-user-drag: none;
+  user-select: none;
+}
