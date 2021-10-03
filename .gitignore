@@ -1,3 +1,4 @@
 .firebase/
+hidden_data/
 setup_repo.sh
 firebase-debug.log
