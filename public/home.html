@@ -5,10 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home | Learn With Joy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.css" />
+    <link rel="stylesheet" href="https://firepad.io/releases/v1.5.10/firepad.css" />
     <link rel="stylesheet" href="./css/custom_reset.css" />
     <link rel="stylesheet" href="./css/common.css" />
     <link rel="stylesheet" href="./css/home.css" />
     <link rel="stylesheet" href="./css/chat.css" />
+    <link rel="stylesheet" href="./css/notes.css" />
+    <link rel="stylesheet" href="./css/firepad_userlist.css">
     <link rel="stylesheet" href="./css/gsearch.css" />
     <link rel="stylesheet" href="./css/loader.css" />
     <link rel="stylesheet" href="./css/timer.css" />
@@ -582,7 +586,42 @@
           </div>
         </div>
       </section>
-      <section class="notes section-tab" data-tab="notes"></section>
+      <section class="notes section-tab" data-tab="notes">
+        <div class="notes_menu">
+          <div class="notes__creat-cnt">
+            <img src="./assets/icons/home/add_file.svg" alt="create note">
+            <h3>Create new Note</h3>
+          </div>
+          <div class="notes_display">
+            <div class="normal_notes-cnt">
+              <h2>Your Notes</h2>
+              <div class="normal_notes" data-creator="true"></div>
+              <h2>Shared Notes</h2>
+              <div class="normal_notes" data-creator="false">
+                <div class="note_card">
+                  <div class="note_select"></div>
+                  <h4 class="note_title">Untitled</h4>
+                  <img class="remove_note" src="./assets/icons/home/msg-clear.svg" alt="remove-note">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="editor-cnt">
+          <div class="no-editor">Select or Create notes to display the editor</div>
+          <div class="rich-editor none">
+            <div class="editor-header">
+              <h1 class="editor-title" contenteditable="true">Untitled</h1>
+              <div class="note-share-link" title="Copy Link">
+                <span class="note-link"></span>
+                <img class="note-copy-link" src="./assets/icons/groups/copy.svg" alt="share">
+              </div>
+            </div>
+            <!-- <div id="userlist"></div> -->
+            <div id="firepad-container"></div>
+          </div>
+        </div>
+      </section>
       <section class="gsearch section-tab" data-tab="gsearch">
         <!-- <div class="iframe-cnt">
           <iframe src="https://google.com" frameborder="0"></iframe>
@@ -653,5 +692,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/typesense@latest/dist/typesense.min.js"></script>
     <script type="module" src="./js/chat_message_search/search.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.js"></script>
+    <script src="https://firepad.io/releases/v1.5.10/firepad.min.js"></script>
+    <script src="./js/notes/firepad_userlist.js"></script>
+    <script type="module" src="./js/notes/notes.js"></script>
+    <!-- <script type="module" src="./js/notes/editor.js"></script> -->
   </body>
 </html>
