@@ -76,6 +76,7 @@ otherAvailableTabsTrigger.addEventListener("click", function () {
 
 function changeTabs(tab, bool) {
   removeAllActiveTabs();
+  console.log(tab);
   tab.classList.add("navbar__tab--active");
   hideAllSections();
   sectionTabs[[...navTabs].indexOf(tab)].classList.remove("none");
@@ -108,10 +109,16 @@ window.addEventListener("DOMContentLoaded", () => {
   let tabPath = window.location.pathname.replace(/\//gi, "");
   const urlParams = new URLSearchParams(window.location.search);
   const share = getParameterByName(urlParams, "share");
+  const editor = getParameterByName(urlParams, "editor");
   if(share){
     changeTabs(tabMap[tabPath], 0);
     return;
   }
+  if(editor){
+    changeTabs(tabMap[tabPath], 0);
+    return;
+  }
+  console.log(tabMap[tabPath]);
   changeTabs(tabMap[tabPath], 1);
 });
 
