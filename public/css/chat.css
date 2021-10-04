@@ -257,8 +257,8 @@
   top: 110%;
   width: 250px;
   padding: 1rem;
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
+  background-color: var(--gray);
+  color: var(--primary-color);
   z-index: 2;
 }
 
@@ -269,7 +269,7 @@
 }
 
 .menu__item:hover {
-  border-color: var(--secondary-color);
+  border-color: var(--primary-color);
 }
 
 .chat__chat-message-sender,
