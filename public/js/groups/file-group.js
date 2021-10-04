@@ -395,7 +395,10 @@ function task(uploadTask, key, groupId, metadata) {
       cnt.dataset.type === "image"
         ? updateImagePreview(cnt, downloadURL, message.time)
         : updateFilePreview(cnt, downloadURL, message.time);
-
+      updateDB(database, `groups/${groupId}`, { lastMessageId: messageKey });
+      let lastMessageID = {};
+      lastMessageID[user.uid] = messageKey;
+      updateDB(database, `groups/${groupId}/usersLastMessages`, lastMessageID);
       addChlidDB(database, `groups/${groupId}/messages`, messageKey, message);
 
       fileCount === 1
