@@ -107,11 +107,12 @@ searchFriendsInputClose.addEventListener("click", function (e) {
 const refreshParticipant = document.querySelector(".dummy-participant-refresh");
 refreshParticipant.addEventListener("click", updateFriendsForAddParticipants);
 
-const participantListCnt = document.querySelector(".group__add-friends-cnt[data-type='friends-cnt']");
+const participantListCnt = document.querySelector(
+  ".group__add-friends-cnt[data-type='friends-cnt']"
+);
 function updateFriendsForAddParticipants() {
   const card = participantListCnt.lastChild;
   const participantAddFriendsIc = card.querySelector(".group__add-friend-ic");
-  console.log(participantAddFriendsIc)
   searchFriendsList.push(
     card.querySelector(".group__add-friend-name").innerText
   );

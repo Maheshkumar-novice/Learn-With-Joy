@@ -65,10 +65,8 @@ function docsPreview(files) {
 }
 
 function triggerPreviewOnUpload(e) {
-  console.log(e.target.files);
   filePreview.innerHTML = "";
   fileToUpload = [];
-  console.log(e.target.dataset.type);
   let files = e.target.files;
 
   if (files.length > 5) {
@@ -81,9 +79,10 @@ function triggerPreviewOnUpload(e) {
   for (const file of files) {
     let size = file.size / (1024 * 1024).toFixed(2);
     if (size > 10) {
-      document.querySelector(".upload__info--size").style.color = "red";
+      document.querySelector(".chat .upload__info--size").style.color = "red";
       setTimeout(() => {
-        document.querySelector(".upload__info--size").style.color = "unset";
+        document.querySelector(".chat .upload__info--size").style.color =
+          "unset";
       }, 1000);
       return;
     }
@@ -104,7 +103,6 @@ fileUploadClick.forEach((upload) => {
 });
 
 toggleUploadBtn.addEventListener("click", function (e) {
-  console.log(this.dataset.mode);
   if (this.dataset.mode === "disabled") return;
   chatContainer = document.querySelector(
     `.chat__chat-container[data-hash="${inputChat.dataset.chatHash}"]`
@@ -253,7 +251,6 @@ sendBtn.addEventListener("click", async (e) => {
       `chat/${inputChat.dataset.chatHash}`,
       `${auth.currentUser.uid}`
     );
-    console.log(key);
     const metadata = {
       name: file.name,
       size,
@@ -263,7 +260,6 @@ sendBtn.addEventListener("click", async (e) => {
       ? (createImagePreview(key, URL.createObjectURL(file), size),
         imageTaskArray.push(val))
       : (createFilePreview(key, file.name, size), fileTaskArray.push(val));
-    console.log(ref);
     task(val, key, inputChat.dataset.chatHash, metadata);
   });
   provideImageFuntionality(imageTaskArray);
@@ -280,7 +276,6 @@ function provideImageFuntionality(taskArray) {
 
   pausePlayElem.forEach((pausePlay, idx) => {
     pausePlay.addEventListener("click", (e) => {
-      console.log(e.target);
       e.target.src.includes("play")
         ? ((e.target.src = "./assets/icons/home/pause.svg"),
           taskArray[idx].pause())
@@ -304,7 +299,6 @@ function provideFileFunctionality(taskArray) {
   const pausePlayElem = document.querySelectorAll(
     `.chat__message-container .chat__message--file-controls`
   );
-  console.log(pausePlayElem);
   pausePlayElem.forEach((pausePlay, idx) => {
     pausePlay.addEventListener("click", (e) => {
       e.target.src.includes("play")
@@ -361,16 +355,13 @@ function task(uploadTask, key, chatHash, metadata) {
 
       switch (snapshot.state) {
         case firebase.storage.TaskState.PAUSED: // or 'paused'
-          console.log("Upload is paused");
           break;
         case firebase.storage.TaskState.RUNNING: // or 'running'
-          console.log("Upload is running");
           break;
       }
     },
     (error) => {
       // Handle unsuccessful uploads
-      console.log(error);
       const toRemove = document.querySelector(
         `.chat__message-container[data-id="${key}"]`
       );
@@ -388,7 +379,6 @@ function task(uploadTask, key, chatHash, metadata) {
 
       let message = {};
       let messageKey = key;
-      console.log("key", chatHash);
       message["sender"] = user.uid;
       message[cnt.dataset.type] = downloadURL;
       message["metadata"] = metadata;
@@ -403,7 +393,6 @@ function task(uploadTask, key, chatHash, metadata) {
       updateDB(database, `chat/${chatHash}/userLastMessage`, lastMessageID);
 
       addChlidDB(database, `chat/${chatHash}/messages`, messageKey, message);
-      console.log(message);
 
       fileCount === 1
         ? (toggleUploadBtn.dataset.mode = "enabled")

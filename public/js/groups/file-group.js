@@ -263,7 +263,7 @@ sendBtn.addEventListener("click", async (e) => {
       ? (createImagePreview(key, URL.createObjectURL(file), size),
         imageTaskArray.push(val))
       : (createFilePreview(key, file.name, size), fileTaskArray.push(val));
-    task(val, key, metadata);
+    task(val, key, chatWindowHeader.dataset.groupId, metadata);
   });
   provideImageFuntionality(imageTaskArray);
   provideFileFunctionality(fileTaskArray);
@@ -323,7 +323,7 @@ function provideFileFunctionality(taskArray) {
 }
 
 // function to handle upload tasks
-function task(uploadTask, key, metadata) {
+function task(uploadTask, key, groupId, metadata) {
   uploadTask.on(
     "state_changed",
     (snapshot) => {
@@ -381,11 +381,7 @@ function task(uploadTask, key, metadata) {
       let user = auth.currentUser;
 
       let message = {};
-      let messageKey = pushKey(
-        database,
-        `group/${chatWindowHeader.dataset.groupId}/messages`,
-        user.uid
-      );
+      let messageKey = key;
       message["sender"] = user.uid;
       message[cnt.dataset.type] = downloadURL;
       message["metadata"] = metadata;
@@ -394,12 +390,7 @@ function task(uploadTask, key, metadata) {
         ? updateImagePreview(cnt, downloadURL, message.time)
         : updateFilePreview(cnt, downloadURL, message.time);
 
-      addChlidDB(
-        database,
-        `groups/${chatWindowHeader.dataset.groupId}/messages`,
-        messageKey,
-        message
-      );
+      addChlidDB(database, `groups/${groupId}/messages`, messageKey, message);
 
       fileCount === 1
         ? (toggleUploadBtn.dataset.mode = "enabled")
