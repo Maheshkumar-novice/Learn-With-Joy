@@ -183,15 +183,18 @@ function createFilePreview(key, name, size) {
 
 // update upon the successful upload.
 function updateImagePreview(cnt, link, ts) {
+  let sender = document.querySelector(
+    `.group__participant-card[data-id=${auth.currentUser.uid}]`
+  ).textContent;
   const imgLink = cnt.querySelector(".group__message--image");
   const aLink = cnt.querySelector(".group__message--link");
   const size = cnt.querySelector(".group__message--downloaded");
   const timeHTML = cnt.querySelector(".group__time-stamp");
   let datePart = new Date(ts).toDateString();
   let timePart = new Date(ts).toTimeString().split(" ")[0];
-  let timeStamp = datePart + " " + timePart;
+  let timeStamp = sender + " " + datePart + " " + timePart;
 
-  timeHTML.innerText = timeStamp;
+  timeHTML.textContent = timeStamp;
   size.innerText = size.innerText.split("/")[1].trim();
 
   imgLink.src = link;
@@ -203,6 +206,9 @@ function updateImagePreview(cnt, link, ts) {
 }
 
 function updateFilePreview(cnt, link, ts) {
+  let sender = document.querySelector(
+    `.group__participant-card[data-id=${auth.currentUser.uid}]`
+  ).textContent;
   const imgLink = cnt.querySelector(".group__message--download-ic");
   const aLink = cnt.querySelector(".group__message--link");
   const name = cnt.querySelector(".group__message--file-name");
@@ -210,9 +216,9 @@ function updateFilePreview(cnt, link, ts) {
   const timeHTML = cnt.querySelector(".group__time-stamp");
   let datePart = new Date(ts).toDateString();
   let timePart = new Date(ts).toTimeString().split(" ")[0];
-  let timeStamp = datePart + " " + timePart;
+  let timeStamp = sender + " " + datePart + " " + timePart;
 
-  timeHTML.innerText = timeStamp;
+  timeHTML.textContent = timeStamp;
   size.innerText = size.innerText.split("/")[1].trim();
   imgLink.classList.remove("none");
   aLink.href = link;

@@ -760,6 +760,7 @@ function fillMessagesToChatBody(data, groupId) {
             message.image,
             message.metadata,
             message.time,
+            sender,
             "right",
             "image"
           )
@@ -768,6 +769,7 @@ function fillMessagesToChatBody(data, groupId) {
             message.file,
             message.metadata,
             message.time,
+            sender,
             "right",
             "file"
           );
@@ -786,6 +788,7 @@ function fillMessagesToChatBody(data, groupId) {
             message.image,
             message.metadata,
             message.time,
+            sender,
             "left",
             "image"
           )
@@ -794,6 +797,7 @@ function fillMessagesToChatBody(data, groupId) {
             message.file,
             message.metadata,
             message.time,
+            sender,
             "left",
             "file"
           );
@@ -840,7 +844,9 @@ async function addMessageToChatBody(chat) {
 
   let chatData = chat.val();
   if (!chatData) return;
-
+  let sender = document.querySelector(
+    `.group__participant-card[data-id=${chatData.sender}]`
+  ).textContent;
   if ("image" in chatData) {
     if (
       chatContainer.querySelector(
@@ -853,6 +859,7 @@ async function addMessageToChatBody(chat) {
       chatData.image,
       chatData.metadata,
       chatData.time,
+      sender,
       "left",
       "image"
     );
@@ -870,14 +877,12 @@ async function addMessageToChatBody(chat) {
       chatData.file,
       chatData.metadata,
       chatData.time,
+      sender,
       "left",
       "file"
     );
     return;
   }
-  let sender = document.querySelector(
-    `.group__participant-card[data-id=${chatData.sender}]`
-  ).textContent;
   if (chatData.sender === user.uid) {
     addMessageToContainer(
       chatContainer,
@@ -903,12 +908,13 @@ function addFileToContainer(
   src,
   metaData,
   time,
+  sender,
   position,
   type
 ) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
-  let timeStamp = datePart + " " + timePart;
+  let timeStamp = sender + " " + datePart + " " + timePart;
   let size = metaData.size;
   let name = metaData.name;
   chatContainer.innerHTML +=
