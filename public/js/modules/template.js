@@ -154,3 +154,15 @@ export function addParticipantCardTemplate(fid, photoURL, name, admin, isUserAdm
                       ${checkAdminStatus(admin, isUserAdmin)}`
   return wrapper;
 }
+
+// -------------------------------------------------- notes.js----------------------------------------------------
+
+export function noteCardTemplate(noteID, title){
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("note_card");
+  wrapper.dataset.id = noteID;
+  wrapper.innerHTML = `<div class="note_select"></div>
+                       <h4 class="note_title">${title}</h4>
+                       <img class="remove_note" src="./assets/icons/home/msg-clear.svg" alt="remove-note">`
+  return wrapper;
+}
