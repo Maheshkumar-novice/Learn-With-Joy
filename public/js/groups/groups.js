@@ -667,6 +667,8 @@ chatMenuItem.forEach((menu) => {
   menu.addEventListener("click", function (e) {
     if (this.dataset.value === "clear") {
       clearChat();
+    } else if (this.dataset.value === "leave") {
+      leaveGroup();
     }
     toggleChatContainer();
   });
@@ -684,6 +686,33 @@ async function clearChat() {
     `.group__chat-container[data-group-id="${groupId}"]`
   );
   groupContainer.innerHTML = "";
+}
+
+async function leaveGroup() {
+  await removeDB(
+    database,
+    `friends/${auth.currentUser.uid}/groups/${chatWindowHeader.dataset.groupId}`
+  );
+  let userInfo = (
+    await readDB(
+      database,
+      `groups/${chatWindowHeader.dataset.groupId}/participants/${auth.currentUser.uid}`
+    )
+  ).val();
+  await removeDB(
+    database,
+    `groups/${chatWindowHeader.dataset.groupId}/participants/${auth.currentUser.uid}`
+  );
+  if (userInfo)
+    document.querySelector(".group__participants-add").classList.add("none");
+  noChatSelectedInfo.classList.remove("none");
+  chatWindowHeader.classList.add("none");
+  chatWindowMessageSender.classList.add("none");
+  document
+    .querySelector(
+      `.group__chat-container[data-group-id="${chatWindowHeader.dataset.groupId}"]`
+    )
+    .remove();
 }
 
 function cleanUpChatWindow() {
