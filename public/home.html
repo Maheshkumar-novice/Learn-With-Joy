@@ -597,28 +597,24 @@
               <h2>Your Notes</h2>
               <div class="normal_notes" data-creator="true"></div>
               <h2>Shared Notes</h2>
-              <div class="normal_notes" data-creator="false">
-                <div class="note_card">
-                  <div class="note_select"></div>
-                  <h4 class="note_title">Untitled</h4>
-                  <img class="remove_note" src="./assets/icons/home/msg-clear.svg" alt="remove-note">
-                </div>
-              </div>
+              <div class="normal_notes" data-creator="false"></div>
             </div>
           </div>
         </div>
         <div class="editor-cnt">
           <div class="no-editor">Select or Create notes to display the editor</div>
-          <div class="rich-editor none">
+          <div class="rich-editor none" data-note-id="null">
             <div class="editor-header">
-              <h1 class="editor-title" contenteditable="true">Untitled</h1>
+              <input class="editor-title" value="Untitled">
               <div class="note-share-link" title="Copy Link">
                 <span class="note-link"></span>
                 <img class="note-copy-link" src="./assets/icons/groups/copy.svg" alt="share">
               </div>
             </div>
-            <!-- <div id="userlist"></div> -->
-            <div id="firepad-container"></div>
+            <div class="firbase-wrapper">
+              <div id="firepad-container"></div>
+              <div id="userlist"></div>
+            </div>
           </div>
         </div>
       </section>
