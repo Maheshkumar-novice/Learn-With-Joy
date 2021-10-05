@@ -12,6 +12,8 @@ const richEditor = document.querySelector(".rich-editor");
 const linkUpdater = document.querySelector(".note-link");
 const copyNoteLink = document.querySelector(".note-share-link");
 const editorTitle = document.querySelector(".editor-title");
+const firepadContainer = document.getElementById("firepad-container");
+const firepadUserListCnt = document.getElementById("userlist");
 // const editorCnt = document.querySelector(".editor-cnt");
 
 createNew.addEventListener("click", (e) => {
@@ -28,7 +30,7 @@ copyNoteLink.addEventListener("click", (e) => {
 
 editorTitle.addEventListener("change", (e) => {
   console.log(e.target.value);
-  updateDB(database, `notes/currentNoteID`, {name: e.target.value});
+  updateDB(database, `notes/${currentNoteID}`, {name: e.target.value});
 });
 
 function initializeNotesUtil(noteID){
@@ -36,38 +38,47 @@ function initializeNotesUtil(noteID){
     richEditor.dataset.noteId = noteID;
     noEditor.classList.add("none");
     richEditor.classList.remove("none");
-    const newURL = `?nid=${noteID}`;
+    const newURL = `?editor=true&nid=${noteID}`;
     console.log(newURL);
     window.history.pushState("noteEditor", null, newURL);
     linkUpdater.innerText = window.location.href;
+    console.log(noteID)
     initializeNotes(noteID);
 }
 
 async function initializeNotes(noteID) {
   //// Get Firebase Database reference.
-  var firepadRef = await loadNoteData(noteID);
+  const firepadRef = await loadNoteData(noteID);
+  firepadContainer.innerHTML = '';
+  firepadUserListCnt.innerHTML = '';
 
   //// Create CodeMirror (with lineWrapping on).
-  var codeMirror = CodeMirror(document.getElementById("firepad-container"), {
+  const codeMirror = CodeMirror(firepadContainer, {
     lineWrapping: true,
+    // lineNumbers: true,
+    // readOnly: true
   });
 
   //// Create Firepad (with rich text toolbar and shortcuts enabled).
-  var userId = Math.floor(Math.random() * 9999999999).toString();
+  const userId = user.uid;
 
-//// Create Firepad (with rich text features and our desired userId).
-var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror,
-    { richTextToolbar: true, richTextShortcuts: true, userId: userId});
+  //// Create Firepad (with rich text features and our desired userId).
+  const firepad = Firepad.fromCodeMirror(firepadRef, codeMirror,
+      { 
+       richTextToolbar: true,
+       richTextShortcuts: true,
+       userId: userId
+      });
 
 //// Create FirepadUserList (with our desired userId).
-// var firepadUserList = FirepadUserList.fromDiv(firepadRef.child('users'),
-//     document.getElementById('userlist'), userId);
+const firepadUserList = FirepadUserList.fromDiv(firepadRef.child('users'),
+      document.getElementById('userlist'), userId, user.displayName);
 
   //// Initialize contents.
   firepad.on("ready", function () {
     if (firepad.isHistoryEmpty()) {
       firepad.setHtml(
-        '<span style="font-size: 24px; color: red">Welcome!</span>'
+        '<span">Welcome!</span>'
       );
     }
   });
@@ -75,7 +86,7 @@ var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror,
   // An example of a complex custom entity.
   firepad.registerEntity("checkbox", {
     render: function (info, entityHandler) {
-      var inputElement = document.createElement("input");
+      const inputElement = document.createElement("input");
       inputElement.setAttribute("type", "checkbox");
       if (info.checked) {
         inputElement.checked = "checked";
@@ -86,7 +97,7 @@ var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror,
       return inputElement;
     }.bind(this),
     fromElement: function (element) {
-      var info = {};
+      const info = {};
       if (element.hasAttribute("checked")) {
         info.checked = true;
       }
@@ -100,7 +111,7 @@ var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror,
       }
     },
     export: function (info) {
-      var inputElement = document.createElement("checkbox");
+      const inputElement = document.createElement("checkbox");
       if (info.checked) {
         inputElement.setAttribute("checked", true);
       }
@@ -130,7 +141,7 @@ const noteCreatorCnt = document.querySelector(".normal_notes[data-creator='true'
 const noteSharedCnt = document.querySelector(".normal_notes[data-creator='false']");
 
 function loadClickedNote(){
-  const activeCard = document.querySelector("active-note");
+  const activeCard = document.querySelector(".active-note");
   activeCard ? activeCard.classList.remove("active-note") : "";
   this.classList.add("active-note");
   initializeNotesUtil(this.dataset.id);
@@ -148,7 +159,22 @@ async function addNoteToContainer(data){
     noteSharedCnt.appendChild(noteCardTemplate(data.key, title));
   }
   const noteCard = document.querySelector(`.note_card[data-id="${data.key}"]`);
+  if(richEditor.dataset.noteId === data.key){
+    editorTitle.value = title;
+    noteCard.classList.add("active-note");
+  }
   noteCard.addEventListener("click", loadClickedNote);
+  setDBListener(database, `notes/${data.key}/name`, "value", updateNoteTitle);
+}
+
+function updateNoteTitle(data){
+  const noteID = data.ref.parent.key;
+  const noteCardTitle = document.querySelector(`.note_card[data-id="${noteID}"]`).querySelector(".note_title");
+  noteCardTitle.innerText = data.val();
+  if(richEditor.dataset.noteId === noteID){
+    console.log("inside")
+    editorTitle.value = data.val();
+  }
 }
 
 // -------------------- db listener ---------------------------
@@ -161,11 +187,18 @@ function DBListener(){
 auth.onAuthStateChanged(async (currentUser) => {
   if (currentUser) {
       user = currentUser;
-      DBListener();
       const urlParams = new URLSearchParams(window.location.search);
       const noteID = getParameterByName(urlParams, "nid");
-      if(!noteID) return;
-      addChlidDB(database, `friends/${uid}/notes`, noteID, true);
+      if(!noteID) {
+        DBListener();
+        return
+      };
+      const isNotePresent = (await readDB(database, `friends/${user.uid}/notes/${noteID}`)).val(); 
+      if(!isNotePresent)
+      {
+        addChlidDB(database, `friends/${user.uid}/notes`, noteID, false);
+      }
       initializeNotesUtil(noteID);
+      DBListener();
   }
 });
