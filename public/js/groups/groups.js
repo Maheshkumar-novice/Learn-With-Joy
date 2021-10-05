@@ -16,10 +16,12 @@ import {
 import {
   checkAndChangeAngularBrackets,
   getParameterByName,
+  pushFront,
 } from "../modules/util.js";
 
 let user;
 let userCreatedGroup = [];
+let pageLoadedTimeStamp;
 const auth = firebase.auth();
 const database = firebase.database();
 const storage = firebase.storage();
@@ -30,6 +32,7 @@ let searchFriendsList = [];
 auth.onAuthStateChanged(async (currentUser) => {
   if (currentUser) {
     user = currentUser;
+    pageLoadedTimeStamp = Date.now();
     totalFriends = (
       await readDB(database, `friends/${user.uid}/friends`)
     ).numChildren();
@@ -107,7 +110,9 @@ searchFriendsInputClose.addEventListener("click", function (e) {
 const refreshParticipant = document.querySelector(".dummy-participant-refresh");
 refreshParticipant.addEventListener("click", updateFriendsForAddParticipants);
 
-const participantListCnt = document.querySelector(".group__add-friends-cnt[data-type='friends-cnt']");
+const participantListCnt = document.querySelector(
+  ".group__add-friends-cnt[data-type='friends-cnt']"
+);
 function updateFriendsForAddParticipants() {
   const card = participantListCnt.lastChild;
   const participantAddFriendsIc = card.querySelector(".group__add-friend-ic");
@@ -649,6 +654,66 @@ let chatWindowMessageSender = document.querySelector(
   ".group__chat-message-sender"
 );
 let chatWrapper = document.querySelector(".group__chat-wrapper");
+const chatMenuIc = document.querySelector(".group__chat-menu-ic");
+const chatMenuCnt = document.querySelector(".group__chat-menu-cnt");
+const chatMenuItem = document.querySelectorAll(".group .menu__item");
+
+function toggleChatContainer() {
+  chatMenuCnt.classList.toggle("none");
+}
+chatMenuIc.addEventListener("click", toggleChatContainer);
+
+chatMenuItem.forEach((menu) => {
+  menu.addEventListener("click", function (e) {
+    if (this.dataset.value === "clear") {
+      clearChat();
+    } else if (this.dataset.value === "leave") {
+      leaveGroup();
+    }
+    toggleChatContainer();
+  });
+});
+
+async function clearChat() {
+  let groupId = chatWindowHeader.dataset.groupId;
+  const lastMessageId = (
+    await readDB(database, `groups/${groupId}/lastMessageId`)
+  ).val();
+  const obj = {};
+  obj[user.uid] = lastMessageId;
+  updateDB(database, `groups/${groupId}/lastClearedMessage`, obj);
+  let groupContainer = document.querySelector(
+    `.group__chat-container[data-group-id="${groupId}"]`
+  );
+  groupContainer.innerHTML = "";
+}
+
+async function leaveGroup() {
+  await removeDB(
+    database,
+    `friends/${auth.currentUser.uid}/groups/${chatWindowHeader.dataset.groupId}`
+  );
+  let userInfo = (
+    await readDB(
+      database,
+      `groups/${chatWindowHeader.dataset.groupId}/participants/${auth.currentUser.uid}`
+    )
+  ).val();
+  await removeDB(
+    database,
+    `groups/${chatWindowHeader.dataset.groupId}/participants/${auth.currentUser.uid}`
+  );
+  if (userInfo)
+    document.querySelector(".group__participants-add").classList.add("none");
+  noChatSelectedInfo.classList.remove("none");
+  chatWindowHeader.classList.add("none");
+  chatWindowMessageSender.classList.add("none");
+  document
+    .querySelector(
+      `.group__chat-container[data-group-id="${chatWindowHeader.dataset.groupId}"]`
+    )
+    .remove();
+}
 
 function cleanUpChatWindow() {
   chatWindowHeader.classList.remove("none");
@@ -701,112 +766,127 @@ async function updateChatWindow(groupCard) {
   } else {
     prevCard = groupContainer;
     groupContainer.classList.remove("none");
+    removeNotSeenCount(id);
     autoScroll();
     return;
   }
   prevCard = groupContainer;
   let data = (await readDB(database, `groups/${id}/`)).val();
-  fillMessagesToChatBody(data.messages, id);
+  removeNotSeenCount(id);
+  data.userLastMessage
+    ? updateLastSeenMessage(id, data.userLastMessage[auth.currentUser.uid])
+    : "";
+  const lastClearedMessage = data.lastClearedMessage;
+  fillMessagesToChatBody(data.messages, id, lastClearedMessage);
 }
 
 function sendMessage() {
   if (!chatWindowMessageInput.value) return;
-  let messageKey = pushKey(
-    database,
-    `group/${chatWindowHeader.dataset.groupId}/messages`,
-    user.uid
-  );
+  let groupId = chatWindowHeader.dataset.groupId;
+  let messageKey = pushKey(database, `group/${groupId}/messages`, user.uid);
   let message = {
     text: chatWindowMessageInput.value,
     sender: user.uid,
     time: new Date().toISOString(),
   };
-  addChlidDB(
-    database,
-    `groups/${chatWindowHeader.dataset.groupId}/messages`,
-    messageKey,
-    message
-  );
+  addChlidDB(database, `groups/${groupId}/messages`, messageKey, message);
+  updateDB(database, `groups/${groupId}`, { lastMessageId: messageKey });
+  let lastMessageID = {};
+  lastMessageID[user.uid] = messageKey;
+  updateDB(database, `groups/${groupId}/usersLastMessages`, lastMessageID);
   chatWindowMessageInput.value = "";
 }
 
-function autoScroll() {
-  chatWrapper.scrollTop = chatWrapper.scrollHeight;
-}
-
-function fillMessagesToChatBody(data, groupId) {
+function fillMessagesToChatBody(data, groupId, lastClearedMessage) {
   if (!data) return;
   let chatContainer = document.querySelector(
     `.group__chat-container[data-group-id="${groupId}"]`
   );
-  Object.values(data).forEach((message, idx) => {
-    let sender = document.querySelector(
-      `.group__participant-card[data-id=${message.sender}]`
-    ).textContent;
-    if (message.sender === user.uid) {
-      "text" in message
-        ? addMessageToContainer(
-            chatContainer,
-            message.text,
-            message.time,
-            sender,
-            "right"
-          )
-        : "image" in message
-        ? addFileToContainer(
-            chatContainer,
-            message.image,
-            message.metadata,
-            message.time,
-            "right",
-            "image"
-          )
-        : addFileToContainer(
-            chatContainer,
-            message.file,
-            message.metadata,
-            message.time,
-            "right",
-            "file"
-          );
-    } else {
-      "text" in message
-        ? addMessageToContainer(
-            chatContainer,
-            message.text,
-            message.time,
-            sender,
-            "left"
-          )
-        : "image" in message
-        ? addFileToContainer(
-            chatContainer,
-            message.image,
-            message.metadata,
-            message.time,
-            "left",
-            "image"
-          )
-        : addFileToContainer(
-            chatContainer,
-            message.file,
-            message.metadata,
-            message.time,
-            "left",
-            "file"
-          );
+  let lastClearedMessageKey =
+    lastClearedMessage && lastClearedMessage[user.uid]
+      ? lastClearedMessage[user.uid]
+      : false;
+
+  if (!lastClearedMessageKey) {
+    for (let key in data) {
+      CreateAndFillMessages(key, data, chatContainer);
     }
-  });
+  } else {
+    for (let key in data) {
+      if (lastClearedMessageKey) {
+        if (key === lastClearedMessageKey) {
+          lastClearedMessageKey = false;
+        }
+        continue;
+      }
+      CreateAndFillMessages(key, data, chatContainer);
+    }
+  }
+
   autoScroll();
 }
 
-function addMessageToContainer(chatContainer, message, time, sender, position) {
-  let datePart = new Date(time).toDateString();
-  let timePart = new Date(time).toTimeString().split(" ")[0];
-  let timeStamp = datePart + " " + timePart;
-  chatContainer.appendChild(
-    createMessage(message, timeStamp, sender, position)
-  );
+function CreateAndFillMessages(key, data, chatContainer) {
+  let sender = document.querySelector(
+    `.group__participant-card[data-id="${data[key].sender}"]`
+  ).textContent;
+  if (data[key].sender === user.uid) {
+    "text" in data[key]
+      ? addMessageToContainer(
+          chatContainer,
+          data[key].text,
+          data[key].time,
+          sender,
+          "right"
+        )
+      : "image" in data[key]
+      ? addFileToContainer(
+          chatContainer,
+          data[key].image,
+          data[key].metadata,
+          data[key].time,
+          sender,
+          "right",
+          "image"
+        )
+      : addFileToContainer(
+          chatContainer,
+          data[key].file,
+          data[key].metadata,
+          data[key].time,
+          sender,
+          "right",
+          "file"
+        );
+  } else {
+    "text" in data[key]
+      ? addMessageToContainer(
+          chatContainer,
+          data[key].text,
+          data[key].time,
+          sender,
+          "left"
+        )
+      : "image" in data[key]
+      ? addFileToContainer(
+          chatContainer,
+          data[key].image,
+          data[key].metadata,
+          data[key].time,
+          sender,
+          "left",
+          "image"
+        )
+      : addFileToContainer(
+          chatContainer,
+          data[key].file,
+          data[key].metadata,
+          data[key].time,
+          sender,
+          "left",
+          "file"
+        );
+  }
 }
 
 function createMessage(message, timeStamp, sender, position) {
@@ -828,17 +908,27 @@ function createMessage(message, timeStamp, sender, position) {
 
 async function addMessageToChatBody(chat) {
   let groupId = chat.ref.parent.parent.key;
-
+  let timeStamp = new Date(chat.val().time);
+  if (pageLoadedTimeStamp > timeStamp) {
+    return;
+  }
   let chatContainer = document.querySelector(
     `.group__chat-container[data-group-id="${groupId}"]`
   );
   if (!chatContainer) {
+    increaseNotSeenCount(groupId);
     return;
+  }
+
+  if (chatContainer.classList.contains("none")) {
+    increaseNotSeenCount(groupId);
   }
 
   let chatData = chat.val();
   if (!chatData) return;
-
+  let sender = document.querySelector(
+    `.group__participant-card[data-id=${chatData.sender}]`
+  ).textContent;
   if ("image" in chatData) {
     if (
       chatContainer.querySelector(
@@ -851,6 +941,7 @@ async function addMessageToChatBody(chat) {
       chatData.image,
       chatData.metadata,
       chatData.time,
+      sender,
       "left",
       "image"
     );
@@ -868,14 +959,12 @@ async function addMessageToChatBody(chat) {
       chatData.file,
       chatData.metadata,
       chatData.time,
+      sender,
       "left",
       "file"
     );
     return;
   }
-  let sender = document.querySelector(
-    `.group__participant-card[data-id=${chatData.sender}]`
-  ).textContent;
   if (chatData.sender === user.uid) {
     addMessageToContainer(
       chatContainer,
@@ -894,6 +983,18 @@ async function addMessageToChatBody(chat) {
     );
   }
   autoScroll();
+  !chatContainer.classList.contains("none") && chatData.sender !== user.uid
+    ? updateLastSeenMessage(groupId, sender)
+    : "";
+}
+
+function addMessageToContainer(chatContainer, message, time, sender, position) {
+  let datePart = new Date(time).toDateString();
+  let timePart = new Date(time).toTimeString().split(" ")[0];
+  let timeStamp = datePart + " " + timePart;
+  chatContainer.appendChild(
+    createMessage(message, timeStamp, sender, position)
+  );
 }
 
 function addFileToContainer(
@@ -901,12 +1002,13 @@ function addFileToContainer(
   src,
   metaData,
   time,
+  sender,
   position,
   type
 ) {
   let datePart = new Date(time).toDateString();
   let timePart = new Date(time).toTimeString().split(" ")[0];
-  let timeStamp = datePart + " " + timePart;
+  let timeStamp = sender + " " + datePart + " " + timePart;
   let size = metaData.size;
   let name = metaData.name;
   chatContainer.innerHTML +=
@@ -931,6 +1033,37 @@ function addFileToContainer(
           <span class="group__time-stamp group__time-stamp--left">${timeStamp}</span>
         </div>`;
   autoScroll();
+}
+
+async function updateLastSeenMessage(hash, messageID) {
+  if (!messageID) return;
+  let msg = {};
+  msg[user.uid] = messageID;
+  updateDB(database, `groups/${hash}/lastSeenMessage`, msg);
+}
+
+function removeNotSeenCount(hash) {
+  const groupContainer = document.querySelector(
+    `.group__group-card[data-id="${hash}"]`
+  );
+  let msgCountCnt = groupContainer.querySelector(".group__message-count");
+  msgCountCnt.classList.add("none");
+  msgCountCnt.innerText = "";
+}
+
+function increaseNotSeenCount(hash) {
+  const groupContainer = document.querySelector(
+    `.group__group-card[data-id="${hash}"]`
+  );
+  pushFront(groupContainer);
+  let msgCountCnt = groupContainer.querySelector(".group__message-count");
+  msgCountCnt.classList.remove("none");
+  let countPresent = msgCountCnt.innerText;
+  msgCountCnt.innerText = countPresent ? +countPresent + 1 : 1;
+}
+
+function autoScroll() {
+  chatWrapper.scrollTop = chatWrapper.scrollHeight;
 }
 
 window.addEventListener("keyup", (e) => {

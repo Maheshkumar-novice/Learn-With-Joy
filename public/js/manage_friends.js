@@ -12,8 +12,15 @@ import {
   storageList,
   updateDB,
 } from "./modules/firebase.js";
-import { chatMessageCollection, chatSearchResult, client } from "./modules/search_index.js";
-import { addParticipantsFriendsCardTemplate, friendCardTemplate } from "./modules/template.js";
+import {
+  chatMessageCollection,
+  chatSearchResult,
+  client,
+} from "./modules/search_index.js";
+import {
+  addParticipantsFriendsCardTemplate,
+  friendCardTemplate,
+} from "./modules/template.js";
 import { checkUserPresent, pushFront } from "./modules/util.js";
 
 const auth = firebase.auth();
@@ -114,7 +121,7 @@ searchInput.addEventListener("click", (e) => {
 });
 
 searchCloseIcon.addEventListener("click", function (e) {
-  searchInput.value = '';
+  searchInput.value = "";
   searchWrap.classList.add("none");
   chatArea.classList.remove("none");
 });
@@ -195,7 +202,9 @@ async function updateFriendsList() {
 }
 
 // add Friends to friend list and add participant friends lists
-const participantListCnt = document.querySelector(".group__add-friends-cnt[data-type='friends-cnt']");
+const participantListCnt = document.querySelector(
+  ".group__add-friends-cnt[data-type='friends-cnt']"
+);
 async function addFriendToFriendsList(data) {
   if (!data.val()) return;
 
@@ -206,8 +215,14 @@ async function addFriendToFriendsList(data) {
 
   friendsUID.push(fid);
   friendsContainer.appendChild(friendCardTemplate(fid, hash, chatUid));
-  participantListCnt.appendChild(addParticipantsFriendsCardTemplate(fid, chatUid.photo, chatUid.name));
-  document.querySelector(`.chat__friend-card[data-id="${fid}"] .chat__remove-friend-ic`).addEventListener("click", removeFriend);
+  participantListCnt.appendChild(
+    addParticipantsFriendsCardTemplate(fid, chatUid.photo, chatUid.name)
+  );
+  document
+    .querySelector(
+      `.chat__friend-card[data-id="${fid}"] .chat__remove-friend-ic`
+    )
+    .addEventListener("click", removeFriend);
   addEventListenerToFriendCards(fid);
   setDBListener(
     database,
@@ -238,7 +253,9 @@ async function removeFriendFromFriendsList(data) {
   friendsContainer.removeChild(removedFriend);
   resetChatContainer(hash);
   // remove from add friend to group container
-  const groupFriendCard = document.querySelector(`.group__add-friend-card[data-id="${data.key}"]`);
+  const groupFriendCard = document.querySelector(
+    `.group__add-friend-card[data-id="${data.key}"]`
+  );
   participantListCnt.removeChild(groupFriendCard);
 }
 
@@ -364,21 +381,20 @@ let chatWindowMessageSender = document.querySelector(
 const chatWrapper = document.querySelector(".chat__chat-wrapper");
 const chatMenuIc = document.querySelector(".chat__chat-menu-ic");
 const chatMenuCnt = document.querySelector(".chat__chat-menu-cnt");
-const chatMenuItem = document.querySelectorAll(".menu__item");
+const chatMenuItem = document.querySelectorAll(".chat .menu__item");
 const searchCnt = document.querySelector(".search_message");
 
 // function to clear Up chat window
-function toggleChatContainer(){
+function toggleChatContainer() {
   chatMenuCnt.classList.toggle("none");
 }
 chatMenuIc.addEventListener("click", toggleChatContainer);
 
-chatMenuItem.forEach(menu => {
-  menu.addEventListener("click", function(e){
-    if(this.dataset.value === "clear"){
+chatMenuItem.forEach((menu) => {
+  menu.addEventListener("click", function (e) {
+    if (this.dataset.value === "clear") {
       clearChat();
-    }
-    else if(this.dataset.value === "search"){
+    } else if (this.dataset.value === "search") {
       enableSearch();
     }
     toggleChatContainer();
@@ -386,12 +402,11 @@ chatMenuItem.forEach(menu => {
 });
 
 const search_input = document.querySelector(".search_message--input");
-function enableSearch(){
-  if(searchCnt.classList.contains("none")){
+function enableSearch() {
+  if (searchCnt.classList.contains("none")) {
     searchCnt.classList.remove("none");
     chatWrapper.style.maxHeight = "calc(100% - 60px)";
-  }
-  else{
+  } else {
     searchCnt.classList.add("none");
     chatWrapper.style.maxHeight = "100%";
   }
@@ -400,7 +415,6 @@ function enableSearch(){
 
 async function clearChat() {
   let hash = chatWindowMessageInput.dataset.chatHash;
-  console.log("helo", chatWindowMessageInput.dataset.chatHash);
   const lastMessageId = (
     await readDB(database, `chat/${hash}/lastMessageId`)
   ).val();
@@ -477,17 +491,16 @@ async function updateChatWindow(friendCard) {
 
   let data = (await readDB(database, `chat/${hash}`)).val();
   removeNotSeenCount(hash);
-  data.userLastMessage ? updateLastSeenMessage(hash, data.userLastMessage[fid]) : ""; 
+  data.userLastMessage
+    ? updateLastSeenMessage(hash, data.userLastMessage[fid])
+    : "";
   const lastClearedMessage = data.lastClearedMessage;
-  //   ? Object.keys(data.messages).findIndex(
-  //       (key) => key === data.lastClearedMessage[user.uid]
-  //     )
-  //   : -1;
+
   fillMessagesToChatBody(data.messages, hash, lastClearedMessage);
 }
 
-async function updateLastSeenMessage(hash, messageID){
-  if(!messageID) return;
+async function updateLastSeenMessage(hash, messageID) {
+  if (!messageID) return;
   let msg = {};
   msg[user.uid] = messageID;
   updateDB(database, `chat/${hash}/lastSeenMessage`, msg);
@@ -517,16 +530,6 @@ function addMessageToContainer(chatContainer, message, time, key, position) {
   let timeStamp = datePart + " " + timePart;
   chatContainer.appendChild(createMessage(message, timeStamp, key, position));
 }
-
-// function addMessageToContainer(chatContainer, message, time, position) {
-//   let datePart = new Date(time).toDateString();
-//   let timePart = new Date(time).toTimeString().split(" ")[0];
-//   let timeStamp = datePart + " " + timePart;
-//   chatContainer.innerHTML += `<div class="chat__message-container chat__message-container--${position}">
-//     <p class="chat__message">${message}</p>
-//     <span class="chat__time-stamp chat__time-stamp--right">${timeStamp}</span>
-//    </div>`;
-// }
 
 function addFileToContainer(
   chatContainer,
@@ -565,7 +568,7 @@ function addFileToContainer(
   autoScroll();
 }
 
-function CreateAndFillMessages(key, data, chatContainer){
+function CreateAndFillMessages(key, data, chatContainer) {
   if (data[key].sender === user.uid) {
     "text" in data[key]
       ? addMessageToContainer(
@@ -627,17 +630,19 @@ function fillMessagesToChatBody(data, hash, lastClearedMessage) {
   let chatContainer = document.querySelector(
     `.chat__chat-container[data-hash="${hash}"]`
   );
-  let lastClearedMessageKey = lastClearedMessage && lastClearedMessage[user.uid] ? lastClearedMessage[user.uid] : false;
+  let lastClearedMessageKey =
+    lastClearedMessage && lastClearedMessage[user.uid]
+      ? lastClearedMessage[user.uid]
+      : false;
   let idx = 0;
-  if(!lastClearedMessageKey){
-    for(let key in data){
+  if (!lastClearedMessageKey) {
+    for (let key in data) {
       CreateAndFillMessages(key, data, chatContainer);
     }
-  }
-  else{
-    for(let key in data){
+  } else {
+    for (let key in data) {
       if (lastClearedMessageKey) {
-        if(key === lastClearedMessageKey){
+        if (key === lastClearedMessageKey) {
           lastClearedMessageKey = false;
         }
         continue;
@@ -645,84 +650,34 @@ function fillMessagesToChatBody(data, hash, lastClearedMessage) {
       CreateAndFillMessages(key, data, chatContainer);
     }
   }
-  
-  // Object.values(data).forEach((message, idx) => {
-  //   if (idx <= lastClearedMessageIndex) return;
-  //   if (message.sender === user.uid) {
-  //     "text" in message
-  //       ? addMessageToContainer(
-  //           chatContainer,
-  //           message.text,
-  //           message.time,
-  //           "right"
-  //         )
-  //       : "image" in message
-  //       ? addFileToContainer(
-  //           chatContainer,
-  //           message.image,
-  //           message.metadata,
-  //           message.time,
-  //           "right",
-  //           "image"
-  //         )
-  //       : addFileToContainer(
-  //           chatContainer,
-  //           message.file,
-  //           message.metadata,
-  //           message.time,
-  //           "right",
-  //           "file"
-  //         );
-  //   } else {
-  //     "text" in message
-  //       ? addMessageToContainer(
-  //           chatContainer,
-  //           message.text,
-  //           message.time,
-  //           "left"
-  //         )
-  //       : "image" in message
-  //       ? addFileToContainer(
-  //           chatContainer,
-  //           message.image,
-  //           message.metadata,
-  //           message.time,
-  //           "left",
-  //           "image"
-  //         )
-  //       : addFileToContainer(
-  //           chatContainer,
-  //           message.file,
-  //           message.metadata,
-  //           message.time,
-  //           "left",
-  //           "file"
-  //         );
-  //   }
-  // });
+
   autoScroll();
 }
 
-function removeNotSeenCount(hash){
-  const friendContainer = document.querySelector(`.chat__friend-card[data-hash="${hash}"]`);
+function removeNotSeenCount(hash) {
+  const friendContainer = document.querySelector(
+    `.chat__friend-card[data-hash="${hash}"]`
+  );
   let msgCountCnt = friendContainer.querySelector(".chat__message-count");
   msgCountCnt.classList.add("none");
   msgCountCnt.innerText = "";
 }
 
-function increaseNotSeenCount(hash){
-  const friendContainer = document.querySelector(`.chat__friend-card[data-hash="${hash}"]`);
+function increaseNotSeenCount(hash) {
+  const friendContainer = document.querySelector(
+    `.chat__friend-card[data-hash="${hash}"]`
+  );
   pushFront(friendContainer);
   let msgCountCnt = friendContainer.querySelector(".chat__message-count");
   msgCountCnt.classList.remove("none");
-  let countPresent = msgCountCnt.innerText
-  msgCountCnt.innerText = countPresent ? +countPresent+1 : 1;
+  let countPresent = msgCountCnt.innerText;
+  msgCountCnt.innerText = countPresent ? +countPresent + 1 : 1;
 }
 
 async function addMessageToChatBody(chat) {
   let hash = chat.ref.parent.parent.key;
   let timeStamp = new Date(chat.val().time);
-  if(pageLoadedTimeStamp > timeStamp){
+  if (pageLoadedTimeStamp > timeStamp) {
     return;
   }
   let chatContainer = document.querySelector(
@@ -732,7 +687,7 @@ async function addMessageToChatBody(chat) {
     increaseNotSeenCount(hash);
     return;
   }
-  if(chatContainer.classList.contains("none")){
+  if (chatContainer.classList.contains("none")) {
     increaseNotSeenCount(hash);
   }
 
@@ -775,12 +730,26 @@ async function addMessageToChatBody(chat) {
   }
 
   if (chatData.sender === user.uid) {
-    addMessageToContainer(chatContainer, chatData.text, chatData.time, chat.key, "right");
+    addMessageToContainer(
+      chatContainer,
+      chatData.text,
+      chatData.time,
+      chat.key,
+      "right"
+    );
   } else {
-    addMessageToContainer(chatContainer, chatData.text, chatData.time, chat.key, "left");
+    addMessageToContainer(
+      chatContainer,
+      chatData.text,
+      chatData.time,
+      chat.key,
+      "left"
+    );
   }
   autoScroll();
-  !chatContainer.classList.contains("none") && (chatData.sender !== user.uid) ? updateLastSeenMessage(hash, chat.key): "";
+  !chatContainer.classList.contains("none") && chatData.sender !== user.uid
+    ? updateLastSeenMessage(hash, chat.key)
+    : "";
 }
 
 function sendMessage() {
@@ -804,12 +773,12 @@ function sendMessage() {
   chatWindowMessageInput.value = "";
   // update for chat message searching [index]
   const dataDocument = {
-    "chat_hash": chatHash,
-    "message_id": messageKey,
-    "text": text,
-    "timestamp": timeStamp.getTime()
+    chat_hash: chatHash,
+    message_id: messageKey,
+    text: text,
+    timestamp: timeStamp.getTime(),
   };
-  client.collections('chat').documents().create(dataDocument);
+  client.collections("chat").documents().create(dataDocument);
 }
 
 function addEventListenerToFriendCards(fid) {
@@ -833,13 +802,16 @@ window.addEventListener("keyup", (e) => {
     sendMessage();
   }
   if (e.key === "Escape") {
-    if(document.activeElement === searchInput || document.activeElement === chatWindowMessageInput){
-    console.log(document.activeElement)
-    document.activeElement.blur();
+    if (
+      document.activeElement === searchInput ||
+      document.activeElement === chatWindowMessageInput
+    ) {
+      console.log(document.activeElement);
+      document.activeElement.blur();
     }
     document.querySelector(".chat__search-close-icon").click();
-    const optionsCnt = document.querySelector(".participants__options")
-    if(!optionsCnt.classList.contains("none")){
+    const optionsCnt = document.querySelector(".participants__options");
+    if (!optionsCnt.classList.contains("none")) {
       optionsCnt.classList.add("none");
     }
   }
@@ -848,7 +820,6 @@ window.addEventListener("keyup", (e) => {
 document
   .querySelector(".chat__img--send")
   .addEventListener("click", sendMessage);
-
 
 // ----------------------------------------- testing -------------------------------------------------
 // client.collections().create(chatMessageCollection);
