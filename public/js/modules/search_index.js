@@ -35,12 +35,3 @@ export async function chatSearchResult(query, chatHash) {
   };
   return (await client.collections('chat').documents().search(searchParameters));
 }
-
-// async function test(){
-//     console.log((await client.collections('books').documents().search(searchParameters)));
-
-// }
-
-// test();
-
-// client.collections().create(myCollection);

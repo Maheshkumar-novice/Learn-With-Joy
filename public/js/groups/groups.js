@@ -111,7 +111,6 @@ const participantListCnt = document.querySelector(".group__add-friends-cnt[data-
 function updateFriendsForAddParticipants() {
   const card = participantListCnt.lastChild;
   const participantAddFriendsIc = card.querySelector(".group__add-friend-ic");
-  console.log(participantAddFriendsIc)
   searchFriendsList.push(
     card.querySelector(".group__add-friend-name").innerText
   );

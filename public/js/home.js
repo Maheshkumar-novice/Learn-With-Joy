@@ -83,8 +83,15 @@ function changeTabs(tab, bool) {
   bool ? pushState(tab.dataset.tab) : "";
 }
 
+const richEditor = document.querySelector(".rich-editor");
 navTabs.forEach((tab) => {
   tab.addEventListener("click", (e) => {
+    if(e.target.innerText === "Notes" && richEditor.dataset.noteId !== "null"){
+      const newURL = `/notes?editor=true&nid=${richEditor.dataset.noteId}`;
+      window.history.pushState("noteEditor", null, newURL);
+      changeTabs(e.target, 0);
+      return;
+    }
     changeTabs(e.target, 1);
   });
 });
