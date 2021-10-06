@@ -20,6 +20,7 @@ const sectionTabs = document.querySelectorAll(".section-tab");
 const userOptions = document.querySelector(".user-options");
 const signOutOption = document.querySelector(".sign-out-option");
 const timerStatus = document.querySelector(".timer-status");
+let userStatusRef;
 
 function updateUserDetails(user) {
   userProfilePic.src = user.photoURL;
@@ -43,9 +44,8 @@ function toggleUserOptions() {
   userOptionsTrigger.classList.toggle("rotate-180");
 }
 
-function enableUserOffline(uid){
-  const ref = database.ref(`users/${uid}`);
-  ref.onDisconnect().update({status: false});
+function enableUserOffline(){
+  userStatusRef.onDisconnect().update({status: false});
 }
 
 auth.onAuthStateChanged(async (currentUser) => {
@@ -58,7 +58,8 @@ auth.onAuthStateChanged(async (currentUser) => {
     document.querySelector(".loader").classList.add("none");
     document.querySelector("main").classList.remove("none");
     updateDB(database, `users/${currentUser.uid}`, {status: true});
-    enableUserOffline(currentUser.uid);
+    userStatusRef = database.ref(`users/${currentUser.uid}`);
+    enableUserOffline();
   } else {
     window.location = "./index.html";
   }
@@ -143,4 +144,11 @@ window.addEventListener("popstate", (e) => {
 
 timerStatus.addEventListener("click", () => {
   changeTabs(tabMap["timer"], 1);
+});
+
+window.addEventListener("focus", (e) => {
+  userStatusRef.update({status: true});
+});
+window.addEventListener("blur", (e) => {
+  userStatusRef.update({status: false});
 });

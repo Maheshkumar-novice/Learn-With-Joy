@@ -42,7 +42,7 @@ auth.onAuthStateChanged(async (currentUser) => {
 });
 
 // ------------------------------------- Add participants from friends ----------------------
-let participantAddFriendsCard;
+let participantAddFriendsCard=[];
 const participantAddFriendsCnt = document.querySelector(
   ".group__add-friends-cnt[data-type='friends-cnt']"
 );
@@ -69,6 +69,7 @@ addParticipantIC.addEventListener("click", function (e) {
     searchFriendsInput.value = "";
     participantAddFriendsCnt.classList.remove("none");
     participantSearchListFriendsCnt.classList.add("none");
+    searchFriendsInputClose.classList.add("none");
   }
   participantFriendCnt.classList.toggle("none");
   groupParticpantCnt.classList.toggle("none");
@@ -80,14 +81,17 @@ searchFriendsInput.addEventListener("input", function (e) {
   if (value == "") {
     participantAddFriendsCnt.classList.remove("none");
     participantSearchListFriendsCnt.classList.add("none");
+    searchFriendsInputClose.classList.add("none");
     return;
   }
+  searchFriendsInputClose.classList.remove("none");
   participantAddFriendsCnt.classList.add("none");
   participantSearchListFriendsCnt.classList.remove("none");
   const regex = new RegExp(`^${value}`, "gi");
   participantSearchListFriendsCnt.innerText = "";
   searchFriendsList.forEach((name, idx) => {
     if (name.match(regex)) {
+      console.log(participantAddFriendsCard, participantAddFriendsCard[idx])
       const clone = participantAddFriendsCard[idx].cloneNode(true);
       participantSearchListFriendsCnt.appendChild(clone);
     }
@@ -119,6 +123,7 @@ function updateFriendsForAddParticipants() {
   searchFriendsList.push(
     card.querySelector(".group__add-friend-name").innerText
   );
+  participantAddFriendsCard.push(card);
   participantAddFriendsIc.addEventListener("click", addFriendsToGroup);
 }
 
@@ -157,6 +162,8 @@ function toggleCreateGroupButton(bool) {
     createButton.disabled = false;
     createButtonLoader.classList.remove("add-loading-animation");
     createButtonLoader.classList.add("none");
+    groupNameInput.value = groupLogoUpload.value = '';
+    groupLogoIC.src = "./assets/icons/groups/group-default.svg";
   }
 }
 

@@ -262,6 +262,17 @@
   z-index: 2;
 }
 
+.online::before{
+  content: '';
+  display: flex;
+  margin-right: .5rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background-color: green;
+}
+
 .menu__item {
   cursor: pointer;
   margin-top: 10px;
@@ -901,7 +912,7 @@ label[for="group-logo"] {
   animation: loading-rotate 1s linear infinite;
 }
 .add-loading-animation-normal{
-  animation: loading-rotate 1s linear infinite;
+  animation: loading-rotate-normal 1s linear infinite;
 }
 
 @keyframes loading-rotate{
@@ -912,7 +923,7 @@ label[for="group-logo"] {
     transform: translateY(-50%) rotate(360deg);
   }
 }
-@keyframes loading-rotate{
+@keyframes loading-rotate-normal{
   0%{
     transform: rotate(0deg);
   }

@@ -230,7 +230,24 @@ async function addFriendToFriendsList(data) {
     "child_added",
     addMessageToChatBody
   );
+  setDBListener(
+    database,
+    `users/${fid}/status`,
+    "value",
+    updateUserStatus
+  );
   document.querySelector(".dummy-participant-refresh").click();
+}
+
+function updateUserStatus(data){
+  const key = data.ref.parent.key;
+  const friendCardOnline =  document.querySelector(`.chat__friend-card[data-id="${key}"]`)
+  if(data.val() === false){
+    friendCardOnline.classList.remove("online");
+  }
+  else{
+    friendCardOnline.classList.add("online")
+  }
 }
 
 async function removeFriendFromFriendsList(data) {
