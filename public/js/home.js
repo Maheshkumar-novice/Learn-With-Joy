@@ -20,7 +20,7 @@ const sectionTabs = document.querySelectorAll(".section-tab");
 const userOptions = document.querySelector(".user-options");
 const signOutOption = document.querySelector(".sign-out-option");
 const timerStatus = document.querySelector(".timer-status");
-let userStatusRef;
+let userStatusRef=null;
 
 function updateUserDetails(user) {
   userProfilePic.src = user.photoURL;
@@ -147,8 +147,10 @@ timerStatus.addEventListener("click", () => {
 });
 
 window.addEventListener("focus", (e) => {
+  if(!userStatusRef) return;
   userStatusRef.update({status: true});
 });
 window.addEventListener("blur", (e) => {
+  if(!userStatusRef) return;
   userStatusRef.update({status: false});
 });

@@ -139,7 +139,7 @@ async function sendFriendRequest(uid) {
 
 async function rejectFriendRequest(e) {
   let fid = e.target.parentElement.dataset.id;
-  let key = pushKey(database, `friends/${fid}`, "notifications");
+  // let key = pushKey(database, `friends/${fid}`, "notifications");
   removeDB(database, `friends/${user.uid}/received/${fid}`);
   removeDB(database, `friends/${fid}/sent/${user.uid}`);
 }
@@ -157,6 +157,10 @@ async function addFriend(e) {
       user1: user.uid,
       user2: fid,
     },
+    typing:{
+      user1: false,
+      user2: false
+    }
   };
   writeDB(database, `chat/${hashtext}`, value);
   notificationFriendRequestAccept(fid, user.displayName);
@@ -191,6 +195,7 @@ function resetChatContainer(hash) {
     `.chat__chat-container[data-hash="${hash}"]`
   );
   friendContainer ? chatWrapper.removeChild(friendContainer) : "";
+  if(!document.querySelector(`.chat__chat-header[data-chat-id=${hash}]`)) return;
   chatWindowHeader.classList.add("none");
   chatWindowMessageSender.classList.add("none");
   noChatSelectedInfo.classList.remove("none");
@@ -241,7 +246,7 @@ async function addFriendToFriendsList(data) {
 
 function updateUserStatus(data){
   const key = data.ref.parent.key;
-  const friendCardOnline =  document.querySelector(`.chat__friend-card[data-id="${key}"]`)
+  const friendCardOnline =  document.querySelector(`.chat__friend-card[data-id="${key}"]`);
   if(data.val() === false){
     friendCardOnline.classList.remove("online");
   }
@@ -274,6 +279,7 @@ async function removeFriendFromFriendsList(data) {
     `.group__add-friend-card[data-id="${data.key}"]`
   );
   participantListCnt.removeChild(groupFriendCard);
+  database.ref(`users/${data.key}/status`).off("value");
 }
 
 async function addFriendRequestReceived(data) {

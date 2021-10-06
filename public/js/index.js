@@ -106,6 +106,7 @@ function updateUserState(val) {
       let value = {
         name: userName,
         photo: user.photoURL,
+        status: true
       };
       writeDB(database, `users/${user.uid}`, value);
       if (val) {
