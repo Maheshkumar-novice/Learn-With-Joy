@@ -696,25 +696,70 @@ async function clearChat() {
 }
 
 async function leaveGroup() {
-  await removeDB(
-    database,
-    `friends/${auth.currentUser.uid}/groups/${chatWindowHeader.dataset.groupId}`
-  );
-  let userInfo = (
+  removeGroupMessageDbListener();
+  if (isAdmin()) removeAdmin();
+  await deleteUserFromGroupDb();
+  setChatWindowToInitialState();
+  deleteUserGroupChatContainer();
+}
+
+function removeGroupMessageDbListener() {
+  database
+    .ref(`groups/${chatWindowHeader.dataset.groupId}/messages`)
+    .off("child_added");
+}
+
+async function removeAdmin() {
+  removeParticipantAddIcon();
+  let a = (
+    await readDB(
+      database,
+      `groups/${chatWindowHeader.dataset.groupId}/participants/`
+    )
+  ).val();
+  delete a[auth.currentUser.uid];
+  console.log(Object.values(a).some((e) => e == true));
+}
+
+function removeParticipantAddIcon() {
+  document.querySelector(".group__participants-add").classList.add("none");
+}
+
+async function isAdmin() {
+  (
     await readDB(
       database,
       `groups/${chatWindowHeader.dataset.groupId}/participants/${auth.currentUser.uid}`
     )
   ).val();
+}
+
+async function deleteUserFromGroupDb() {
+  await removeDB(
+    database,
+    `friends/${auth.currentUser.uid}/groups/${chatWindowHeader.dataset.groupId}`
+  );
+  await removeDB(
+    database,
+    `groups/${chatWindowHeader.dataset.groupId}/usersLastMessages/${auth.currentUser.uid}`
+  );
+  await removeDB(
+    database,
+    `groups/${chatWindowHeader.dataset.groupId}/lastClearedMessage/${auth.currentUser.uid}`
+  );
   await removeDB(
     database,
     `groups/${chatWindowHeader.dataset.groupId}/participants/${auth.currentUser.uid}`
   );
-  if (userInfo)
-    document.querySelector(".group__participants-add").classList.add("none");
+}
+
+function setChatWindowToInitialState() {
   noChatSelectedInfo.classList.remove("none");
   chatWindowHeader.classList.add("none");
   chatWindowMessageSender.classList.add("none");
+}
+
+function deleteUserGroupChatContainer() {
   document
     .querySelector(
       `.group__chat-container[data-group-id="${chatWindowHeader.dataset.groupId}"]`
