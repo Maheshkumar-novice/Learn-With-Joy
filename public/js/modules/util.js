@@ -72,7 +72,7 @@ export function setGreeting(element) {
 }
 
 export function pushState(pathName){
-  window.history.pushState(pathName, null, `/${pathName}`);
+  window.history.pushState({pathName}, null, `/${pathName}`);
 }
 
 export function checkAndChangeAngularBrackets(value){

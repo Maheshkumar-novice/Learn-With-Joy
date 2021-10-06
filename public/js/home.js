@@ -1,4 +1,4 @@
-import { firebaseConfig, userSignOut, readDB } from "./modules/firebase.js";
+import { firebaseConfig, userSignOut, readDB, updateDB } from "./modules/firebase.js";
 import { displayTime, getParameterByName, pushState, setGreeting } from "./modules/util.js";
 
 // firebase initialization
@@ -43,6 +43,11 @@ function toggleUserOptions() {
   userOptionsTrigger.classList.toggle("rotate-180");
 }
 
+function enableUserOffline(uid){
+  const ref = database.ref(`users/${uid}`);
+  ref.onDisconnect().update({status: false});
+}
+
 auth.onAuthStateChanged(async (currentUser) => {
   if (currentUser) {
     let check_presence = await readDB(database, `users/${currentUser.uid}`);
@@ -52,6 +57,8 @@ auth.onAuthStateChanged(async (currentUser) => {
     updateUserDetails(currentUser);
     document.querySelector(".loader").classList.add("none");
     document.querySelector("main").classList.remove("none");
+    updateDB(database, `users/${currentUser.uid}`, {status: true});
+    enableUserOffline(currentUser.uid);
   } else {
     window.location = "./index.html";
   }
@@ -130,12 +137,11 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("popstate", (e) => {
-  changeTabs(tabMap[e.state], 0);
-});
-
-window.addEventListener("click", () => {
-  // otherAvailableTabs.classList.add("none");
-  // userOptions.classList.add("none");
+  console.log("in");
+  console.log(e.state);
+  if(!e.state.pathName) return;
+  console.log("in") 
+  changeTabs(tabMap[e.state.pathName], 0);
 });
 
 timerStatus.addEventListener("click", () => {

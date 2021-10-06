@@ -21,7 +21,7 @@ createNew.addEventListener("click", (e) => {
     const noteID = pushKey(database, `notes/`, auth.currentUser.uid);
     console.log(noteID);
     addChlidDB(database, `friends/${uid}/notes`, noteID, true);
-    initializeNotesUtil(noteID);
+    initializeNotesUtil(noteID, 1);
 });
 
 copyNoteLink.addEventListener("click", (e) => {
@@ -33,15 +33,30 @@ editorTitle.addEventListener("change", (e) => {
   updateDB(database, `notes/${currentNoteID}`, {name: e.target.value});
 });
 
-function initializeNotesUtil(noteID){
+function setUpActiveNoteEffect(noteID){
+  const noteCard = document.querySelector(`.note_card[data-id="${noteID}"]`);
+  const activeCard = document.querySelector(".active-note");
+  activeCard ? activeCard.classList.remove("active-note") : "";
+  if(noteCard){
+    noteCard.classList.add("active-note");
+    editorTitle.value = noteCard.querySelector("h4").innerText;
+  }
+  richEditor.dataset.noteId = noteID;
+  noEditor.classList.add("none");
+  richEditor.classList.remove("none");
+}
+
+function setUpURL(noteID, boolAddURL){
+  const newURL = `?editor=true&nid=${noteID}`;
+  console.log(boolAddURL);
+  boolAddURL ? window.history.pushState({noteID}, null, newURL) : "";
+  linkUpdater.innerText = window.location.href;
+}
+
+function initializeNotesUtil(noteID, boolAddURL){
     currentNoteID = noteID;
-    richEditor.dataset.noteId = noteID;
-    noEditor.classList.add("none");
-    richEditor.classList.remove("none");
-    const newURL = `?editor=true&nid=${noteID}`;
-    console.log(newURL);
-    window.history.pushState("noteEditor", null, newURL);
-    linkUpdater.innerText = window.location.href;
+    setUpActiveNoteEffect(noteID);
+    setUpURL(noteID, boolAddURL);
     console.log(noteID)
     initializeNotes(noteID);
 }
@@ -141,10 +156,7 @@ const noteCreatorCnt = document.querySelector(".normal_notes[data-creator='true'
 const noteSharedCnt = document.querySelector(".normal_notes[data-creator='false']");
 
 function loadClickedNote(){
-  const activeCard = document.querySelector(".active-note");
-  activeCard ? activeCard.classList.remove("active-note") : "";
-  this.classList.add("active-note");
-  initializeNotesUtil(this.dataset.id);
+  initializeNotesUtil(this.dataset.id, 1);
   console.log(this.dataset.id);
 }
 
@@ -198,7 +210,21 @@ auth.onAuthStateChanged(async (currentUser) => {
       {
         addChlidDB(database, `friends/${user.uid}/notes`, noteID, false);
       }
-      initializeNotesUtil(noteID);
+      initializeNotesUtil(noteID, 0);
       DBListener();
+  }
+});
+
+window.addEventListener("popstate", (e) => {
+  if("noteID" in e.state){
+    initializeNotesUtil(e.state.pathName, 0);
+  }
+  else if(e.state.pathName === "notes"){
+    const activeCard = document.querySelector(".active-note");
+    activeCard ? activeCard.classList.remove("active-note") : "";
+    editorTitle.value = '';
+    noEditor.classList.remove("none");
+    richEditor.classList.add("none");
+    richEditor.dataset.noteId = "null";
   }
 });
