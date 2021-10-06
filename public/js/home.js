@@ -137,10 +137,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("popstate", (e) => {
-  console.log("in");
-  console.log(e.state);
-  if(!e.state.pathName) return;
-  console.log("in") 
+  if(!e.state || !e.state.pathName) return;
   changeTabs(tabMap[e.state.pathName], 0);
 });
 

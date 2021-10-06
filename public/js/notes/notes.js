@@ -216,10 +216,10 @@ auth.onAuthStateChanged(async (currentUser) => {
 });
 
 window.addEventListener("popstate", (e) => {
-  if("noteID" in e.state){
-    initializeNotesUtil(e.state.pathName, 0);
+  if(e.state && e.state.noteID){
+    initializeNotesUtil(e.state.noteID, 0);
   }
-  else if(e.state.pathName === "notes"){
+  else if(e.state && e.state.pathName === "notes"){
     const activeCard = document.querySelector(".active-note");
     activeCard ? activeCard.classList.remove("active-note") : "";
     editorTitle.value = '';
