@@ -932,6 +932,19 @@ label[for="group-logo"] {
   }
 }
 
+.typing-animation{
+  animation: blink 1s linear infinite;
+}
+
+@keyframes blink{
+  0%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+
 .create-group-error{
   color: var(--error-color);
   font-size: 1.2rem;

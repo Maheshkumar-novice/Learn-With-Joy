@@ -152,15 +152,15 @@ async function addFriend(e) {
   addChlidDB(database, `friends/${fid}/friends`, user.uid, hashtext);
   removeDB(database, `friends/${user.uid}/received/${fid}`);
   removeDB(database, `friends/${fid}/sent/${user.uid}`);
+  let typingObject = {};
+  typingObject[user.uid] = false;
+  typingObject[fid] = false;
   let value = {
     user: {
       user1: user.uid,
       user2: fid,
     },
-    typing:{
-      user1: false,
-      user2: false
-    }
+    typing:typingObject
   };
   writeDB(database, `chat/${hashtext}`, value);
   notificationFriendRequestAccept(fid, user.displayName);
@@ -241,6 +241,7 @@ async function addFriendToFriendsList(data) {
     "value",
     updateUserStatus
   );
+  setDBListener(database, `chat/${hash}/typing`, "child_changed", toggleTypingEffect);
   document.querySelector(".dummy-participant-refresh").click();
 }
 
@@ -495,7 +496,8 @@ async function updateChatWindow(friendCard) {
   let hash = friendCard.dataset.hash;
   let fid = friendCard.dataset.id;
   setUpChatWindow(friendCard);
-
+  const isUserTyping = (await readDB(database, `chat/${hash}/typing/${fid}`)).val();
+  isUserTyping ? typingEffectCnt.classList.remove("none") : typingEffectCnt.classList.add("none");
   let friendContainer = document.querySelector(
     `.chat__chat-container[data-hash="${hash}"]`
   );
@@ -775,6 +777,42 @@ async function addMessageToChatBody(chat) {
     : "";
 }
 
+// Enable user typing
+let isTyping=false, prevTimeout, prevChatHash;
+function disableTyping(){
+  const obj = {};
+  obj[user.uid] = false;
+  console.log("helo");
+  updateDB(database, `chat/${chatWindowMessageInput.dataset.chatHash}/typing`, obj);
+  isTyping = false;
+}
+
+chatWindowMessageInput.addEventListener("input", (e) => {
+  if(isTyping){
+    clearTimeout(prevTimeout);
+    prevTimeout = setTimeout(disableTyping, 5000);
+  }
+  else{
+    prevChatHash = chatWindowMessageInput.dataset.chatHash;
+    isTyping=true;
+    const obj = {};
+    obj[user.uid] = true;
+    updateDB(database, `chat/${chatWindowMessageInput.dataset.chatHash}/typing`, obj);
+    prevTimeout = setTimeout(disableTyping, 5000);
+  }
+});
+
+const typingEffectCnt = document.querySelector(".chat__chat-typing");
+const typingEffectDot = document.querySelector(".typing-animation");
+function toggleTypingEffect(data){
+  const hash = data.ref.parent.parent.key;
+  console.log(data.key, data.val(), hash);
+  if(data.key === user.uid || chatWindowMessageInput.dataset.chatHash !== hash) return;
+  data.val() ? typingEffectCnt.classList.remove("none") : typingEffectCnt.classList.add("none");
+}
+
+
+
 function sendMessage() {
   if (!chatWindowMessageInput.value) return;
   let chatHash = chatWindowMessageInput.dataset.chatHash;
@@ -807,6 +845,8 @@ function sendMessage() {
 function addEventListenerToFriendCards(fid) {
   let friends = document.querySelector(`.chat__friend-card[data-id="${fid}"]`);
   friends.addEventListener("click", function (e) {
+    clearTimeout(prevTimeout);
+    disableTyping();
     const prevSelected = document.querySelector(".chat__friend-card-active");
     prevSelected
       ? prevSelected.classList.remove("chat__friend-card-active")
