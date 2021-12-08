@@ -9,5 +9,5 @@
   * Timer 
 
 ### Create by
-* [Arul Murugave B - github](https://github.com/bloodbrother/)
+* [Arul Murugavel B - github](https://github.com/bloodbrother/)
 * [Maheshkumar P - github](https://github.com/Maheshkumar-novice/)
