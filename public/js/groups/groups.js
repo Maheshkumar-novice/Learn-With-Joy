@@ -329,7 +329,7 @@ async function showParticipantsList(hash, userAdminStatus) {
   const nonAdminData = await nonAdminDB.val();
   for (let id in adminData) {
     const checkFriend = document.querySelector(
-      `.group__add-friend-card[data-id=${id}]`
+      `.group__add-friend-card[data-id="${id}"]`
     );
     if (checkFriend) {
       const photoURL = checkFriend.querySelector(".chat__img").src;
@@ -350,7 +350,7 @@ async function showParticipantsList(hash, userAdminStatus) {
   }
   for (let id in nonAdminData) {
     const checkFriend = document.querySelector(
-      `.group__add-friend-card[data-id=${id}]`
+      `.group__add-friend-card[data-id="${id}"]`
     );
     if (checkFriend) {
       const photoURL = checkFriend.querySelector(".chat__img").src;
@@ -422,10 +422,10 @@ async function updateParticipantList(data) {
   );
   if (!participantCnt) return;
   const checkFriend = document.querySelector(
-    `.group__add-friend-card[data-id=${data.key}]`
+    `.group__add-friend-card[data-id="${data.key}"]`
   );
   const checkAdmin =
-    document.querySelector(`.group__participant-card[data-id=${user.uid}]`)
+    document.querySelector(`.group__participant-card[data-id="${user.uid}"]`)
       .dataset.admin === "true"
       ? true
       : false;
@@ -444,7 +444,7 @@ async function updateParticipantList(data) {
     );
   }
   const newcard = participantCnt.querySelector(
-    `.group__participant-card[data-id=${data.key}] .group__participant-option-ic`
+    `.group__participant-card[data-id="${data.key}"] .group__participant-option-ic`
   );
   newcard ? newcard.addEventListener("click", showOptionsCnt) : "";
 }
@@ -524,7 +524,7 @@ function deleteParticipant(data) {
     }
   }
   const participantCard = participantCnt.querySelector(
-    `.group__participant-card[data-id=${data.key}]`
+    `.group__participant-card[data-id="${data.key}"]`
   );
   participantCnt.removeChild(participantCard);
   const searchCardIC = document.querySelector(
@@ -979,7 +979,7 @@ async function addMessageToChatBody(chat) {
   let chatData = chat.val();
   if (!chatData) return;
   let sender = document.querySelector(
-    `.group__participant-card[data-id=${chatData.sender}]`
+    `.group__participant-card[data-id="${chatData.sender}"]`
   ).textContent;
   if ("image" in chatData) {
     if (
