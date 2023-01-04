@@ -206,8 +206,9 @@ function updateImagePreview(cnt, link, ts) {
 }
 
 function updateFilePreview(cnt, link, ts) {
+  console.log(auth.currentUser.uid);
   let sender = document.querySelector(
-    `.group__participant-card[data-id="${auth.currentUser.uid}]"`
+    `.group__participant-card[data-id="${auth.currentUser.uid}"]`
   ).textContent;
   const imgLink = cnt.querySelector(".group__message--download-ic");
   const aLink = cnt.querySelector(".group__message--link");
